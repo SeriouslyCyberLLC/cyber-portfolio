@@ -1,0 +1,23 @@
+# Exclude personal screenshots (keep only portfolio picks)
+screenshots/*
+!screenshots/portfolio-picks/
+!screenshots/portfolio-picks/*.png
+
+# Python
+__pycache__/
+*.py[cod]
+*env/
+venv/
+
+# Sensitive data
+*.key
+*.pem
+*config.json
+notification_config.json
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
