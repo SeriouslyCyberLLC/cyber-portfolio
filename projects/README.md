@@ -5,16 +5,17 @@ Cybersecurity professional specializing in Security Operations, Incident Respons
 
 ## Certifications
 - CISSP (Certified Information Systems Security Professional)
-- CompTIA Security+ (Security X/CASP+)
+- CCSP (Certified Cloud Security Professional)
+- CompTIA Security X (CASP+)
 - CompTIA CySA+ (Cybersecurity Analyst)
 - SANS FOR500/GCFE (In Progress)
 
 ## Current Role
-**Incident Response Analyst** - DFIR Team at Managed Security Service Provider (MSSP)
-- 24/7 security monitoring and incident response
-- Threat hunting and forensic analysis
-- Client security assessments
-- Automated tooling development
+**Security Advisory Consultant - Incident & Crisis Rediness** - at Managed Security Service Provider (MSSP)
+- Own security governance, risk, and incident readiness advisory engagements for regulated enterprise clients, delivering audit-defensible security programs aligned to NIST CSF 2.0, NIST 800-61 r2, HIPAA, and federal risk management expectations.
+- Advise on data handling, retention, and incident documentation practices to support regulatory obligations and potential litigation scenarios.
+- Conduct formal risk and control assessments, document control gaps, and prioritize remediation actions based on regulatory exposure, operational impact, and organizational risk tolerance.
+- Develop executive-ready security risk reports and dashboards, presenting clear findings, trends, and decision points to senior leadership and boards.
 
 ## Technical Projects
 
@@ -77,8 +78,8 @@ Privacy-focused transcription system using Whisper AI with GPU acceleration. Bro
 ## Contact
 - Website: seriouslycyber.com
 - GitHub: [Portfolio will be pushed here]
-- Location: Raeford, North Carolina
-- Clearance: [If applicable]
+- Location: Parkton, North Carolina
+- Clearance: Public Trust
 
 ---
 
