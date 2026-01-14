@@ -85,3 +85,13 @@ Privacy-focused transcription system using Whisper AI with GPU acceleration. Bro
 
 **Last Updated**: January 2026  
 **Portfolio Status**: Active Development
+
+### 6. [Firewalla Network Security Architecture](firewalla-network-security.md)
+Defense-in-depth network architecture with multi-VLAN segmentation, threat prevention, and comprehensive traffic monitoring. Blocks 877K+ malicious flows daily.
+
+**Key Stats**: 877K+ blocked flows/day, 99.98% uptime, 2.1M flow records/day
+
+### 7. [AI-Enhanced Security Analysis](ai-enhanced-security-analysis.md)
+Local LLM infrastructure with Mixtral and RAG system for automated log analysis, threat research, and incident response assistance. 100% private, on-premise processing.
+
+**Key Stats**: 60% analyst time savings, 35% FP reduction, 25-35 tokens/sec, 95%+ accuracy
