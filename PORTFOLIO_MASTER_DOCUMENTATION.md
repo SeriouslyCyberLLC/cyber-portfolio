@@ -433,3 +433,48 @@ tar -czf portfolio-backup-$(date +%Y%m%d).tar.gz portfolio/
 **Last Updated**: January 13, 2026  
 **Created By**: Larry Harvey with Claude assistance  
 **Version**: 1.0
+
+---
+
+## Conky System Monitoring
+
+### Configuration Location
+- Main config: `~/.config/conky/tepes.conf`
+- Auto-start: `~/.config/autostart/conky-tepes.desktop`
+- Full docs: `~/portfolio/docs/conky-system-monitoring.md`
+
+### Quick Commands
+```bash
+# Restart Conky
+killall conky && conky -c ~/.config/conky/tepes.conf &
+
+# Edit configuration
+nano ~/.config/conky/tepes.conf
+
+# Test without persistence
+conky -c ~/.config/conky/tepes.conf
+
+# Check auto-start status
+ls -la ~/.config/autostart/conky-tepes.desktop
+```
+
+### Display Metrics
+- CPU: 48-core temperature and utilization
+- RAM: 128GB usage tracking
+- GPU: AMD RX 7900 XTX metrics
+- Storage: NVMe + HDD monitoring
+- Network: Real-time bandwidth
+- Color-coded status indicators
+
+### Troubleshooting
+If Conky not showing after boot:
+```bash
+# Verify auto-start file
+cat ~/.config/autostart/conky-tepes.desktop
+
+# Test manually
+conky -c ~/.config/conky/tepes.conf
+
+# Check for errors
+journalctl --user | grep conky
+```
