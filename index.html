@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Larry Harvey - Cybersecurity Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 10px;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+        
+        .subtitle {
+            font-size: 1.5em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .certs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .cert {
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        
+        .projects {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .project {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .project:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .project h3 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        
+        .project p {
+            margin: 10px 0;
+            color: #555;
+        }
+        
+        .stats {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            font-family: monospace;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin: 10px 10px 10px 0;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #5568d3;
+        }
+        
+        .btn-secondary {
+            background: #764ba2;
+        }
+        
+        .btn-secondary:hover {
+            background: #5e3a81;
+        }
+        
+        footer {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 10px;
+            margin: 40px 0;
+            text-align: center;
+        }
+        
+        .contact-links {
+            margin: 20px 0;
+        }
+        
+        .contact-links a {
+            margin: 0 15px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            .projects {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Larry Harvey</h1>
+            <div class="subtitle">Cybersecurity Professional | Incident Response | Security Engineering</div>
+            <p>Incident Response Analyst with expertise in SIEM deployment, threat detection, and security automation. Rapid career progression from military/fire rescue to cybersecurity, achieving Employee of the Quarter in first year.</p>
+            
+            <div class="certs">
+                <span class="cert">CISSP</span>
+                <span class="cert">Security+</span>
+                <span class="cert">CySA+</span>
+                <span class="cert">GCFE (In Progress)</span>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio" class="btn">📂 View on GitHub</a>
+                <a href="#projects" class="btn btn-secondary">🚀 See Projects</a>
+            </div>
+        </header>
+        
+        <div id="projects" class="projects">
+            <div class="project">
+                <h3>🛡️ Enterprise SOC Infrastructure</h3>
+                <p>Full-stack security monitoring platform with ELK Stack, Suricata IDS, Zeek NSM, and Velociraptor EDR.</p>
+                <div class="stats">
+                    📊 42M+ indexed events<br>
+                    ⚡ 1.4M events/day<br>
+                    🎯 99.9% uptime<br>
+                    💾 25.8GB indexed data
+                </div>
+                <p><strong>Tech:</strong> Elasticsearch, Logstash, Kibana, Suricata, Zeek, Velociraptor, Python, AMD ROCm</p>
+                <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/soc-infrastructure.md" class="btn">Read More →</a>
+            </div>
+            
+            <div class="project">
+                <h3>🔍 DNS Behavioral Monitoring</h3>
+                <p>Real-time DNS threat detection using DGA analysis, tunneling detection, and behavioral scoring.</p>
+                <div class="stats">
+                    🎯 Real-time processing<br>
+                    📉 <5% false positive rate<br>
+                    🔔 Pushover alerting<br>
+                    📊 ELK integration
+                </div>
+                <p><strong>Tech:</strong> Python, Zeek, Elasticsearch, Behavioral Analysis, Threat Intelligence</p>
+                <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/dns-behavioral-monitoring.md" class="btn">Read More →</a>
+            </div>
+            
+            <div class="project">
+                <h3>🤖 Automated Report Generation</h3>
+                <p>AI-powered system reducing client deliverable creation time by 95% using local LLMs.</p>
+                <div class="stats">
+                    ⏱️ 4-8 hours → 3-20 minutes<br>
+                    📈 10x capacity increase<br>
+                    📄 TTX & IR assessments<br>
+                    🎯 Client-ready output
+                </div>
+                <p><strong>Tech:</strong> Ollama, Llama3.1, Python, python-docx, RAG, Template Engineering</p>
+                <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/automated-report-generation.md" class="btn">Read More →</a>
+            </div>
+            
+            <div class="project">
+                <h3>🎤 Local Speech-to-Text</h3>
+                <p>Privacy-focused transcription system using Whisper AI with GPU acceleration for secure dictation.</p>
+                <div class="stats">
+                    🔒 100% local processing<br>
+                    ⚡ 3-5 second transcription<br>
+                    🎯 95%+ accuracy<br>
+                    🌐 Browser integration
+                </div>
+                <p><strong>Tech:</strong> OpenAI Whisper, AMD ROCm, Python, WebSocket, JavaScript, Browser Extensions</p>
+                <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/whisper-speech-to-text.md" class="btn">Read More →</a>
+            </div>
+        </div>
+        
+        <footer>
+            <h2>Get In Touch</h2>
+            <div class="contact-links">
+                <a href="https://github.com/SeriouslyCyberLLC">GitHub</a>
+                <a href="mailto:larry.harvey.cyber@protonmail.com">Email</a>
+                <a href="https://www.linkedin.com/in/larry-harvey-cyber">LinkedIn</a>
+            </div>
+            <p style="margin-top: 20px; color: #666;">
+                📍 Raeford, North Carolina<br>
+                🚀 Available for federal agencies and top-tier private sector opportunities
+            </p>
+            <p style="margin-top: 30px; font-size: 0.9em; color: #999;">
+                © 2026 Larry Harvey - Seriously Cyber Consulting LLC
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
