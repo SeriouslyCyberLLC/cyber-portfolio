@@ -18,6 +18,11 @@ Cybersecurity professional specializing in Security Operations, Incident Respons
 
 ## Technical Projects
 
+### 5. [Threat Intelligence Integration](threat-intelligence-integration.md)
+Multi-source threat intel platform with automated IOC enrichment, reducing analyst investigation time by 60%. Integrated VirusTotal, AbuseIPDB, AlienVault OTX, and Hybrid Analysis.
+
+**Key Stats**: 50K daily API calls, 60% time savings, 40% FP reduction, 2.3M IOCs indexed
+
 ### 1. [Enterprise SOC Infrastructure](soc-infrastructure.md)
 Full-stack security monitoring platform with ELK Stack, Suricata IDS, Zeek NSM, and Velociraptor EDR. Processing 1.4M+ events daily with AI-enhanced threat analysis.
 
