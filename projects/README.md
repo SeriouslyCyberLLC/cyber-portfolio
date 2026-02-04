@@ -19,11 +19,6 @@ Cybersecurity professional specializing in Security Operations, Incident Respons
 
 ## Technical Projects
 
-### 5. [Threat Intelligence Integration](threat-intelligence-integration.md)
-Multi-source threat intel platform with automated IOC enrichment, reducing analyst investigation time by 60%. Integrated VirusTotal, AbuseIPDB, AlienVault OTX, and Hybrid Analysis.
-
-**Key Stats**: 50K daily API calls, 60% time savings, 40% FP reduction, 2.3M IOCs indexed
-
 ### 1. [Enterprise SOC Infrastructure](soc-infrastructure.md)
 Full-stack security monitoring platform with ELK Stack, Suricata IDS, Zeek NSM, and Velociraptor EDR. Processing 1.4M+ events daily with AI-enhanced threat analysis.
 
@@ -43,6 +38,30 @@ AI-powered system reducing client deliverable creation time by 95%. Generates pr
 Privacy-focused transcription system using Whisper AI with GPU acceleration. Browser extension and system-wide hotkey for secure dictation.
 
 **Key Stats**: 3-5 second transcription, 95%+ accuracy, 100% local
+
+### 5. [Threat Intelligence Integration](threat-intelligence-integration.md)
+Multi-source threat intel platform with automated IOC enrichment, reducing analyst investigation time by 60%. Integrated VirusTotal, AbuseIPDB, AlienVault OTX, and Hybrid Analysis.
+
+**Key Stats**: 50K daily API calls, 60% time savings, 40% FP reduction, 2.3M IOCs indexed
+
+### 6. Automated Vulnerability Discovery in Production SOC Infrastructure
+Leveraged Trail of Bits Claude Code security analysis skills to perform automated code review of production Security Operations Center infrastructure. Discovered and remediated 4 CRITICAL and 3 HIGH severity vulnerabilities in 157 minutes, demonstrating the effectiveness of AI-enhanced security assessment methodologies.
+- Analysis Duration: 2 minutes 37 seconds (automated)
+- Remediation Duration: 155 minutes (guided implementation)
+- Tools Used: Claude Code with Trail of Bits security skills, insecure-defaults skill, static-analysis skill
+
+Target Environment:
+    • Tepes SOC - Enterprise security operations infrastructure 
+    • 13 Python security applications 
+    • Elasticsearch cluster (127 active shards, 230 total) 
+    • Automated threat intelligence pipeline 
+    • Real-time log analysis and automated response system 
+Assessment Methodology:
+    1. Automated security code review using Trail of Bits insecure-defaults skill 
+    2. Command injection vulnerability analysis 
+    3. Authentication and authorization review 
+    4. Input validation assessment 
+    5. Secrets management audit 
 
 ## Technical Skills
 
