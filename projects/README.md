@@ -44,7 +44,17 @@ Multi-source threat intel platform with automated IOC enrichment, reducing analy
 
 **Key Stats**: 50K daily API calls, 60% time savings, 40% FP reduction, 2.3M IOCs indexed
 
-### 6. Automated Vulnerability Discovery in Production SOC Infrastructure
+### 6. [Firewalla Network Security Architecture](firewalla-network-security.md)
+Defense-in-depth network architecture with multi-VLAN segmentation, threat prevention, and comprehensive traffic monitoring. Blocks 877K+ malicious flows daily.
+
+**Key Stats**: 877K+ blocked flows/day, 99.98% uptime, 2.1M flow records/day
+
+### 7. [AI-Enhanced Security Analysis](ai-enhanced-security-analysis.md)
+Local LLM infrastructure with Mixtral and RAG system for automated log analysis, threat research, and incident response assistance. 100% private, on-premise processing.
+
+**Key Stats**: 60% analyst time savings, 35% FP reduction, 25-35 tokens/sec, 95%+ accuracy
+
+### 8. Automated Vulnerability Discovery in Production SOC Infrastructure
 Leveraged Trail of Bits Claude Code security analysis skills to perform automated code review of production Security Operations Center infrastructure. Discovered and remediated 4 CRITICAL and 3 HIGH severity vulnerabilities in 157 minutes, demonstrating the effectiveness of AI-enhanced security assessment methodologies.
 - Analysis Duration: 2 minutes 37 seconds (automated)
 - Remediation Duration: 155 minutes (guided implementation)
@@ -104,13 +114,3 @@ Assessment Methodology:
 
 **Last Updated**: January 2026  
 **Portfolio Status**: Active Development
-
-### 6. [Firewalla Network Security Architecture](firewalla-network-security.md)
-Defense-in-depth network architecture with multi-VLAN segmentation, threat prevention, and comprehensive traffic monitoring. Blocks 877K+ malicious flows daily.
-
-**Key Stats**: 877K+ blocked flows/day, 99.98% uptime, 2.1M flow records/day
-
-### 7. [AI-Enhanced Security Analysis](ai-enhanced-security-analysis.md)
-Local LLM infrastructure with Mixtral and RAG system for automated log analysis, threat research, and incident response assistance. 100% private, on-premise processing.
-
-**Key Stats**: 60% analyst time savings, 35% FP reduction, 25-35 tokens/sec, 95%+ accuracy
