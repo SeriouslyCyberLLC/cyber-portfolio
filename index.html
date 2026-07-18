@@ -109,9 +109,12 @@
             box-shadow: 0 0 30px rgba(255,42,42,0.45), inset 0 0 22px rgba(255,42,42,0.2);
             text-align: center; flex: 0 0 auto;
         }
-        .flagship-badge .isc2 { font-size: .72em; letter-spacing: .12em; color: var(--muted); }
-        .flagship-badge .mark { font-size: 2.1em; font-weight: 800; letter-spacing: .04em; color: #fff; text-shadow: 0 0 16px rgba(255,42,42,0.7); }
+        .flagship-badge .issuer { font-size: .72em; letter-spacing: .12em; color: var(--muted); }
+        .flagship-badge .mark { font-size: 1.95em; font-weight: 800; letter-spacing: .03em; color: #fff; text-shadow: 0 0 16px rgba(255,42,42,0.7); }
         .flagship-badge .full { font-size: .56em; color: var(--faint); padding: 0 12px; margin-top: 2px; line-height: 1.25; }
+        /* AI-security flagship variant — amber (brand accent) to set them apart */
+        .flagship-badge.ai { border-color: var(--amber); background: radial-gradient(circle at 50% 35%, #2a1808 0%, #120a03 70%); box-shadow: 0 0 30px rgba(223,133,68,0.45), inset 0 0 22px rgba(223,133,68,0.2); }
+        .flagship-badge.ai .mark { text-shadow: 0 0 16px rgba(223,133,68,0.75); }
 
         .cert-wall { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 18px; margin: 26px 0 10px; }
         .cert-item {
@@ -178,21 +181,31 @@
         <!-- ================= CERTIFICATIONS ================= -->
         <div class="section-title" id="certs">
             <h2>Certifications</h2>
-            <p>Verified credentials across security leadership, cloud, analysis, and operations</p>
+            <p>Verified credentials across AI security, security leadership, cloud, analysis, and operations</p>
         </div>
 
-        <!-- CISSP + CCSP flagship. To use official (ISC)² badges, drop PNGs in
-             assets/certs/ and swap these .flagship-badge blocks for <img> tags. -->
+        <!-- Flagship medallions (CISSP/CCSP = red core-security, AAISM/SecAI+ = amber AI-security).
+             To use official issuer badges, drop PNGs in assets/certs/ and swap these blocks for <img> tags. -->
         <div class="cert-flagship">
             <div class="flagship-badge">
-                <span class="isc2">(ISC)&sup2;</span>
+                <span class="issuer">(ISC)&sup2;</span>
                 <span class="mark">CISSP</span>
                 <span class="full">Certified Information Systems Security Professional</span>
             </div>
             <div class="flagship-badge">
-                <span class="isc2">(ISC)&sup2;</span>
+                <span class="issuer">(ISC)&sup2;</span>
                 <span class="mark">CCSP</span>
                 <span class="full">Certified Cloud Security Professional</span>
+            </div>
+            <div class="flagship-badge ai">
+                <span class="issuer">ISACA</span>
+                <span class="mark">AAISM</span>
+                <span class="full">Advanced in AI Security Management</span>
+            </div>
+            <div class="flagship-badge ai">
+                <span class="issuer">CompTIA</span>
+                <span class="mark">SecAI+</span>
+                <span class="full">AI Security certification</span>
             </div>
         </div>
 
