@@ -3,371 +3,284 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Larry Harvey - Cybersecurity Portfolio</title>
+    <title>Larry W. Harvey — Cybersecurity Portfolio</title>
+    <meta name="description" content="Larry W. Harvey — Security Advisory Consultant. Incident &amp; crisis readiness, cloud security engineering. CISSP, CCSP, CySA+.">
+    <link rel="icon" type="image/svg+xml" href="assets/logo-orbital.svg">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --red: #ff2a2a;
+            --red-deep: #cc0000;
+            --amber: #df8544;          /* brand-logo accent, used sparingly */
+            --ink: #e8e8e8;
+            --muted: #a8a8a8;
+            --faint: #6f6f6f;
+            --panel: #141414;
+            --panel-2: #0d0d0d;
         }
-        
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            color: #e0e0e0;
-            background: #0a0a0a;
-            background-image: 
-                radial-gradient(circle at 20% 50%, rgba(255, 0, 0, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(0, 255, 0, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 40% 20%, rgba(0, 100, 255, 0.08) 0%, transparent 50%);
+            color: var(--ink);
+            /* Carbon-fiber weave (pure CSS, no image) */
+            background-color: #0b0b0b;
+            background-image:
+                linear-gradient(27deg,  #161616 5px, transparent 5px) 0 5px,
+                linear-gradient(207deg, #161616 5px, transparent 5px) 10px 0,
+                linear-gradient(27deg,  #0f0f0f 5px, transparent 5px) 0 10px,
+                linear-gradient(207deg, #0f0f0f 5px, transparent 5px) 10px 5px,
+                linear-gradient(90deg,  #131313 10px, transparent 10px),
+                linear-gradient(#181818 25%, #141414 25%, #141414 50%, transparent 50%, transparent 75%, #1c1c1c 75%, #1c1c1c);
+            background-size: 20px 20px;
             min-height: 100vh;
         }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+
+        /* Subtle red ambient glow over the weave */
+        body::after {
+            content: '';
+            position: fixed; inset: 0;
+            background-image:
+                radial-gradient(circle at 18% 12%, rgba(255,42,42,0.12) 0%, transparent 45%),
+                radial-gradient(circle at 85% 90%, rgba(122,0,0,0.14) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
         }
-        
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
+
+        /* ---------- Header / Hero ---------- */
         header {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d0a0a 100%);
-            padding: 40px;
-            border-radius: 10px;
-            margin: 40px 0;
-            box-shadow: 
-                0 10px 30px rgba(255, 0, 0, 0.3),
-                0 0 100px rgba(255, 0, 0, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 0, 0, 0.3);
-        }
-        
-        h1 {
-            font-size: 3em;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #ff0000, #cc0000, #ff3333);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
-        }
-        
-        .subtitle {
-            font-size: 1.5em;
-            color: #b0b0b0;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
-        }
-        
-        header p {
-            color: #c0c0c0;
-        }
-        
-        .certs {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 20px 0;
-        }
-        
-        .cert {
-            background: linear-gradient(135deg, #cc0000, #990000);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
-            border: 1px solid rgba(255, 0, 0, 0.5);
-        }
-        
-        .section-title {
-            text-align: center;
-            margin: 40px 0;
-        }
-        
-        .section-title h2 {
-            font-size: 2.5em;
-            background: linear-gradient(135deg, #ff0000, #ff3333);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
-        }
-        
-        .projects {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: auto 1fr;
             gap: 30px;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a1a 0%, #240707 100%);
+            padding: 40px;
+            border-radius: 14px;
             margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(255,0,0,0.25), 0 0 100px rgba(255,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,42,42,0.28);
         }
-        
-        .project {
-            background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 
-                0 5px 20px rgba(255, 0, 0, 0.2),
-                0 0 40px rgba(255, 0, 0, 0.05),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 0, 0, 0.2);
-            transition: all 0.3s ease;
+
+        .brand-logo { width: 150px; height: auto; filter: drop-shadow(0 0 18px rgba(223,133,68,0.45)); }
+
+        h1 {
+            font-size: 3em; line-height: 1.1; margin-bottom: 8px;
+            background: linear-gradient(135deg, #ff5b5b, #ff2a2a, #cc0000);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255,0,0,0.4);
         }
-        
-        .project:hover {
-            transform: translateY(-5px);
-            box-shadow: 
-                0 10px 40px rgba(255, 0, 0, 0.4),
-                0 0 60px rgba(255, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 0, 0, 0.5);
-        }
-        
-        .project h3 {
-            color: #ff3333;
-            font-size: 1.8em;
-            margin-bottom: 15px;
-            text-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
-        }
-        
-        .project p {
-            margin: 10px 0;
-            color: #b0b0b0;
-        }
-        
-        .stats {
-            background: rgba(255, 0, 0, 0.05);
-            padding: 15px;
-            border-radius: 5px;
-            margin: 15px 0;
-            font-family: 'Courier New', monospace;
-            border: 1px solid rgba(255, 0, 0, 0.2);
-            color: #e0e0e0;
-        }
-        
+        .subtitle { font-size: 1.35em; color: #cfcfcf; margin-bottom: 14px; }
+        header p { color: var(--muted); max-width: 72ch; }
+        .hero-cta { margin-top: 22px; }
+
+        /* ---------- Buttons ---------- */
         .btn {
             display: inline-block;
-            background: linear-gradient(135deg, #cc0000, #990000);
-            color: white;
-            padding: 12px 30px;
-            border-radius: 5px;
-            text-decoration: none;
-            margin: 10px 10px 10px 0;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
-            border: 1px solid rgba(255, 0, 0, 0.5);
+            background: linear-gradient(135deg, var(--red-deep), #990000);
+            color: #fff; padding: 12px 28px; border-radius: 6px;
+            text-decoration: none; margin: 8px 10px 0 0; font-weight: 700;
+            transition: all .25s ease; box-shadow: 0 4px 15px rgba(255,0,0,0.28);
+            border: 1px solid rgba(255,42,42,0.5);
         }
-        
-        .btn:hover {
-            background: linear-gradient(135deg, #ff0000, #cc0000);
-            box-shadow: 0 6px 25px rgba(255, 0, 0, 0.5);
-            transform: translateY(-2px);
+        .btn:hover { background: linear-gradient(135deg, var(--red), var(--red-deep)); box-shadow: 0 6px 25px rgba(255,0,0,0.5); transform: translateY(-2px); }
+        .btn-secondary { background: linear-gradient(135deg, #2c2c2c, #181818); border: 1px solid rgba(255,255,255,0.18); }
+        .btn-secondary:hover { background: linear-gradient(135deg, #3d3d3d, #2c2c2c); box-shadow: 0 6px 25px rgba(223,133,68,0.28); border-color: rgba(223,133,68,0.5); }
+
+        /* ---------- Section titles ---------- */
+        .section-title { text-align: center; margin: 56px 0 30px; }
+        .section-title h2 {
+            font-size: 2.4em;
+            background: linear-gradient(135deg, #ff2a2a, #ff6b6b);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255,0,0,0.4);
         }
-        
-        .btn-secondary {
-            background: linear-gradient(135deg, #333333, #1a1a1a);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        .section-title p { color: var(--faint); margin-top: 4px; }
+
+        /* ---------- Certifications ---------- */
+        .cert-flagship { display: flex; align-items: center; justify-content: center; gap: 30px; flex-wrap: wrap; margin: 0 auto 26px; }
+        .flagship-badge {
+            width: 148px; height: 148px; border-radius: 50%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: radial-gradient(circle at 50% 35%, #2a0a0a 0%, #120303 70%);
+            border: 2px solid var(--red);
+            box-shadow: 0 0 30px rgba(255,42,42,0.45), inset 0 0 22px rgba(255,42,42,0.2);
+            text-align: center; flex: 0 0 auto;
         }
-        
-        .btn-secondary:hover {
-            background: linear-gradient(135deg, #4d4d4d, #333333);
-            box-shadow: 0 6px 25px rgba(255, 255, 255, 0.2);
+        .flagship-badge .isc2 { font-size: .72em; letter-spacing: .12em; color: var(--muted); }
+        .flagship-badge .mark { font-size: 2.1em; font-weight: 800; letter-spacing: .04em; color: #fff; text-shadow: 0 0 16px rgba(255,42,42,0.7); }
+        .flagship-badge .full { font-size: .56em; color: var(--faint); padding: 0 12px; margin-top: 2px; line-height: 1.25; }
+
+        .cert-wall { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 18px; margin: 26px 0 10px; }
+        .cert-item {
+            background: linear-gradient(135deg, var(--panel) 0%, var(--panel-2) 100%);
+            border: 1px solid rgba(255,42,42,0.16); border-radius: 12px;
+            padding: 18px 12px 12px; text-align: center; transition: all .25s ease;
         }
-        
-        footer {
+        .cert-item:hover { transform: translateY(-4px); border-color: rgba(223,133,68,0.55); box-shadow: 0 8px 26px rgba(255,0,0,0.22); }
+        .cert-item img { width: 84px; height: 84px; object-fit: contain; }
+        .cert-item span { display: block; margin-top: 8px; font-size: .82em; color: var(--muted); }
+        .cert-item.in-progress {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border-style: dashed; border-color: rgba(223,133,68,0.5);
+        }
+        .cert-item.in-progress .ip-mark { font-size: 1.5em; font-weight: 800; color: var(--amber); }
+        .cert-item.in-progress .ip-tag { font-size: .72em; color: var(--faint); margin-top: 4px; }
+
+        /* ---------- Projects ---------- */
+        .projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin: 30px 0; }
+        .project {
             background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
-            padding: 30px;
-            border-radius: 10px;
-            margin: 40px 0;
-            text-align: center;
-            border: 1px solid rgba(255, 0, 0, 0.2);
-            box-shadow: 0 5px 20px rgba(255, 0, 0, 0.2);
+            padding: 30px; border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(255,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,42,42,0.18); transition: all .3s ease;
         }
-        
-        footer h2 {
-            color: #ff3333;
-            text-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
-        }
-        
-        .contact-links {
-            margin: 20px 0;
-        }
-        
-        .contact-links a {
-            margin: 0 15px;
-            color: #ff3333;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        
-        .contact-links a:hover {
-            color: #ff6666;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
-        }
-        
+        .project:hover { transform: translateY(-5px); box-shadow: 0 12px 42px rgba(255,0,0,0.35), 0 0 60px rgba(223,133,68,0.12); border-color: rgba(223,133,68,0.5); }
+        .project h3 { color: #ff4d4d; font-size: 1.6em; margin-bottom: 12px; text-shadow: 0 0 20px rgba(255,0,0,0.4); }
+        .project p { margin: 10px 0; color: var(--muted); }
+        .project a:not(.btn) { color: var(--amber); text-decoration: none; font-weight: 700; }
+        .project a:not(.btn):hover { text-shadow: 0 0 10px rgba(223,133,68,0.7); }
+        .stats { background: rgba(255,42,42,0.06); padding: 15px; border-radius: 6px; margin: 15px 0; font-family: 'Courier New', monospace; border: 1px solid rgba(255,42,42,0.18); color: var(--ink); }
+
+        /* ---------- Footer ---------- */
+        footer { background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%); padding: 34px; border-radius: 12px; margin: 56px 0 40px; text-align: center; border: 1px solid rgba(255,42,42,0.18); box-shadow: 0 5px 20px rgba(255,0,0,0.18); }
+        footer h2 { color: #ff4d4d; text-shadow: 0 0 20px rgba(255,0,0,0.4); }
+        .contact-links { margin: 20px 0; }
+        .contact-links a { margin: 0 15px; color: #ff4d4d; text-decoration: none; font-weight: 700; transition: all .25s ease; }
+        .contact-links a:hover { color: var(--amber); text-shadow: 0 0 10px rgba(223,133,68,0.8); }
+
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2em;
-            }
-            .projects {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        /* Scanline effect */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 0, 0, 0.15),
-                rgba(0, 0, 0, 0.15) 1px,
-                transparent 1px,
-                transparent 2px
-            );
-            pointer-events: none;
-            z-index: 9999;
+            header { grid-template-columns: 1fr; text-align: center; justify-items: center; }
+            h1 { font-size: 2.1em; }
+            .projects { grid-template-columns: 1fr; }
+            .cert-flagship { flex-direction: column; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Larry W. Harvey</h1>
-            <div class="subtitle">Security Advisory Consultant | Incident & Crisis Readiness | Cloud Security Engineering</div>
-            <p>Security Advisory Consultant specializing in incident and crisis readiness for enterprise healthcare organizations. Proven program owner delivering executive-level tabletop exercises, incident response program design, and NIST-aligned readiness assessments across complex, regulated environments. Trusted advisor to C-suite, legal, compliance, and IT leadership, translating cyber risk into operational, regulatory, and business impact decisions. Rapid career progression from military/fire rescue to cybersecurity, achieving Employee of the Quarter in first year.</p>
-            
-            <div class="certs">
-                <span class="cert">CISSP</span>
-                <span class="cert">CCSP</span>
-                <span class="cert">CySA+</span>
-                <span class="cert">Security+</span>
-                <span class="cert">GCFE (In Progress)</span>
-            </div>
-            
-            <div style="margin-top: 20px;">
-                <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio" class="btn">📂 View on GitHub</a>
-                <a href="#projects" class="btn btn-secondary">🚀 See Projects</a>
+            <img class="brand-logo" src="assets/logo-orbital.svg" alt="Seriously Cyber Consulting logo">
+            <div>
+                <h1>Larry W. Harvey</h1>
+                <div class="subtitle">Security Advisory Consultant | Incident &amp; Crisis Readiness | Cloud Security Engineering</div>
+                <p>Security Advisory Consultant specializing in incident and crisis readiness for enterprise healthcare organizations. Proven program owner delivering executive-level tabletop exercises, incident response program design, and NIST-aligned readiness assessments across complex, regulated environments. Trusted advisor to C-suite, legal, compliance, and IT leadership, translating cyber risk into operational, regulatory, and business impact decisions. Rapid career progression from military/fire rescue to cybersecurity, achieving Employee of the Quarter in first year.</p>
+                <div class="hero-cta">
+                    <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio" class="btn">📂 View on GitHub</a>
+                    <a href="#certs" class="btn btn-secondary">🎖️ Certifications</a>
+                    <a href="#projects" class="btn btn-secondary">🚀 Projects</a>
+                </div>
             </div>
         </header>
-        
-        <div class="section-title">
-            <h2>7 Production Systems</h2>
+
+        <!-- ================= CERTIFICATIONS ================= -->
+        <div class="section-title" id="certs">
+            <h2>Certifications</h2>
+            <p>Verified credentials across security leadership, cloud, analysis, and operations</p>
         </div>
-        
-        <div id="projects" class="projects">
+
+        <!-- CISSP + CCSP flagship. To use official (ISC)² badges, drop PNGs in
+             assets/certs/ and swap these .flagship-badge blocks for <img> tags. -->
+        <div class="cert-flagship">
+            <div class="flagship-badge">
+                <span class="isc2">(ISC)&sup2;</span>
+                <span class="mark">CISSP</span>
+                <span class="full">Certified Information Systems Security Professional</span>
+            </div>
+            <div class="flagship-badge">
+                <span class="isc2">(ISC)&sup2;</span>
+                <span class="mark">CCSP</span>
+                <span class="full">Certified Cloud Security Professional</span>
+            </div>
+        </div>
+
+        <div class="cert-wall">
+            <div class="cert-item"><img src="assets/certs/comptia-securityx.png" alt="CompTIA SecurityX (CASP+)"><span>SecurityX (CASP+)</span></div>
+            <div class="cert-item"><img src="assets/certs/comptia-cysa.png" alt="CompTIA CySA+"><span>CySA+</span></div>
+            <div class="cert-item"><img src="assets/certs/comptia-security.png" alt="CompTIA Security+"><span>Security+</span></div>
+            <div class="cert-item"><img src="assets/certs/comptia-network.png" alt="CompTIA Network+"><span>Network+</span></div>
+            <div class="cert-item"><img src="assets/certs/comptia-a.png" alt="CompTIA A+"><span>A+</span></div>
+            <div class="cert-item"><img src="assets/certs/comptia-csap.png" alt="CompTIA Security Analytics Professional"><span>CSAP (Stackable)</span></div>
+            <div class="cert-item"><img src="assets/certs/isc2-cc.png" alt="(ISC)² Certified in Cybersecurity"><span>(ISC)² CC</span></div>
+            <div class="cert-item"><img src="assets/certs/sentinelone-ir.png" alt="SentinelOne Incident Responder"><span>SentinelOne IR</span></div>
+            <div class="cert-item"><img src="assets/certs/linux-essentials.png" alt="LPI Linux Essentials"><span>Linux Essentials</span></div>
+            <div class="cert-item in-progress"><span class="ip-mark">GCFE</span><span class="ip-tag">GIAC · In Progress</span></div>
+        </div>
+
+        <!-- ================= PROJECTS ================= -->
+        <div class="section-title" id="projects">
+            <h2>8 Production Systems</h2>
+            <p>Live infrastructure — not lab demos</p>
+        </div>
+
+        <div class="projects">
             <div class="project">
                 <h3>🔍 Threat Intelligence Integration</h3>
                 <p>Multi-source threat intel platform with automated IOC enrichment integrated into SOC infrastructure.</p>
-                <div class="stats">
-                    ⚡ 60% time savings<br>
-                    📉 40% FP reduction<br>
-                    🔎 2.3M IOCs indexed<br>
-                    📊 50K queries/day
-                </div>
+                <div class="stats">⚡ 60% time savings<br>📉 40% FP reduction<br>🔎 2.3M IOCs indexed<br>📊 50K queries/day</div>
                 <p><strong>Tech:</strong> VirusTotal, AbuseIPDB, AlienVault OTX, Hybrid Analysis, Elasticsearch, Logstash, Python</p>
                 <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/threat-intelligence-integration.md" class="btn">Read More →</a>
             </div>
-            
+
             <div class="project">
                 <h3>🛡️ Enterprise SOC Infrastructure</h3>
                 <p>Full-stack security monitoring platform with ELK Stack, Suricata IDS, Zeek NSM, and Velociraptor EDR.</p>
-                <div class="stats">
-                    📊 42M+ indexed events<br>
-                    ⚡ 1.4M events/day<br>
-                    🎯 99.9% uptime<br>
-                    💾 25.8GB indexed data
-                </div>
+                <div class="stats">📊 42M+ indexed events<br>⚡ 1.4M events/day<br>🎯 99.9% uptime<br>💾 25.8GB indexed data</div>
                 <p><strong>Tech:</strong> Elasticsearch, Logstash, Kibana, Suricata, Zeek, Velociraptor, Python, AMD ROCm</p>
                 <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/soc-infrastructure.md" class="btn">Read More →</a>
             </div>
-            
+
             <div class="project">
                 <h3>🔍 DNS Behavioral Monitoring</h3>
                 <p>Real-time DNS threat detection using DGA analysis, tunneling detection, and behavioral scoring.</p>
-                <div class="stats">
-                    🎯 Real-time processing<br>
-                    📉 <5% false positive rate<br>
-                    🔔 Pushover alerting<br>
-                    📊 ELK integration
-                </div>
+                <div class="stats">🎯 Real-time processing<br>📉 &lt;5% false positive rate<br>🔔 Pushover alerting<br>📊 ELK integration</div>
                 <p><strong>Tech:</strong> Python, Zeek, Elasticsearch, Behavioral Analysis, Threat Intelligence</p>
                 <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/dns-behavioral-monitoring.md" class="btn">Read More →</a>
             </div>
-            
+
             <div class="project">
                 <h3>🤖 Automated Report Generation</h3>
                 <p>AI-powered system reducing client deliverable creation time by 95% using local LLMs.</p>
-                <div class="stats">
-                    ⏱️ 4-8 hours → 3-20 minutes<br>
-                    📈 10x capacity increase<br>
-                    📄 TTX & IR assessments<br>
-                    🎯 Client-ready output
-                </div>
+                <div class="stats">⏱️ 4-8 hours → 3-20 minutes<br>📈 10x capacity increase<br>📄 TTX &amp; IR assessments<br>🎯 Client-ready output</div>
                 <p><strong>Tech:</strong> Ollama, Llama3.1, Python, python-docx, RAG, Template Engineering</p>
                 <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/automated-report-generation.md" class="btn">Read More →</a>
             </div>
-            
+
             <div class="project">
                 <h3>🎤 Local Speech-to-Text</h3>
                 <p>Privacy-focused transcription system using Whisper AI with GPU acceleration for secure dictation.</p>
-                <div class="stats">
-                    🔒 100% local processing<br>
-                    ⚡ 3-5 second transcription<br>
-                    🎯 95%+ accuracy<br>
-                    🌐 Browser integration
-                </div>
+                <div class="stats">🔒 100% local processing<br>⚡ 3-5 second transcription<br>🎯 95%+ accuracy<br>🌐 Browser integration</div>
                 <p><strong>Tech:</strong> OpenAI Whisper, AMD ROCm, Python, WebSocket, JavaScript, Browser Extensions</p>
                 <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/whisper-speech-to-text.md" class="btn">Read More →</a>
             </div>
-            
+
             <div class="project">
                 <h3>🔒 Network Security Architecture</h3>
                 <p>Defense-in-depth network with Firewalla Gold Pro, multi-VLAN segmentation, and comprehensive threat prevention.</p>
-                <div class="stats">
-                    🛡️ 877K+ blocked flows/day<br>
-                    📊 2.1M flow records/day<br>
-                    ⚡ 99.98% uptime<br>
-                    🌐 5 VLANs configured
-                </div>
+                <div class="stats">🛡️ 877K+ blocked flows/day<br>📊 2.1M flow records/day<br>⚡ 99.98% uptime<br>🌐 5 VLANs configured</div>
                 <p><strong>Tech:</strong> Firewalla Gold Pro, VLANs, IDS/IPS, Threat Intelligence, NetFlow, Python</p>
                 <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/firewalla-network-security.md" class="btn">Read More →</a>
             </div>
-            
+
             <div class="project">
                 <h3>🤖 AI-Enhanced Security Analysis</h3>
                 <p>Local LLM infrastructure with RAG system for automated log analysis, threat research, and incident response.</p>
-                <div class="stats">
-                    ⚡ 60% time savings<br>
-                    📉 35% FP reduction<br>
-                    🔒 100% local/private<br>
-                    🎯 95%+ accuracy
-                </div>
-                <p><strong>Tech:</strong> Ollama, Mixtral 8x7B, RAG, ChromaDB, AMD ROCm, Python, MITRE ATT&CK</p>
+                <div class="stats">⚡ 60% time savings<br>📉 35% FP reduction<br>🔒 100% local/private<br>🎯 95%+ accuracy</div>
+                <p><strong>Tech:</strong> Ollama, Mixtral 8x7B, RAG, ChromaDB, AMD ROCm, Python, MITRE ATT&amp;CK</p>
                 <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/ai-enhanced-security-analysis.md" class="btn">Read More →</a>
             </div>
+
+            <div class="project">
+                <h3>🏢 Business Infrastructure Platform</h3>
+                <p>Self-hosted business infrastructure with zero-trust architecture, automated lead generation, and enterprise-grade security on SMB budget. Demonstrates cloud security, automation, and cost optimization.</p>
+                <div class="stats">💰 $0/month hosting<br>🔒 Zero-trust architecture<br>🎯 6 lead gen templates<br>⚡ Multi-domain Cloudflare Tunnel</div>
+                <p><strong>Tech:</strong> Cloudflare Tunnel, Nginx, Python, Ubuntu 24, DNS Management</p>
+                <p><strong>Live Site:</strong> <a href="https://seriouslycyber.com" target="_blank" rel="noopener">seriouslycyber.com</a></p>
+            </div>
         </div>
-        
-           <div class="project">
-               <h3>🏢 Business Infrastructure Platform</h3>
-               <p>Self-hosted business infrastructure with zero-trust architecture, automated lead generation, and enterprise-grade security on SMB budget. Demonstrates cloud security, automation, and cost optimization.</p>
-               <div class="stats">
-                  💰 $0/month hosting<br>
-                  🔒 Zero-trust architecture<br>
-                  🎯 6 lead gen templates<br>
-                  ⚡ Multi-domain Cloudflare Tunnel
-             </div>
-             <p><strong>Tech:</strong> Cloudflare Tunnel, Nginx, Python, Ubuntu 24, DNS Management</p>
-             <p><strong>Live Site:</strong> <a href="https://seriouslycyber.com" target="_blank">seriouslycyber.com</a></p>
-          </div>
-        </div>
-    
-    </div> 
+
         <footer>
             <h2>Get In Touch</h2>
             <div class="contact-links">
@@ -377,11 +290,11 @@
             </div>
             <p style="margin-top: 20px; color: #888;">
                 📍 Fayetteville, North Carolina Metro Area<br>
-                🚀 Available for residential,samall and medium sized business opportunities
+                🚀 Available for residential, small and medium sized business opportunities
             </p>
-            <p style="margin-top: 30px; font-size: 0.9em; color: #666;">
+            <p style="margin-top: 26px; font-size: .9em; color: #666;">
                 Secure infrastructure | Privacy-focused | Disabled Combat Veteran-owned<br>
-                © 2026 Larry Harvey - Seriously Cyber Consulting LLC
+                © 2026 Larry Harvey — Seriously Cyber Consulting LLC
             </p>
         </footer>
     </div>

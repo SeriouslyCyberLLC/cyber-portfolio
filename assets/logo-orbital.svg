@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 260" width="340" height="260" role="img" aria-label="Seriously Cyber Consulting">
+<defs>
+<linearGradient id="trail" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0" stop-color="#df8544" stop-opacity="0"/>
+<stop offset="1" stop-color="#df8544" stop-opacity="1"/>
+</linearGradient>
+</defs>
+<g transform="translate(170,130) scale(1.4)">
+<path d="M -76 24 A 80 32 0 0 1 62 -28" transform="rotate(-24)" fill="none" stroke="url(#trail)" stroke-width="2.8" stroke-linecap="round"/>
+<ellipse rx="80" ry="32" transform="rotate(-24)" fill="none" stroke="#df8544" stroke-width="2.4" opacity="0.35"/>
+<circle cx="68" cy="-38" r="7" fill="#df8544"/>
+<g transform="translate(-31.21,16) scale(0.02539,-0.02539)"><path d="M1165 391Q1165 199 1018.5 89.5Q872 -20 611 -20Q376 -20 228.0 79.0Q80 178 38 367L323 404Q346 310 419.0 255.5Q492 201 619 201Q751 201 814.5 243.0Q878 285 878 374Q878 440 822.0 485.5Q766 531 659 557Q444 609 355.5 647.5Q267 686 214.0 734.0Q161 782 132.5 846.5Q104 911 104 991Q104 1166 244.5 1268.0Q385 1370 615 1370Q839 1370 965.0 1281.5Q1091 1193 1128 1007L842 978Q798 1161 609 1161Q503 1161 447.0 1121.5Q391 1082 391 1008Q391 959 418.0 926.5Q445 894 491.5 871.5Q538 849 681 812Q869 766 970.0 709.5Q1071 653 1118.0 573.0Q1165 493 1165 391Z" fill="#df8544"/></g><g transform="translate(0.00,16) scale(0.02539,-0.02539)"><path d="M380 681Q380 456 450.0 334.0Q520 212 659 212Q821 212 899 456L1172 404Q1039 -20 656 -20Q375 -20 227.5 158.5Q80 337 80 681Q80 1370 648 1370Q834 1370 959.5 1272.0Q1085 1174 1144 981L872 915Q843 1021 785.0 1079.5Q727 1138 652 1138Q380 1138 380 681Z" fill="#df8544"/></g>
+</g>
+</svg>
