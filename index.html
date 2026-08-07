@@ -100,21 +100,60 @@
         .section-title p { color: var(--faint); margin-top: 4px; }
 
         /* ---------- Certifications ---------- */
-        .cert-flagship { display: flex; align-items: center; justify-content: center; gap: 30px; flex-wrap: wrap; margin: 0 auto 26px; }
-        .flagship-badge {
-            width: 148px; height: 148px; border-radius: 50%;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: radial-gradient(circle at 50% 35%, #2a0a0a 0%, #120303 70%);
-            border: 2px solid var(--red);
-            box-shadow: 0 0 30px rgba(255,42,42,0.45), inset 0 0 22px rgba(255,42,42,0.2);
-            text-align: center; flex: 0 0 auto;
+        /* Flagship tier — official issuer badge art, split into the two credential
+           families. The red/amber coding that used to sit on fake medallions now
+           lives on the GROUP LABEL RULE instead: issuer art has its own mandated
+           palette and must never be recoloured, tinted or ringed to match a theme.
+           Core (ISC2) badges render larger than the AI pair to hold priority. */
+        .cert-flagship {
+            display: flex; justify-content: center; align-items: flex-start;
+            gap: clamp(30px, 5vw, 64px); flex-wrap: wrap; margin: 0 auto 12px;
         }
-        .flagship-badge .issuer { font-size: .72em; letter-spacing: .12em; color: var(--muted); }
-        .flagship-badge .mark { font-size: 1.95em; font-weight: 800; letter-spacing: .03em; color: #fff; text-shadow: 0 0 16px rgba(255,42,42,0.7); }
-        .flagship-badge .full { font-size: .56em; color: var(--faint); padding: 0 12px; margin-top: 2px; line-height: 1.25; }
-        /* AI-security flagship variant — amber (brand accent) to set them apart */
-        .flagship-badge.ai { border-color: var(--amber); background: radial-gradient(circle at 50% 35%, #2a1808 0%, #120a03 70%); box-shadow: 0 0 30px rgba(223,133,68,0.45), inset 0 0 22px rgba(223,133,68,0.2); }
-        .flagship-badge.ai .mark { text-shadow: 0 0 16px rgba(223,133,68,0.75); }
+        .cert-group { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+        .cert-group__label {
+            font-size: .68em; font-weight: 700; letter-spacing: .22em;
+            text-transform: uppercase; color: var(--muted);
+        }
+        .cert-group__label::after {
+            content: ''; display: block; height: 2px; width: 34px;
+            margin: 7px auto 0; background: var(--red); border-radius: 2px;
+        }
+        .cert-group--ai .cert-group__label::after { background: var(--amber); }
+        .cert-group__items { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; }
+
+        .flagship-badge {
+            display: flex; flex-direction: column; align-items: center;
+            width: 172px; padding: 18px 12px 15px; text-decoration: none;
+            background: linear-gradient(135deg, var(--panel) 0%, var(--panel-2) 100%);
+            border: 1px solid rgba(255,42,42,0.22); border-radius: 14px;
+            transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+        }
+        /* Badge well. ISC2 badge art is TRANSPARENT with black wordmarks, so on the
+           carbon panel "CISSP" renders black-on-black and is unreadable. CompTIA art
+           carries its own white disc and is unaffected. A neutral light well makes
+           every issuer's art legible without recolouring any of it. */
+        .flagship-badge img {
+            width: 128px; height: 128px; object-fit: contain;
+            background: #f4f4f5; border-radius: 12px; padding: 9px;
+        }
+        .flagship-badge .mark { margin-top: 12px; font-size: .95em; font-weight: 700; color: var(--ink); letter-spacing: .02em; }
+        .flagship-badge .full { font-size: .62em; color: var(--faint); line-height: 1.3; margin-top: 4px; text-align: center; }
+        .cert-group--ai .flagship-badge { width: 148px; border-color: rgba(223,133,68,0.22); }
+        .cert-group--ai .flagship-badge img { width: 104px; height: 104px; }
+
+        .flagship-badge:hover, .flagship-badge:focus-visible {
+            transform: translateY(-4px); border-color: rgba(255,42,42,0.55);
+            box-shadow: 0 10px 30px rgba(255,0,0,0.22);
+        }
+        .cert-group--ai .flagship-badge:hover, .cert-group--ai .flagship-badge:focus-visible {
+            border-color: rgba(223,133,68,0.6); box-shadow: 0 10px 30px rgba(223,133,68,0.2);
+        }
+        .flagship-badge:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+        .cert-verify-note { text-align: center; font-size: .68em; color: var(--faint); margin: 0 auto 24px; }
+        @media (prefers-reduced-motion: reduce) {
+            .flagship-badge { transition: none; }
+            .flagship-badge:hover, .flagship-badge:focus-visible { transform: none; }
+        }
 
         .cert-wall { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 18px; margin: 26px 0 10px; }
         .cert-item {
@@ -123,7 +162,9 @@
             padding: 18px 12px 12px; text-align: center; transition: all .25s ease;
         }
         .cert-item:hover { transform: translateY(-4px); border-color: rgba(223,133,68,0.55); box-shadow: 0 8px 26px rgba(255,0,0,0.22); }
-        .cert-item img { width: 84px; height: 84px; object-fit: contain; }
+        /* Same well as the flagship tier — the (ISC)² CC badge is transparent art
+           with a black wordmark and was unreadable on the dark panel. */
+        .cert-item img { width: 84px; height: 84px; object-fit: contain; background: #f4f4f5; border-radius: 10px; padding: 7px; }
         .cert-item span { display: block; margin-top: 8px; font-size: .82em; color: var(--muted); }
         .cert-item.in-progress {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -158,7 +199,7 @@
             header { grid-template-columns: 1fr; text-align: center; justify-items: center; }
             h1 { font-size: 2.1em; }
             .projects { grid-template-columns: 1fr; }
-            .cert-flagship { flex-direction: column; }
+            .cert-flagship { flex-direction: column; align-items: center; gap: 30px; }
         }
     </style>
 </head>
@@ -184,30 +225,41 @@
             <p>Verified credentials across AI security, security leadership, cloud, analysis, and operations</p>
         </div>
 
-        <!-- Flagship medallions (CISSP/CCSP = red core-security, AAISM/SecAI+ = amber AI-security).
-             To use official issuer badges, drop PNGs in assets/certs/ and swap these blocks for <img> tags. -->
+        <!-- Official issuer badge art from Credly. Each badge links to its public
+             verification page, so the credential is checkable rather than asserted. -->
         <div class="cert-flagship">
-            <div class="flagship-badge">
-                <span class="issuer">(ISC)&sup2;</span>
-                <span class="mark">CISSP</span>
-                <span class="full">Certified Information Systems Security Professional</span>
+            <div class="cert-group cert-group--core">
+                <p class="cert-group__label">Core security</p>
+                <div class="cert-group__items">
+                    <a class="flagship-badge" href="https://www.credly.com/badges/2c9c6a8d-8a67-4c45-b2ed-661bbdb5fd26" target="_blank" rel="noopener noreferrer">
+                        <img src="assets/certs/isc2-cissp.png" alt="ISC2 CISSP certification badge" width="600" height="600" loading="lazy">
+                        <span class="mark">CISSP</span>
+                        <span class="full">Certified Information Systems Security Professional</span>
+                    </a>
+                    <a class="flagship-badge" href="https://www.credly.com/badges/7a7f80fa-db95-4ea3-b9a9-5840ef5754fc" target="_blank" rel="noopener noreferrer">
+                        <img src="assets/certs/isc2-ccsp.png" alt="ISC2 CCSP certification badge" width="600" height="600" loading="lazy">
+                        <span class="mark">CCSP</span>
+                        <span class="full">Certified Cloud Security Professional</span>
+                    </a>
+                </div>
             </div>
-            <div class="flagship-badge">
-                <span class="issuer">(ISC)&sup2;</span>
-                <span class="mark">CCSP</span>
-                <span class="full">Certified Cloud Security Professional</span>
-            </div>
-            <div class="flagship-badge ai">
-                <span class="issuer">ISACA</span>
-                <span class="mark">AAISM</span>
-                <span class="full">Advanced in AI Security Management</span>
-            </div>
-            <div class="flagship-badge ai">
-                <span class="issuer">CompTIA</span>
-                <span class="mark">SecAI+</span>
-                <span class="full">AI Security certification</span>
+            <div class="cert-group cert-group--ai">
+                <p class="cert-group__label">AI security</p>
+                <div class="cert-group__items">
+                    <a class="flagship-badge" href="https://www.credly.com/badges/af500e93-95d8-480a-9872-236dfd93ff9d" target="_blank" rel="noopener noreferrer">
+                        <img src="assets/certs/isaca-aaism.png" alt="ISACA AAISM certification badge" width="1200" height="1200" loading="lazy">
+                        <span class="mark">AAISM</span>
+                        <span class="full">Advanced in AI Security Management</span>
+                    </a>
+                    <a class="flagship-badge" href="https://www.credly.com/badges/faff0a1e-7ce7-407c-aa5f-85ab11ddb303" target="_blank" rel="noopener noreferrer">
+                        <img src="assets/certs/comptia-secai.png" alt="CompTIA SecAI+ certification badge" width="625" height="625" loading="lazy">
+                        <span class="mark">SecAI+</span>
+                        <span class="full">CompTIA SecAI+ Certification</span>
+                    </a>
+                </div>
             </div>
         </div>
+        <p class="cert-verify-note">Each badge links to its issuer verification page.</p>
 
         <div class="cert-wall">
             <div class="cert-item"><img src="assets/certs/comptia-securityx.png" alt="CompTIA SecurityX (CASP+)"><span>SecurityX (CASP+)</span></div>
