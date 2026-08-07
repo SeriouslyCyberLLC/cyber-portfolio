@@ -165,8 +165,9 @@
             padding: 18px 12px 12px; text-align: center; transition: all .25s ease;
         }
         .cert-item:hover { transform: translateY(-4px); border-color: rgba(223,133,68,0.55); box-shadow: 0 8px 26px rgba(255,0,0,0.22); }
-        /* Same well as the flagship tier — the (ISC)² CC badge is transparent art
-           with a black wordmark and was unreadable on the dark panel. */
+        /* Same well as the flagship tier, kept for consistency with it. Also guards
+           the case that broke the (ISC)² CC badge here: transparent issuer art with
+           a black wordmark renders unreadable straight onto the carbon panel. */
         .cert-item img { width: 84px; height: 84px; object-fit: contain; background: #f4f4f5; border-radius: 10px; padding: 7px; }
         .cert-item span { display: block; margin-top: 8px; font-size: .82em; color: var(--muted); }
 
@@ -265,7 +266,6 @@
             <div class="cert-item"><img src="assets/certs/comptia-network.png" alt="CompTIA Network+"><span>Network+</span></div>
             <div class="cert-item"><img src="assets/certs/comptia-a.png" alt="CompTIA A+"><span>A+</span></div>
             <div class="cert-item"><img src="assets/certs/comptia-csap.png" alt="CompTIA Security Analytics Professional"><span>CSAP (Stackable)</span></div>
-            <div class="cert-item"><img src="assets/certs/isc2-cc.png" alt="(ISC)² Certified in Cybersecurity"><span>(ISC)² CC</span></div>
             <div class="cert-item"><img src="assets/certs/sentinelone-ir.png" alt="SentinelOne Incident Responder"><span>SentinelOne IR</span></div>
             <div class="cert-item"><img src="assets/certs/linux-essentials.png" alt="LPI Linux Essentials"><span>Linux Essentials</span></div>
         </div>
