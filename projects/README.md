@@ -11,7 +11,7 @@ Cybersecurity professional specializing in Security Operations, Incident Respons
 - SANS FOR500/GCFE (In Progress)
 
 ## Current Role
-**Security Advisory Consultant - Incident & Crisis Rediness** - at Managed Security Service Provider (MSSP)
+**Security Advisory Consultant - Incident & Crisis Readiness** - at Managed Security Service Provider (MSSP)
 - Own security governance, risk, and incident readiness advisory engagements for regulated enterprise clients, delivering audit-defensible security programs aligned to NIST CSF 2.0, NIST 800-61 r2, HIPAA, and federal risk management expectations.
 - Advise on data handling, retention, and incident documentation practices to support regulatory obligations and potential litigation scenarios.
 - Conduct formal risk and control assessments, document control gaps, and prioritize remediation actions based on regulatory exposure, operational impact, and organizational risk tolerance.

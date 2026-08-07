@@ -625,7 +625,7 @@ AI-powered security tools with domain-specific skills from industry
 leaders like Trail of Bits.
 
 **Prepared by:** Larry (Seriously Cyber Consulting LLC)\
-**Certifications:** CISSP, CCSP, GCFE, CASP+, CySA+\
+**Certifications:** CISSP, CCSP, CASP+, CySA+\
 **Date:** February 3, 2026\
 **Tools Version:** Claude Code v2.1.25, Trail of Bits Skills v2025.01
 

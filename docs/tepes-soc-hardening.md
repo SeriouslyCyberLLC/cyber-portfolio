@@ -778,7 +778,7 @@ leaders like Trail of Bits.
 
 **Prepared by:** Larry\
 **Organization:** Seriously Cyber Consulting LLC\
-**Certifications:** CISSP, CCSP, GCFE, CASP+, CySA+\
+**Certifications:** CISSP, CCSP, CASP+, CySA+\
 **Date:** February 3, 2026\
 **Engagement Duration:** 6 hours\
 **Infrastructure Status:** Production-ready with zero critical
