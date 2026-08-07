@@ -8,7 +8,6 @@ Cybersecurity professional specializing in Security Operations, Incident Respons
 - CCSP (Certified Cloud Security Professional)
 - CompTIA Security X (CASP+)
 - CompTIA CySA+ (Cybersecurity Analyst)
-- SANS FOR500/GCFE (In Progress)
 
 ## Current Role
 **Security Advisory Consultant - Incident & Crisis Readiness** - at Managed Security Service Provider (MSSP)
