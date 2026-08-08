@@ -12,7 +12,7 @@ Designed and deployed a comprehensive, defense-in-depth security monitoring infr
 ## Technical Architecture
 
 ### Hardware Infrastructure
-- **Server**: Custom-built i9-14900K/128GB RAM system
+- **Server**: Custom-built i9-13900K/128GB RAM system (24 cores / 32 threads)
 - **Storage**: 1.8TB NVMe SSD for hot data, 3.58TB HDD for archives
 - **GPU**: AMD RX 7900 XTX with ROCm acceleration
 - **Network**: Firewalla Gold Pro managing multiple VLANs with port mirroring
@@ -20,9 +20,9 @@ Designed and deployed a comprehensive, defense-in-depth security monitoring infr
 ### Core Components
 
 #### 1. SIEM Platform (ELK Stack)
-- **Elasticsearch 8.19.3**: 25.8GB indexed, 42M+ security events
+- **Elasticsearch 8.19.19**: 25.8GB indexed, 42M+ security events
 - **Logstash**: Multi-pipeline ingestion from 6+ sources
-- **Kibana 7.17.14**: Custom dashboards for security operations
+- **Kibana 8.19.19**: Custom dashboards for security operations
 - **Data Volume**: 1.4M events/day, ~91M total indexed events
 - **Index Strategy**: Daily indices (`tepes-security-YYYY.MM.DD`)
 
@@ -55,7 +55,7 @@ Designed and deployed a comprehensive, defense-in-depth security monitoring infr
 #### Automated Response
 - Custom Python automation for alert triage
 - Velociraptor hunt deployment
-- AI-enhanced analysis using Ollama/Mixtral
+- AI-enhanced analysis using Ollama with Mistral 7B
 - RAG system with MITRE ATT&CK framework integration
 
 ## Data Scale & Performance
@@ -78,7 +78,7 @@ velociraptor-hunts-*: EDR collections
 ## Advanced Features
 
 ### AI-Enhanced Analysis
-- Local LLM (Mixtral 13B) for log analysis
+- Local LLM (Mistral 7B for triage, Mistral Small 22B as overseer) for log analysis
 - RAG system with security knowledge base
 - Automated threat classification
 - Alert prioritization

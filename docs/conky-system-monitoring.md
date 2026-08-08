@@ -17,7 +17,7 @@ Custom Conky system monitoring overlay providing real-time visibility into syste
 ## Display Metrics
 
 ### System Resources
-- **CPU**: Per-core temperatures (48 cores), aggregate load percentage, CPU frequency
+- **CPU**: Per-core temperatures (24 cores: 8 performance + 16 efficiency), aggregate load percentage, CPU frequency
 - **RAM**: Used/Total with percentage (128GB capacity)
 - **Swap**: Usage and percentage (20GB)
 - **GPU**: Temperature, utilization, VRAM usage, power draw
