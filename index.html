@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Larry W. Harvey — Cybersecurity Portfolio</title>
-    <meta name="description" content="Larry W. Harvey — Security Advisory Consultant. Incident &amp; crisis readiness, cloud security engineering. CISSP, CCSP, CySA+.">
+    <title>Larry W. Harvey | Cybersecurity Portfolio</title>
+    <meta name="description" content="Larry W. Harvey, AI security and governance professional. Enterprise AI adoption, AI risk strategy, responsible AI controls. CISSP, CCSP, AAISM, SecAI+.">
     <link rel="icon" type="image/svg+xml" href="assets/logo-orbital.svg">
     <style>
         :root {
@@ -64,7 +64,10 @@
             border: 1px solid rgba(255,42,42,0.28);
         }
 
-        .brand-logo { width: 150px; height: auto; filter: drop-shadow(0 0 18px rgba(223,133,68,0.45)); }
+        /* Scales with viewport instead of a fixed 150px, which read undersized
+           against the three-paragraph hero. Floor keeps it legible on mobile,
+           ceiling stops it crowding the text column on wide screens. */
+        .brand-logo { width: clamp(200px, 24vw, 330px); height: auto; filter: drop-shadow(0 0 24px rgba(223,133,68,0.5)); }
 
         h1 {
             font-size: 3em; line-height: 1.1; margin-bottom: 8px;
@@ -74,6 +77,10 @@
         }
         .subtitle { font-size: 1.35em; color: #cfcfcf; margin-bottom: 14px; }
         header p { color: var(--muted); max-width: 72ch; }
+        header p + p { margin-top: 12px; }
+        /* Lead sentence carries the current-tense positioning, so it sits a step
+           brighter and larger than the supporting paragraphs behind it. */
+        header p.hero-lead { font-size: 1.1em; color: var(--ink); }
         .hero-cta { margin-top: 22px; }
 
         /* ---------- Buttons ---------- */
@@ -207,8 +214,10 @@
             <img class="brand-logo" src="assets/logo-orbital.svg" alt="Seriously Cyber Consulting logo">
             <div>
                 <h1>Larry W. Harvey</h1>
-                <div class="subtitle">Security Advisory Consultant | Incident &amp; Crisis Readiness | Cloud Security Engineering</div>
-                <p>Security Advisory Consultant specializing in incident and crisis readiness for enterprise healthcare organizations. Proven program owner delivering executive-level tabletop exercises, incident response program design, and NIST-aligned readiness assessments across complex, regulated environments. Trusted advisor to C-suite, legal, compliance, and IT leadership, translating cyber risk into operational, regulatory, and business impact decisions. Rapid career progression from military/fire rescue to cybersecurity, achieving Employee of the Quarter in first year.</p>
+                <div class="subtitle">AI Security &amp; Governance | Enterprise AI Risk | Incident &amp; Crisis Readiness</div>
+                <p class="hero-lead">AI security and governance professional focused on enterprise AI adoption, AI risk strategy, responsible AI controls, and secure use of generative and agentic systems.</p>
+                <p>Currently assess AI use cases, vendors, customer-facing features, and internal AI workflows across regulated SaaS environments with Engineering, Product, Legal, Privacy, Compliance, and Security stakeholders. Translate ambiguous AI risk into executive-ready recommendations, control requirements, residual-risk decisions, and operational safeguards.</p>
+                <p>Background combines AI security, DFIR consulting, regulated healthcare MSSP experience, executive incident reporting, vendor risk, security questionnaires, and crisis leadership. Strong fit for organizations needing a practical advisor who can align AI capability, confidentiality, privacy, security, legal exposure, and business adoption.</p>
                 <div class="hero-cta">
                     <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio" class="btn">📂 View on GitHub</a>
                     <a href="#certs" class="btn btn-secondary">🎖️ Certifications</a>
@@ -273,7 +282,7 @@
         <!-- ================= PROJECTS ================= -->
         <div class="section-title" id="projects">
             <h2>8 Production Systems</h2>
-            <p>Live infrastructure — not lab demos</p>
+            <p>Live infrastructure, not lab demos</p>
         </div>
 
         <div class="projects">
@@ -355,7 +364,7 @@
             </p>
             <p style="margin-top: 26px; font-size: .9em; color: #666;">
                 Secure infrastructure | Privacy-focused | Disabled Combat Veteran-owned<br>
-                © 2026 Larry Harvey — Seriously Cyber Consulting LLC
+                © 2026 Larry Harvey, Seriously Cyber Consulting LLC
             </p>
         </footer>
     </div>
