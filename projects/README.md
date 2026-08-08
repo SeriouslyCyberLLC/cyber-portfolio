@@ -1,20 +1,33 @@
 # Larry's Cybersecurity Portfolio
 
 ## Professional Summary
-Cybersecurity professional specializing in Security Operations, Incident Response, and Security Engineering. Transitioned from military/fire rescue to cybersecurity in May 2024, achieving rapid career progression including Employee of the Quarter recognition.
+AI security and governance professional focused on enterprise AI adoption, AI risk strategy, responsible AI controls, and secure use of generative and agentic systems.
 
 ## Certifications
-- CISSP (Certified Information Systems Security Professional)
-- CCSP (Certified Cloud Security Professional)
-- CompTIA Security X (CASP+)
+- CISSP (Certified Information Systems Security Professional) — ISC2
+- CCSP (Certified Cloud Security Professional) — ISC2
+- AAISM (Advanced in AI Security Management) — ISACA
+- SecAI+ (CompTIA SecAI+ Certification)
+- CompTIA SecurityX (CASP+)
 - CompTIA CySA+ (Cybersecurity Analyst)
 
-## Current Role
-**Security Advisory Consultant - Incident & Crisis Readiness** - at Managed Security Service Provider (MSSP)
-- Own security governance, risk, and incident readiness advisory engagements for regulated enterprise clients, delivering audit-defensible security programs aligned to NIST CSF 2.0, NIST 800-61 r2, HIPAA, and federal risk management expectations.
-- Advise on data handling, retention, and incident documentation practices to support regulatory obligations and potential litigation scenarios.
-- Conduct formal risk and control assessments, document control gaps, and prioritize remediation actions based on regulatory exposure, operational impact, and organizational risk tolerance.
-- Develop executive-ready security risk reports and dashboards, presenting clear findings, trends, and decision points to senior leadership and boards.
+## Current Focus
+Assess AI use cases, vendors, customer-facing features, and internal AI workflows across regulated SaaS environments, working with Engineering, Product, Legal, Privacy, Compliance, and Security stakeholders.
+
+- Translate ambiguous AI risk into executive-ready recommendations, control requirements, residual-risk decisions, and operational safeguards.
+- Define responsible-AI controls for generative and agentic systems, weighing confidentiality, privacy, security, legal exposure, and business adoption together rather than in isolation.
+
+## Background
+AI security, DFIR consulting, regulated-healthcare MSSP experience, executive incident reporting, vendor risk, security questionnaires, and crisis leadership.
+
+Previously **Security Advisory Consultant – Incident & Crisis Readiness** at a managed security service provider:
+
+- Owned security governance, risk, and incident readiness advisory engagements for regulated enterprise clients, delivering audit-defensible security programs aligned to NIST CSF 2.0, NIST 800-61 r2, HIPAA, and federal risk management expectations.
+- Advised on data handling, retention, and incident documentation practices supporting regulatory obligations and potential litigation scenarios.
+- Conducted formal risk and control assessments, documented control gaps, and prioritized remediation by regulatory exposure, operational impact, and organizational risk tolerance.
+- Developed executive-ready security risk reports and dashboards, presenting findings, trends, and decision points to senior leadership and boards.
+
+Transitioned from military and fire rescue into cybersecurity in May 2024, with rapid progression including Employee of the Quarter recognition in the first year.
 
 ## Technical Projects
 
@@ -49,7 +62,7 @@ Defense-in-depth network architecture with multi-VLAN segmentation, threat preve
 **Key Stats**: 877K+ blocked flows/day, 99.98% uptime, 2.1M flow records/day
 
 ### 7. [AI-Enhanced Security Analysis](ai-enhanced-security-analysis.md)
-Local LLM infrastructure with Mixtral and RAG system for automated log analysis, threat research, and incident response assistance. 100% private, on-premise processing.
+Local LLM infrastructure with Mistral and a RAG system for automated log analysis, threat research, and incident response assistance. 100% private, on-premise processing.
 
 **Key Stats**: 60% analyst time savings, 35% FP reduction, 25-35 tokens/sec, 95%+ accuracy
 
@@ -105,11 +118,11 @@ Assessment Methodology:
 
 ## Contact
 - Website: seriouslycyber.com
-- GitHub: [Portfolio will be pushed here]
+- GitHub: https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio
 - Location: Parkton, North Carolina
 - Clearance: Public Trust
 
 ---
 
-**Last Updated**: January 2026  
+**Last Updated**: August 2026  
 **Portfolio Status**: Active Development
