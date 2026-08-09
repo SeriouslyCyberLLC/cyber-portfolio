@@ -7,7 +7,7 @@ Integrated multiple threat intelligence feeds into SOC infrastructure for automa
 - Security alerts lacked context for rapid decision-making
 - Manual IOC lookup was time-consuming and inconsistent
 - No centralized threat intelligence management
-- Analysts spending 60%+ time on investigation vs. response
+- Analysts spending the bulk of their time on investigation rather than response
 
 ## Technical Solution
 
@@ -56,16 +56,15 @@ Low (1-39): Clean or insufficient data
 
 ## Performance Metrics
 
-### Time Savings
-- **Manual IOC Lookup**: 5-10 minutes per alert
-- **Automated Enrichment**: <2 seconds per alert
-- **Analyst Time Saved**: 60% reduction in investigation time
+### Enrichment Latency
+- **Manual IOC Lookup**: 5-10 minutes per alert, across four separate web interfaces
+- **Automated Enrichment**: <2 seconds per alert, all four sources queried in parallel
 
 ### Detection Improvements
-- **False Positive Reduction**: 40% decrease through context
-- **True Positive Identification**: 35% increase in confirmed threats
-- **Mean Time to Detect (MTTD)**: Reduced from 2 hours to 15 minutes
-- **Mean Time to Respond (MTTR)**: Reduced from 4 hours to 45 minutes
+- **Context at Triage**: Reputation, category, and first-seen date are attached before the analyst sees the alert
+- **Priority Reordering**: Threat score drives alert severity, so high-confidence indicators surface first
+- **Cross-Source Corroboration**: An indicator flagged by multiple feeds scores higher than one flagged by a single feed
+- **Historical Tracking**: Reputation changes over time are retained, so a newly-malicious host is visible as a change
 
 ### Data Volume
 - **Daily API Calls**: ~50K queries across all feeds

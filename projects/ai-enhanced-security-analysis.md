@@ -14,10 +14,10 @@ Deployed local Large Language Model (LLM) infrastructure for security log analys
 
 ### AI Infrastructure
 - **Platform**: Ollama for local LLM hosting
-- **Primary Model**: Mixtral 8x7B (47GB, quantized)
-- **Secondary Models**: Llama 3.1 70B, Qwen 2.5 32B
-- **Hardware**: AMD RX 7900 XTX GPU with ROCm acceleration
-- **Server**: Dedicated Ubuntu 24.04 system (Anubis)
+- **Triage Model**: mistral:7b (4.4GB) for first-pass classification
+- **Overseer Model**: mistral-small:22b (12GB) for verification and harder cases
+- **Hardware**: AMD RX 7900 XTX (24GB) with ROCm acceleration
+- **Server**: Tepes, a dedicated Debian system (Intel i9-13900K, 24 cores / 32 threads)
 
 ### RAG (Retrieval Augmented Generation) System
 - **Knowledge Base**: MITRE ATT&CK framework, security procedures, threat intel
@@ -111,14 +111,14 @@ and defensive measures, tailored to analyst's expertise level]
 - **Threat Intelligence Research**: 5-8 seconds
 - **Playbook Generation**: 15-20 seconds
 
-### Accuracy & Quality
-- **Technical Accuracy**: 95%+ (validated against known threats)
-- **MITRE ATT&CK Mapping**: 98% correct technique identification
-- **False Positive Reduction**: 35% through context-aware analysis
-- **Analyst Time Savings**: 60% on research tasks
+### Quality Controls
+- **Two-Tier Verification**: mistral:7b produces the first-pass verdict, mistral-small:22b reviews it before anything is surfaced
+- **Grounded Output**: Every technique mapping is drawn from the retrieved ATT&CK context rather than model recall
+- **Structured Verdicts**: Fixed output schema, so a malformed or low-confidence response fails closed instead of guessing
+- **Human in the Loop**: No containment action is taken on a model verdict alone
 
 ### Resource Utilization
-- **GPU Memory**: 32GB VRAM (Mixtral 8x7B)
+- **GPU Memory**: 24GB VRAM total; 4.4GB resident for mistral:7b, 12GB for mistral-small:22b
 - **Inference Speed**: 25-35 tokens/second
 - **Concurrent Requests**: Up to 3 simultaneous analyses
 - **Model Loading Time**: 8-12 seconds cold start
@@ -199,7 +199,7 @@ def analyze_security_event(event):
     """
     
     response = ollama.generate(
-        model="mixtral:8x7b",
+        model="mistral:7b",
         prompt=prompt,
         context=rag_search(event['indicators'])
     )
@@ -208,11 +208,10 @@ def analyze_security_event(event):
 ```
 
 ## Business Impact
-- **Analyst Efficiency**: 60% time savings on research
-- **Detection Quality**: 35% reduction in false positives
-- **Response Speed**: 40% faster initial triage
-- **Knowledge Retention**: Consistent analysis methodology
-- **Cost Avoidance**: $15K+/year vs. commercial AI services
+- **Analyst Efficiency**: Routine enrichment and ATT&CK mapping happen before an analyst opens the alert
+- **Knowledge Retention**: Consistent analysis methodology across every alert, independent of who is on shift
+- **Cost**: Runs on already-owned hardware, with no per-token or per-seat billing
+- **Data Residency**: Alert contents never leave the host, which is what makes the tool usable on regulated data
 
 ## Comparison to Alternatives
 - **vs. ChatGPT/Claude**: 100% private, no API costs, custom knowledge
@@ -230,4 +229,4 @@ def analyze_security_event(event):
 
 **Deployed**: November 2025  
 **Status**: Production, continuous enhancement  
-**Performance**: 25-35 tokens/sec, 95%+ accuracy
+**Performance**: 25-35 tokens/sec

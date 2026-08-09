@@ -26,9 +26,10 @@ Score 120: Critical threat (multi-vector detection)
 ```
 
 ### Performance
-- **Processing Rate**: Real-time (no lag)
-- **False Positive Rate**: <5% after tuning
+- **Volume**: 625,943 DNS records processed in a 24-hour sample
+- **Processing Rate**: Streaming, consumed as Zeek writes `dns.log`
 - **Detection Speed**: Sub-second from DNS query to alert
+- **Tuning**: High-entropy false positives (AWS ELB and similar) are whitelisted after review rather than suppressed by threshold
 
 ## Sample Detections
 - DGA domains: `qkjsdhfkljahsdkfjhaskldjfhalksjdhf.com` (Score: 120)
