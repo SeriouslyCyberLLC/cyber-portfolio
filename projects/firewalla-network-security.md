@@ -34,9 +34,9 @@ operations segment on 81 except on the ports the EDR and log shippers need.
 ## Technical Implementation
 
 ### Firewalla Gold Pro Configuration
-- **Hardware**: Dual-core ARM, 2GB RAM, 32GB storage
-- **Interfaces**: 4x Gigabit Ethernet (router mode)
-- **Performance**: Line-rate throughput with DPI enabled
+- **Hardware**: Quad-core 64-bit Intel 12th Gen CPU, 8GB RAM
+- **Interfaces**: 2x 10GbE + 2x 2.5GbE NBASE-T, plus a console port
+- **Performance**: Rated above 10 Gb software packet processing; deployed behind a 5 Gb fiber uplink
 - **Management**: Web UI + mobile app for remote administration
 
 ### Security Rules Implemented
@@ -61,7 +61,7 @@ operations segment on 81 except on the ports the EDR and log shippers need.
 - **Intrusion Attempts**: 1,200+ daily connection attempts blocked
 
 ### Network Performance
-- **Throughput**: 950 Mbps with full DPI enabled
+- **Throughput**: 5 Gb fiber uplink inspected inline, hardware rated above 10 Gb
 - **Latency**: <2ms added latency for inspection
 
 ### Visibility
@@ -164,4 +164,4 @@ Honest scope notes, since this is prosumer hardware doing a job enterprises solv
 
 **Deployed**: September 2025  
 **Status**: Production, 24/7 operation  
-**Performance**: 950 Mbps with DPI enabled
+**Performance**: 5 Gb fiber uplink, DPI enabled
