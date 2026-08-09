@@ -20,11 +20,11 @@ Designed and deployed a comprehensive, defense-in-depth security monitoring infr
 ### Core Components
 
 #### 1. SIEM Platform (ELK Stack)
-- **Elasticsearch 8.19.19**: 25.8GB indexed, 42M+ security events
+- **Elasticsearch 8.19.19**: 307M network security events (Suricata + Zeek) in 118GB, within a 6.09-billion-document cluster totalling 1.51TB
 - **Logstash**: Multi-pipeline ingestion from 6+ sources
 - **Kibana 8.19.19**: Custom dashboards for security operations
-- **Data Volume**: 1.4M events/day, ~91M total indexed events
-- **Index Strategy**: Daily indices (`tepes-security-YYYY.MM.DD`)
+- **Data Volume**: ~1.5M network security events/day; ~41M endpoint telemetry events/day from Elastic Defend
+- **Index Strategy**: ILM rollover behind the `tepes-security-write` alias (replaced daily `tepes-security-YYYY.MM.DD` indices in July 2026, cutting the cluster from 814 to 589 shards)
 
 #### 2. Network Security Monitoring
 - **Suricata 7.0.3**: 44,983 threat signatures, IDS mode
@@ -60,20 +60,26 @@ Designed and deployed a comprehensive, defense-in-depth security monitoring infr
 
 ## Data Scale & Performance
 
-### Current Metrics
-- **Total Events**: 91M+ indexed security events
-- **Daily Throughput**: 1.4M events/day
-- **Storage Efficiency**: 25.8GB for 42M events
+### Current Metrics (measured 2026-08-08)
+- **Cluster Total**: 6.09 billion documents, 1.51TB across 443 indices
+- **Network Security Events**: 307M (Suricata + Zeek) in 118GB — `tepes-security-*`
+- **Endpoint Telemetry**: 4.81 billion events in 1.21TB from Elastic Defend across 3 hosts
+- **Daily Throughput**: ~1.5M network security events/day, ~41M endpoint events/day
 - **Query Performance**: Sub-second search across 90-day retention
 - **Uptime**: 99.9% availability (systemd-managed services)
 
 ### Index Management
 ```
-tepes-security-*: 42M+ events (Sept-Dec 2025)
-metricbeat-*: System performance metrics
-tepes-zeek-*: Network analysis data
-velociraptor-hunts-*: EDR collections
+tepes-security-*              307M docs / 118GB   Suricata + Zeek, ILM rollover
+.ds-logs-endpoint.events.*   4.81B docs / 1.21TB  Elastic Defend (file, process,
+                                                   network, library, registry,
+                                                   api, security)
+velociraptor-hunts-*                              EDR collections
 ```
+
+Endpoint telemetry dominates the cluster: `logs-endpoint.file` alone is 3.99 billion
+documents in 624GB, which makes file-event retention the largest single lever on
+cluster size.
 
 ## Advanced Features
 

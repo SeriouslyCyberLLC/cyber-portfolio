@@ -32,9 +32,9 @@ Transitioned from military and fire rescue into cybersecurity in May 2024, with 
 ## Technical Projects
 
 ### 1. [Enterprise SOC Infrastructure](soc-infrastructure.md)
-Full-stack security monitoring platform with ELK Stack, Suricata IDS, Zeek NSM, and Velociraptor EDR. Processing 1.4M+ events daily with AI-enhanced threat analysis.
+Full-stack security monitoring platform with ELK Stack, Suricata IDS, Zeek NSM, and Velociraptor EDR. Processing ~1.5M network security events and ~41M endpoint telemetry events daily with AI-enhanced threat analysis.
 
-**Key Stats**: 42M+ indexed events, 99.9% uptime, sub-second query performance
+**Key Stats**: 6.09B documents / 1.51TB indexed, 307M network security events, 99.9% uptime, sub-second query performance
 
 ### 2. [DNS Behavioral Monitoring](dns-behavioral-monitoring.md)
 Real-time DNS threat detection using DGA analysis, tunneling detection, and behavioral scoring. Integrated with Pushover alerting and ELK Stack.
