@@ -44,14 +44,11 @@ Built a fully local, privacy-focused speech-to-text system using OpenAI Whisper 
 - Audio capture via MediaRecorder API
 - Real-time transcription feedback
 
-### Code Repository
-[Link will go here once pushed to GitHub]
-
 ## Results
 - **Transcription Speed**: 3-5 seconds for 10s audio
-- **Accuracy**: 95%+ for clear speech
-- **Uptime**: 24/7 availability via systemd
-- **Privacy**: Zero data exfiltration
+- **Model**: Whisper medium, which trades some accuracy against latency versus large-v3
+- **Availability**: systemd-managed, auto-start on boot
+- **Privacy**: No network egress; the model and audio never leave the host
 
 ## Skills Demonstrated
 - Linux system administration

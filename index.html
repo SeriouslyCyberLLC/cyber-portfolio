@@ -304,7 +304,16 @@
            how much copy sits above it; flex-start keeps it hugging its label rather
            than stretching to the card width the way a blockified flex item would. */
         .project .btn { margin-top: auto; align-self: flex-start; }
+        /* Cards carrying two CTAs share one bottom-pinned row, so the buttons stay
+           side by side and still align with the single-button cards beside them. */
+        .project-actions { margin-top: auto; display: flex; flex-wrap: wrap; align-items: flex-start; }
+        .project-actions .btn { margin-top: 8px; }
         .stats { background: rgba(255,42,42,0.06); padding: 15px; border-radius: 6px; margin: 15px 0; font-family: 'Courier New', monospace; border: 1px solid rgba(255,42,42,0.18); color: var(--ink); list-style: none; }
+        /* Hanging indent + inter-item gap. These lines wrap at card width, and with
+           no leading glyph a wrapped continuation is otherwise indistinguishable
+           from the next item, so the block reads as one run-on paragraph. */
+        .stats li { padding-left: 15px; text-indent: -15px; }
+        .stats li + li { margin-top: 9px; }
 
         /* ---------- Footer ---------- */
         footer { background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%); padding: 34px; border-radius: 12px; margin: 56px 0 40px; text-align: center; border: 1px solid rgba(255,42,42,0.18); box-shadow: 0 5px 20px rgba(255,0,0,0.18); }
@@ -352,9 +361,9 @@
                 <p>Currently assess AI use cases, vendors, customer-facing features, and internal AI workflows across regulated SaaS environments with Engineering, Product, Legal, Privacy, Compliance, and Security stakeholders. Translate ambiguous AI risk into executive-ready recommendations, control requirements, residual-risk decisions, and operational safeguards.</p>
                 <p>Background combines AI security, DFIR consulting, regulated healthcare MSSP experience, executive incident reporting, vendor risk, security questionnaires, and crisis leadership. Strong fit for organizations needing a practical advisor who can align AI capability, confidentiality, privacy, security, legal exposure, and business adoption.</p>
                 <div class="hero-cta">
-                    <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio" class="btn"><span aria-hidden="true">📂</span> View on GitHub</a>
-                    <a href="#certs" class="btn btn-secondary"><span aria-hidden="true">🎖️</span> Certifications</a>
-                    <a href="#projects" class="btn btn-secondary"><span aria-hidden="true">🚀</span> Projects</a>
+                    <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio" class="btn">View on GitHub</a>
+                    <a href="#certs" class="btn btn-secondary">Certifications</a>
+                    <a href="#projects" class="btn btn-secondary">Projects</a>
                 </div>
             </div>
         </header>
@@ -432,107 +441,110 @@
 
                 <ul class="projects">
                     <li class="project">
-                        <h3><span aria-hidden="true">🔍</span> Threat Intelligence Integration</h3>
-                        <p>Multi-source threat intel platform with automated IOC enrichment integrated into SOC infrastructure.</p>
-                        <ul class="stats">
-                            <li><span aria-hidden="true">⚡</span> 60% time savings</li>
-                            <li><span aria-hidden="true">📉</span> 40% FP reduction</li>
-                            <li><span aria-hidden="true">🔎</span> 2.3M IOCs indexed</li>
-                            <li><span aria-hidden="true">📊</span> 50K queries/day</li>
-                        </ul>
-                        <p><strong>Tech:</strong> VirusTotal, AbuseIPDB, AlienVault OTX, Hybrid Analysis, Elasticsearch, Logstash, Python</p>
-                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/threat-intelligence-integration.md" class="btn">Read More<span class="visually-hidden"> about Threat Intelligence Integration</span> <span aria-hidden="true">→</span></a>
-                    </li>
-
-                    <li class="project">
-                        <h3><span aria-hidden="true">🛡️</span> Enterprise SOC Infrastructure</h3>
-                        <p>Full-stack security monitoring platform with ELK Stack, Suricata IDS, Zeek NSM, and Velociraptor EDR.</p>
-                        <ul class="stats">
-                            <li><span aria-hidden="true">📊</span> 42M+ indexed events</li>
-                            <li><span aria-hidden="true">⚡</span> 1.4M events/day</li>
-                            <li><span aria-hidden="true">🎯</span> 99.9% uptime</li>
-                            <li><span aria-hidden="true">💾</span> 25.8GB indexed data</li>
-                        </ul>
-                        <p><strong>Tech:</strong> Elasticsearch, Logstash, Kibana, Suricata, Zeek, Velociraptor, Python, AMD ROCm</p>
-                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/soc-infrastructure.md" class="btn">Read More<span class="visually-hidden"> about Enterprise SOC Infrastructure</span> <span aria-hidden="true">→</span></a>
-                    </li>
-
-                    <li class="project">
-                        <h3><span aria-hidden="true">🔍</span> DNS Behavioral Monitoring</h3>
-                        <p>Real-time DNS threat detection using DGA analysis, tunneling detection, and behavioral scoring.</p>
-                        <ul class="stats">
-                            <li><span aria-hidden="true">🎯</span> Real-time processing</li>
-                            <li><span aria-hidden="true">📉</span> &lt;5% false positive rate</li>
-                            <li><span aria-hidden="true">🔔</span> Pushover alerting</li>
-                            <li><span aria-hidden="true">📊</span> ELK integration</li>
-                        </ul>
-                        <p><strong>Tech:</strong> Python, Zeek, Elasticsearch, Behavioral Analysis, Threat Intelligence</p>
-                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/dns-behavioral-monitoring.md" class="btn">Read More<span class="visually-hidden"> about DNS Behavioral Monitoring</span> <span aria-hidden="true">→</span></a>
-                    </li>
-
-                    <li class="project">
-                        <h3><span aria-hidden="true">🤖</span> Automated Report Generation</h3>
-                        <p>AI-powered system reducing client deliverable creation time by 95% using local LLMs.</p>
-                        <ul class="stats">
-                            <li><span aria-hidden="true">⏱️</span> 4-8 hours <span aria-hidden="true">→</span><span class="visually-hidden">reduced to</span> 3-20 minutes</li>
-                            <li><span aria-hidden="true">📈</span> 10x capacity increase</li>
-                            <li><span aria-hidden="true">📄</span> TTX &amp; IR assessments</li>
-                            <li><span aria-hidden="true">🎯</span> Client-ready output</li>
-                        </ul>
-                        <p><strong>Tech:</strong> Ollama, mistral:7b, mistral-small:22b, Python, python-docx, RAG, Template Engineering</p>
-                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/automated-report-generation.md" class="btn">Read More<span class="visually-hidden"> about Automated Report Generation</span> <span aria-hidden="true">→</span></a>
-                    </li>
-
-                    <li class="project">
-                        <h3><span aria-hidden="true">🎤</span> Local Speech-to-Text</h3>
-                        <p>Privacy-focused transcription system using Whisper AI with GPU acceleration for secure dictation.</p>
-                        <ul class="stats">
-                            <li><span aria-hidden="true">🔒</span> 100% local processing</li>
-                            <li><span aria-hidden="true">⚡</span> 3-5 second transcription</li>
-                            <li><span aria-hidden="true">🎯</span> 95%+ accuracy</li>
-                            <li><span aria-hidden="true">🌐</span> Browser integration</li>
-                        </ul>
-                        <p><strong>Tech:</strong> OpenAI Whisper, AMD ROCm, Python, WebSocket, JavaScript, Browser Extensions</p>
-                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/whisper-speech-to-text.md" class="btn">Read More<span class="visually-hidden"> about Local Speech-to-Text</span> <span aria-hidden="true">→</span></a>
-                    </li>
-
-                    <li class="project">
-                        <h3><span aria-hidden="true">🔒</span> Network Security Architecture</h3>
-                        <p>Defense-in-depth network with Firewalla Gold Pro, multi-VLAN segmentation, and comprehensive threat prevention.</p>
-                        <ul class="stats">
-                            <li><span aria-hidden="true">🛡️</span> 877K+ blocked flows/day</li>
-                            <li><span aria-hidden="true">📊</span> 2.1M flow records/day</li>
-                            <li><span aria-hidden="true">⚡</span> 99.98% uptime</li>
-                            <li><span aria-hidden="true">🌐</span> 5 VLANs configured</li>
-                        </ul>
-                        <p><strong>Tech:</strong> Firewalla Gold Pro, VLANs, IDS/IPS, Threat Intelligence, NetFlow, Python</p>
-                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/firewalla-network-security.md" class="btn">Read More<span class="visually-hidden"> about Network Security Architecture</span> <span aria-hidden="true">→</span></a>
-                    </li>
-
-                    <li class="project">
-                        <h3><span aria-hidden="true">🤖</span> AI-Enhanced Security Analysis</h3>
+                        <h3>AI-Enhanced Security Analysis</h3>
                         <p>Local LLM infrastructure with RAG system for automated log analysis, threat research, and incident response.</p>
                         <ul class="stats">
-                            <li><span aria-hidden="true">⚡</span> 60% time savings</li>
-                            <li><span aria-hidden="true">📉</span> 35% FP reduction</li>
-                            <li><span aria-hidden="true">🔒</span> 100% local/private</li>
-                            <li><span aria-hidden="true">🎯</span> 95%+ accuracy</li>
+                            <li>Two-tier triage, fast model then overseer verification</li>
+                            <li>RAG over ATT&amp;CK, D3FEND, Sigma, CISA KEV</li>
+                            <li>Local inference only, no external API calls</li>
+                            <li>Runs on a 24GB RX 7900 XTX</li>
                         </ul>
                         <p><strong>Tech:</strong> Ollama, mistral:7b, mistral-small:22b, RAG, ChromaDB, AMD ROCm, Python, MITRE ATT&amp;CK</p>
-                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/ai-enhanced-security-analysis.md" class="btn">Read More<span class="visually-hidden"> about AI-Enhanced Security Analysis</span> <span aria-hidden="true">→</span></a>
+                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/ai-enhanced-security-analysis.md" class="btn">Read More<span class="visually-hidden"> about AI-Enhanced Security Analysis</span></a>
                     </li>
 
                     <li class="project">
-                        <h3><span aria-hidden="true">🏢</span> Business Infrastructure Platform</h3>
+                        <h3>Automated Report Generation</h3>
+                        <p>AI-powered system reducing client deliverable creation time by 95% using local LLMs.</p>
+                        <ul class="stats">
+                            <li>4-8 hours to 3-20 minutes per document</li>
+                            <li>TTX and IR assessment templates</li>
+                            <li>Formatting preserved from Word templates</li>
+                            <li>Automated rubric scoring</li>
+                        </ul>
+                        <p><strong>Tech:</strong> Ollama, mistral:7b, mistral-small:22b, Python, python-docx, RAG, Template Engineering</p>
+                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/automated-report-generation.md" class="btn">Read More<span class="visually-hidden"> about Automated Report Generation</span></a>
+                    </li>
+
+                    <li class="project">
+                        <h3>Threat Intelligence Integration</h3>
+                        <p>Multi-source threat intel platform with automated IOC enrichment integrated into SOC infrastructure.</p>
+                        <ul class="stats">
+                            <li>2.3M IOCs indexed</li>
+                            <li>50K queries per day</li>
+                            <li>Four intel sources on a 5-minute enrichment cycle</li>
+                            <li>threat_score 0-100 written to each alert</li>
+                        </ul>
+                        <p><strong>Tech:</strong> VirusTotal, AbuseIPDB, AlienVault OTX, Hybrid Analysis, Elasticsearch, Logstash, Python</p>
+                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/threat-intelligence-integration.md" class="btn">Read More<span class="visually-hidden"> about Threat Intelligence Integration</span></a>
+                    </li>
+
+                    <li class="project">
+                        <h3>Enterprise SOC Infrastructure</h3>
+                        <p>Full-stack security monitoring platform with ELK Stack, Suricata IDS, Zeek NSM, and Velociraptor EDR.</p>
+                        <ul class="stats">
+                            <li>307M events across the SOC indices</li>
+                            <li>118 GB of Suricata and Zeek telemetry</li>
+                            <li>Mirrored capture on a dedicated interface</li>
+                            <li>Velociraptor and Elastic Defend on 3 endpoints</li>
+                        </ul>
+                        <p><strong>Tech:</strong> Elasticsearch, Logstash, Kibana, Suricata, Zeek, Velociraptor, Python, AMD ROCm</p>
+                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/soc-infrastructure.md" class="btn">Read More<span class="visually-hidden"> about Enterprise SOC Infrastructure</span></a>
+                    </li>
+
+                    <li class="project">
+                        <h3>DNS Behavioral Monitoring</h3>
+                        <p>Real-time DNS threat detection using DGA analysis, tunneling detection, and behavioral scoring.</p>
+                        <ul class="stats">
+                            <li>626K DNS records in 24 hours</li>
+                            <li>DGA and tunneling detection</li>
+                            <li>Zeek dns.log into Elasticsearch</li>
+                            <li>Pushover alerting</li>
+                        </ul>
+                        <p><strong>Tech:</strong> Python, Zeek, Elasticsearch, Behavioral Analysis, Threat Intelligence</p>
+                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/dns-behavioral-monitoring.md" class="btn">Read More<span class="visually-hidden"> about DNS Behavioral Monitoring</span></a>
+                    </li>
+
+                    <li class="project">
+                        <h3>Network Security Architecture</h3>
+                        <p>Defense-in-depth network with Firewalla Gold Pro, multi-VLAN segmentation, and comprehensive threat prevention.</p>
+                        <ul class="stats">
+                            <li>877K blocked flows per day</li>
+                            <li>2.1M flow records per day</li>
+                            <li>6 VLANs segmented by trust level</li>
+                            <li>Inter-VLAN policy enforced at the gateway</li>
+                        </ul>
+                        <p><strong>Tech:</strong> Firewalla Gold Pro, VLANs, IDS/IPS, Threat Intelligence, NetFlow, Python</p>
+                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/firewalla-network-security.md" class="btn">Read More<span class="visually-hidden"> about Network Security Architecture</span></a>
+                    </li>
+
+                    <li class="project">
+                        <h3>Business Infrastructure Platform</h3>
                         <p>Self-hosted business infrastructure with zero-trust architecture, automated lead generation, and enterprise-grade security on SMB budget. Demonstrates cloud security, automation, and cost optimization.</p>
                         <ul class="stats">
-                            <li><span aria-hidden="true">💰</span> $0/month hosting</li>
-                            <li><span aria-hidden="true">🔒</span> Zero-trust architecture</li>
-                            <li><span aria-hidden="true">🎯</span> 6 lead gen templates</li>
-                            <li><span aria-hidden="true">⚡</span> Multi-domain Cloudflare Tunnel</li>
+                            <li>$0/month hosting</li>
+                            <li>Zero-trust architecture</li>
+                            <li>6 lead gen templates</li>
+                            <li>Multi-domain Cloudflare Tunnel</li>
                         </ul>
                         <p><strong>Tech:</strong> Cloudflare Tunnel, Nginx, Python, Ubuntu 24, DNS Management</p>
-                        <a href="https://seriouslycyber.com" class="btn" target="_blank" rel="noopener noreferrer">Visit seriouslycyber.com <span aria-hidden="true">→</span></a>
+                        <div class="project-actions">
+                            <a href="https://seriouslycyber.com" class="btn" target="_blank" rel="noopener noreferrer">Visit seriouslycyber.com</a>
+                            <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/business-infrastructure-platform.md" class="btn btn-secondary">Read More<span class="visually-hidden"> about Business Infrastructure Platform</span></a>
+                        </div>
+                    </li>
+
+                    <li class="project">
+                        <h3>Local Speech-to-Text</h3>
+                        <p>Privacy-focused transcription system using Whisper AI with GPU acceleration for secure dictation.</p>
+                        <ul class="stats">
+                            <li>3-5 second transcription</li>
+                            <li>Local Whisper, no cloud upload</li>
+                            <li>ROCm GPU acceleration</li>
+                            <li>Browser extension and system hotkey</li>
+                        </ul>
+                        <p><strong>Tech:</strong> OpenAI Whisper, AMD ROCm, Python, WebSocket, JavaScript, Browser Extensions</p>
+                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/whisper-speech-to-text.md" class="btn">Read More<span class="visually-hidden"> about Local Speech-to-Text</span></a>
                     </li>
                 </ul>
             </section>
@@ -546,8 +558,8 @@
                 <a href="https://www.linkedin.com/in/larry-harvey-cybersecurity">LinkedIn</a>
             </div>
             <p class="footer-meta">
-                <span aria-hidden="true">📍</span> Fayetteville, North Carolina Metro Area<br>
-                <span aria-hidden="true">🚀</span> Available for residential, small and medium sized business opportunities
+                Fayetteville, North Carolina Metro Area<br>
+                Available for residential, small and medium sized business opportunities
             </p>
             <p class="footer-legal">
                 Secure infrastructure | Privacy-focused | Disabled Combat Veteran-owned<br>

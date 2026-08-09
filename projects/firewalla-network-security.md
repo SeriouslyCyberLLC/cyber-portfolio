@@ -13,12 +13,17 @@ Designed and implemented defense-in-depth network architecture using Firewalla G
 
 ### VLAN Segmentation Strategy
 ```
-VLAN 10: Management & Administration
-VLAN 20: Security Operations (ELK, Suricata, Zeek servers)
-VLAN 30: Endpoint Monitoring (EDR agents, workstations)
-VLAN 40: Guest/IoT (isolated, restricted)
-VLAN 50: DMZ (exposed services, honeypots)
+VLAN 20: Secondary Linux node (Anubis)
+VLAN 40: Guest network (isolated, restricted egress)
+VLAN 60: Primary workstation
+VLAN 70: Windows endpoint (EDR agent)
+VLAN 80: Servers and self-hosted infrastructure
+VLAN 81: Security operations (ELK, Suricata, Zeek, Velociraptor)
 ```
+Each segment is a routed `/24` in `192.168.<vlan>.0/24` form, with the Firewalla as
+the gateway at `.1`. Inter-VLAN traffic is denied by default and allowed only where a
+rule exists, so the monitored endpoints on 20, 60 and 70 cannot reach the security
+operations segment on 81 except on the ports the EDR and log shippers need.
 
 ### Traffic Flow Design
 - **Port Mirroring**: Managed switch mirrors all traffic to security monitoring VLAN
@@ -50,7 +55,7 @@ VLAN 50: DMZ (exposed services, honeypots)
 ## Performance Metrics
 
 ### Threat Prevention
-- **Daily Blocked Flows**: 877,321+ (from Gatekeeper alone)
+- **Daily Blocked Flows**: 877,321 (from Gatekeeper alone)
 - **Blocked Domains**: 12,000+ malicious/suspicious domains
 - **Geo-blocked IPs**: 45,000+ high-risk source addresses
 - **Intrusion Attempts**: 1,200+ daily connection attempts blocked
@@ -58,8 +63,6 @@ VLAN 50: DMZ (exposed services, honeypots)
 ### Network Performance
 - **Throughput**: 950 Mbps with full DPI enabled
 - **Latency**: <2ms added latency for inspection
-- **Uptime**: 99.98% availability
-- **Rule Processing**: Sub-millisecond decision time
 
 ### Visibility
 - **Flow Records**: 2.1M daily network flows logged
@@ -116,8 +119,8 @@ Network Traffic → Firewalla (inspection/blocking) → Mirror → Security VLAN
 - Flow logged to ELK for investigation
 
 ### 2. Lateral Movement Prevention
-- Compromised IoT device attempts to scan internal network
-- VLAN isolation prevents access to security operations VLAN
+- Compromised device on the guest network attempts to scan internally
+- VLAN isolation prevents access to the security operations segment
 - Connection attempts logged and analyzed
 - Device automatically quarantined to restricted VLAN
 
@@ -138,17 +141,18 @@ Network Traffic → Firewalla (inspection/blocking) → Mirror → Security VLAN
 - API integration and automation
 
 ## Business Impact
-- **Attack Surface Reduction**: 85% reduction through segmentation
-- **Threat Prevention**: 877K+ daily malicious connections blocked
+- **Attack Surface Reduction**: Segmentation confines a compromised device to its own VLAN
+- **Threat Prevention**: 877K daily malicious connections blocked
 - **Incident Response**: Network forensics data for investigations
 - **Compliance**: Network segmentation for regulatory requirements
-- **Cost Savings**: Enterprise-grade security at fraction of commercial firewall cost
+- **Cost**: No per-seat or per-throughput licensing
 
-## Comparison to Enterprise Solutions
-- **vs. Palo Alto**: Similar threat prevention, 95% cost savings
-- **vs. Cisco ASA**: Better visibility, easier management
-- **vs. FortiGate**: Comparable features, no licensing fees
-- **vs. pfSense**: More user-friendly, better threat intelligence
+## Limitations
+Honest scope notes, since this is prosumer hardware doing a job enterprises solve differently:
+- Single appliance, so it is a single point of failure with no HA pair
+- Deep packet inspection cannot see inside TLS without interception, which is not deployed here
+- Threat feeds are the vendor's, not tunable the way a commercial NGFW ruleset is
+- Throughput ceiling is well below a datacenter firewall; adequate for this link, not for a campus
 
 ## Future Enhancements
 - Implement SD-WAN for multi-site connectivity
@@ -160,4 +164,4 @@ Network Traffic → Firewalla (inspection/blocking) → Mirror → Security VLAN
 
 **Deployed**: September 2025  
 **Status**: Production, 24/7 operation  
-**Performance**: 99.98% uptime, line-rate throughput
+**Performance**: 950 Mbps with DPI enabled

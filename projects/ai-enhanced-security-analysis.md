@@ -111,11 +111,11 @@ and defensive measures, tailored to analyst's expertise level]
 - **Threat Intelligence Research**: 5-8 seconds
 - **Playbook Generation**: 15-20 seconds
 
-### Accuracy & Quality
-- **Technical Accuracy**: 95%+ (validated against known threats)
-- **MITRE ATT&CK Mapping**: 98% correct technique identification
-- **False Positive Reduction**: 35% through context-aware analysis
-- **Analyst Time Savings**: 60% on research tasks
+### Quality Controls
+- **Two-Tier Verification**: mistral:7b produces the first-pass verdict, mistral-small:22b reviews it before anything is surfaced
+- **Grounded Output**: Every technique mapping is drawn from the retrieved ATT&CK context rather than model recall
+- **Structured Verdicts**: Fixed output schema, so a malformed or low-confidence response fails closed instead of guessing
+- **Human in the Loop**: No containment action is taken on a model verdict alone
 
 ### Resource Utilization
 - **GPU Memory**: 24GB VRAM total; 4.4GB resident for mistral:7b, 12GB for mistral-small:22b
@@ -208,11 +208,10 @@ def analyze_security_event(event):
 ```
 
 ## Business Impact
-- **Analyst Efficiency**: 60% time savings on research
-- **Detection Quality**: 35% reduction in false positives
-- **Response Speed**: 40% faster initial triage
-- **Knowledge Retention**: Consistent analysis methodology
-- **Cost Avoidance**: $15K+/year vs. commercial AI services
+- **Analyst Efficiency**: Routine enrichment and ATT&CK mapping happen before an analyst opens the alert
+- **Knowledge Retention**: Consistent analysis methodology across every alert, independent of who is on shift
+- **Cost**: Runs on already-owned hardware, with no per-token or per-seat billing
+- **Data Residency**: Alert contents never leave the host, which is what makes the tool usable on regulated data
 
 ## Comparison to Alternatives
 - **vs. ChatGPT/Claude**: 100% private, no API costs, custom knowledge
@@ -230,4 +229,4 @@ def analyze_security_event(event):
 
 **Deployed**: November 2025  
 **Status**: Production, continuous enhancement  
-**Performance**: 25-35 tokens/sec, 95%+ accuracy
+**Performance**: 25-35 tokens/sec

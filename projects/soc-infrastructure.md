@@ -13,17 +13,17 @@ Designed and deployed a comprehensive, defense-in-depth security monitoring infr
 
 ### Hardware Infrastructure
 - **Server**: Custom-built i9-13900K/128GB RAM system (24 cores / 32 threads)
-- **Storage**: 1.8TB NVMe SSD for hot data, 3.58TB HDD for archives
+- **Storage**: Elasticsearch index data on a RAID1 pair of spinning disks, NVMe for the OS, a separate disk for snapshot archives
 - **GPU**: AMD RX 7900 XTX with ROCm acceleration
 - **Network**: Firewalla Gold Pro managing multiple VLANs with port mirroring
 
 ### Core Components
 
 #### 1. SIEM Platform (ELK Stack)
-- **Elasticsearch 8.19.19**: 25.8GB indexed, 42M+ security events
+- **Elasticsearch 8.19.19**: 307M Suricata and Zeek events across 118 GB
 - **Logstash**: Multi-pipeline ingestion from 6+ sources
 - **Kibana 8.19.19**: Custom dashboards for security operations
-- **Data Volume**: 1.4M events/day, ~91M total indexed events
+- **Cluster Total**: 6.09B documents and 1.51 TB across 443 indices. Network telemetry is 5% of that; the rest is Elastic Defend endpoint data.
 - **Index Strategy**: Daily indices (`tepes-security-YYYY.MM.DD`)
 
 #### 2. Network Security Monitoring
@@ -61,18 +61,17 @@ Designed and deployed a comprehensive, defense-in-depth security monitoring infr
 ## Data Scale & Performance
 
 ### Current Metrics
-- **Total Events**: 91M+ indexed security events
-- **Daily Throughput**: 1.4M events/day
-- **Storage Efficiency**: 25.8GB for 42M events
-- **Query Performance**: Sub-second search across 90-day retention
-- **Uptime**: 99.9% availability (systemd-managed services)
+- **Network Telemetry**: 307M Suricata and Zeek events in 118 GB
+- **Endpoint Telemetry**: 4.81B Elastic Defend events in 1.21 TB, dominated by file events
+- **Daily Throughput**: Zeek alone wrote 243,971 connection and 625,943 DNS records in a 24-hour sample
+- **Availability**: systemd-managed services with automatic restart
+- **Ingest Ceiling**: ~6.3K docs/sec on bulk work, bounded by the spinning-disk array rather than CPU or memory
 
 ### Index Management
 ```
-tepes-security-*: 42M+ events (Sept-Dec 2025)
-metricbeat-*: System performance metrics
-tepes-zeek-*: Network analysis data
-velociraptor-hunts-*: EDR collections
+tepes-security-*:       307M events (Suricata + Zeek)
+logs-endpoint.events.*: 4.81B events (Elastic Defend)
+velociraptor-hunts-*:   EDR collections
 ```
 
 ## Advanced Features
@@ -86,7 +85,7 @@ velociraptor-hunts-*: EDR collections
 ### Automated Reporting
 - TTX (Tabletop Exercise) report generation: 3 minutes
 - IR assessment creation: 20 minutes  
-- Previously manual (4-8 hours) → 95% time reduction
+- Previously manual, at 4-8 hours per document
 
 ## Technical Skills Demonstrated
 - Enterprise SIEM deployment & tuning
@@ -102,11 +101,11 @@ velociraptor-hunts-*: EDR collections
 - Infrastructure as code
 
 ## Business Impact
-- **Threat Detection**: Real-time visibility across entire network
-- **Response Time**: Reduced from hours to minutes via automation
-- **Cost Savings**: Self-hosted vs. commercial SIEM ($50K+/year)
+- **Threat Detection**: Real-time visibility across the entire network
+- **Response Time**: Alert triage and hunt deployment run without analyst intervention
+- **Cost**: Self-hosted on owned hardware, with no per-GB ingest licensing
 - **Compliance**: Complete audit trail for forensics
-- **Scalability**: Handles 1M+ events/day with room for 10x growth
+- **Scalability**: Headroom is constrained by disk throughput, which is the documented next upgrade
 
 ## Screenshots
 - [Full SIEM Dashboard](../screenshots/portfolio-picks/Screenshot from 2025-12-31 05-05-31.png)
