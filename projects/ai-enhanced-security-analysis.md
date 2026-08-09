@@ -14,10 +14,10 @@ Deployed local Large Language Model (LLM) infrastructure for security log analys
 
 ### AI Infrastructure
 - **Platform**: Ollama for local LLM hosting
-- **Primary Model**: Mixtral 8x7B (47GB, quantized)
-- **Secondary Models**: Llama 3.1 70B, Qwen 2.5 32B
-- **Hardware**: AMD RX 7900 XTX GPU with ROCm acceleration
-- **Server**: Dedicated Ubuntu 24.04 system (Anubis)
+- **Triage Model**: mistral:7b (4.4GB) for first-pass classification
+- **Overseer Model**: mistral-small:22b (12GB) for verification and harder cases
+- **Hardware**: AMD RX 7900 XTX (24GB) with ROCm acceleration
+- **Server**: Tepes, a dedicated Debian system (Intel i9-13900K, 24 cores / 32 threads)
 
 ### RAG (Retrieval Augmented Generation) System
 - **Knowledge Base**: MITRE ATT&CK framework, security procedures, threat intel
@@ -118,7 +118,7 @@ and defensive measures, tailored to analyst's expertise level]
 - **Analyst Time Savings**: 60% on research tasks
 
 ### Resource Utilization
-- **GPU Memory**: 32GB VRAM (Mixtral 8x7B)
+- **GPU Memory**: 24GB VRAM total; 4.4GB resident for mistral:7b, 12GB for mistral-small:22b
 - **Inference Speed**: 25-35 tokens/second
 - **Concurrent Requests**: Up to 3 simultaneous analyses
 - **Model Loading Time**: 8-12 seconds cold start
@@ -199,7 +199,7 @@ def analyze_security_event(event):
     """
     
     response = ollama.generate(
-        model="mixtral:8x7b",
+        model="mistral:7b",
         prompt=prompt,
         context=rag_search(event['indicators'])
     )

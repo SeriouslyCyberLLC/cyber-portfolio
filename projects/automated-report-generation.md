@@ -9,7 +9,7 @@ Developed automated report generation system using AI and template-based documen
 ## Technical Architecture
 
 ### Components
-- **AI Engine**: Ollama with Llama3.1:8b model
+- **AI Engine**: Ollama with the mistral:7b model (4.4GB)
 - **Document Processing**: python-docx for template manipulation
 - **Template System**: Professional Word templates with exact formatting
 - **Content Generation**: RAG system with security knowledge base
@@ -35,8 +35,8 @@ Developed automated report generation system using AI and template-based documen
 - Revenue potential: Additional clients without additional hours
 
 ## Technical Implementation
-- Server: Anubis (Ubuntu 24.04)
-- Model: Qwen 2.5 32B for document generation
+- Server: Tepes (Debian, Intel i9-13900K, 24 cores / 32 threads, RX 7900 XTX 24GB)
+- Model: mistral-small:22b (12GB) for document generation
 - Resource isolation from security monitoring
 - Template versioning and management
 

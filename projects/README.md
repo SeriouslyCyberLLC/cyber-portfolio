@@ -4,9 +4,9 @@
 AI security and governance professional focused on enterprise AI adoption, AI risk strategy, responsible AI controls, and secure use of generative and agentic systems.
 
 ## Certifications
-- CISSP (Certified Information Systems Security Professional) — ISC2
-- CCSP (Certified Cloud Security Professional) — ISC2
-- AAISM (Advanced in AI Security Management) — ISACA
+- CISSP (Certified Information Systems Security Professional), ISC2
+- CCSP (Certified Cloud Security Professional), ISC2
+- AAISM (Advanced in AI Security Management), ISACA
 - SecAI+ (CompTIA SecAI+ Certification)
 - CompTIA SecurityX (CASP+)
 - CompTIA CySA+ (Cybersecurity Analyst)
@@ -20,7 +20,7 @@ Assess AI use cases, vendors, customer-facing features, and internal AI workflow
 ## Background
 AI security, DFIR consulting, regulated-healthcare MSSP experience, executive incident reporting, vendor risk, security questionnaires, and crisis leadership.
 
-Previously **Security Advisory Consultant – Incident & Crisis Readiness** at a managed security service provider:
+Previously **Security Advisory Consultant, Incident & Crisis Readiness** at a managed security service provider:
 
 - Owned security governance, risk, and incident readiness advisory engagements for regulated enterprise clients, delivering audit-defensible security programs aligned to NIST CSF 2.0, NIST 800-61 r2, HIPAA, and federal risk management expectations.
 - Advised on data handling, retention, and incident documentation practices supporting regulatory obligations and potential litigation scenarios.
