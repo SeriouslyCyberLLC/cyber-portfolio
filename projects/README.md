@@ -126,7 +126,7 @@ Assessment Methodology:
 ## Contact
 - Website: seriouslycyber.com
 - GitHub: https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio
-- Location: Parkton, North Carolina
+- Location: Fayetteville, North Carolina Metro Area
 - Clearance: Public Trust
 
 ---
