@@ -23,6 +23,13 @@ notification_config.json
 # Badge IMAGES are fine and intended; certificate DOCUMENTS are not.
 *.pdf
 
+# Agent scratch. `.claude/worktrees/` holds full checkouts of this repo, and
+# `.superpowers/` holds execution ledgers and review packages. Neither belongs
+# in history, and an unignored worktree directory means a `git add -A` in the
+# main checkout commits an entire second copy of the tree.
+.claude/
+.superpowers/
+
 # Logs
 *.log
 
