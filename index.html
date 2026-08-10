@@ -132,17 +132,6 @@
 
         a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 
-        /* Shared gradient-text treatment. At line-height 1.1 the background-clip box
-           cropped the descenders in "Larry W. Harvey"; 1.25 plus the padding clears
-           them. `color` is the fallback wherever background-clip:text is unsupported. */
-        .gradient-text {
-            color: #ff4d4d;
-            -webkit-background-clip: text; background-clip: text;
-            -webkit-text-fill-color: transparent;
-            line-height: 1.25;
-            padding-bottom: 0.12em;
-        }
-
         /* ---------- Header / Hero ---------- */
         header {
             display: grid;
@@ -163,11 +152,13 @@
         .brand-logo { width: clamp(200px, 24vw, 330px); height: auto; filter: drop-shadow(0 0 24px rgba(223,133,68,0.5)); }
 
         h1 {
-            font-size: 3em; margin-bottom: 8px;
-            background-image: linear-gradient(135deg, #ff5b5b, #ff2a2a, #cc0000);
-            text-shadow: 0 0 30px rgba(255,0,0,0.4);
+            font-size: 2.6em;
+            line-height: 1.2;
+            letter-spacing: -0.01em;
+            color: #f2f2f2;
+            margin-bottom: 8px;
         }
-        .subtitle { font-size: 1.35em; color: #cfcfcf; margin-bottom: 14px; }
+        .subtitle { font-size: 1.25em; color: var(--muted); margin-bottom: 14px; }
         header p { color: var(--muted); max-width: 72ch; }
         header p + p { margin-top: 12px; }
         /* Lead sentence carries the current-tense positioning, so it sits a step
@@ -189,13 +180,19 @@
         .btn-secondary:hover { background: linear-gradient(135deg, #3d3d3d, #2c2c2c); box-shadow: 0 6px 25px rgba(223,133,68,0.28); border-color: rgba(223,133,68,0.5); }
 
         /* ---------- Section titles ---------- */
-        .section-title { text-align: center; margin: 56px 0 30px; }
+        .section-title { text-align: left; margin: 56px 0 24px; }
         .section-title h2 {
-            font-size: 2.4em;
-            background-image: linear-gradient(135deg, #ff2a2a, #ff6b6b);
-            text-shadow: 0 0 30px rgba(255,0,0,0.4);
+            font-size: 1.75em;
+            line-height: 1.25;
+            color: #f2f2f2;
+            letter-spacing: -0.01em;
         }
-        .section-title p { color: var(--faint); margin-top: 4px; }
+        /* 34px matches .cert-group__label::after so the two rules read as one system. */
+        .section-title h2::after {
+            content: ''; display: block; height: 2px; width: 34px;
+            margin-top: 10px; background: var(--accent); border-radius: 2px;
+        }
+        .section-title p { color: var(--faint); margin-top: 10px; }
 
         /* ---------- Certifications ---------- */
         /* Flagship tier: official issuer badge art, split into the two credential
@@ -333,7 +330,7 @@
         <header>
             <img class="brand-logo" src="assets/logo-orbital.svg" alt="Seriously Cyber Consulting logo">
             <div>
-                <h1 class="gradient-text">Larry W. Harvey</h1>
+                <h1>Larry W. Harvey</h1>
                 <div class="subtitle">AI Security &amp; Governance | Enterprise AI Risk | Incident &amp; Crisis Readiness</div>
                 <p class="hero-lead">AI security and governance professional focused on enterprise AI adoption, AI risk strategy, responsible AI controls, and secure use of generative and agentic systems.</p>
                 <p>Currently assess AI use cases, vendors, customer-facing features, and internal AI workflows across regulated SaaS environments with Engineering, Product, Legal, Privacy, Compliance, and Security stakeholders. Translate ambiguous AI risk into executive-ready recommendations, control requirements, residual-risk decisions, and operational safeguards.</p>
@@ -350,7 +347,7 @@
             <!-- ================= CERTIFICATIONS ================= -->
             <section id="certs" aria-labelledby="certs-title">
                 <div class="section-title">
-                    <h2 class="gradient-text" id="certs-title">Certifications</h2>
+                    <h2 id="certs-title">Certifications</h2>
                     <p>Verified credentials across AI security, security leadership, cloud, analysis, and operations</p>
                 </div>
 
@@ -413,7 +410,7 @@
             <!-- ================= PROJECTS ================= -->
             <section id="projects" aria-labelledby="projects-title">
                 <div class="section-title">
-                    <h2 class="gradient-text" id="projects-title">8 Production Systems</h2>
+                    <h2 id="projects-title">8 Production Systems</h2>
                     <p>Live infrastructure, not lab demos</p>
                 </div>
 
