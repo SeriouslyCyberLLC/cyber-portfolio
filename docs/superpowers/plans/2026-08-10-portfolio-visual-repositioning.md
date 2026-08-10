@@ -568,7 +568,18 @@ Replace the transform-suppression list, since the hover lifts it referenced no l
 - [ ] **Step 7: Run verification**
 
 Run: `node scripts/verify-page.mjs`
-Expected: `no red values`, `no glow`, `no pixel hover lifts`, `logo drop-shadow removed`, `stats are not monospace`, `stats hanging indent retained`, `badge wells retained` all PASS. Only the cert-wall check should still FAIL.
+Expected: `14/18 passed`, with `logo drop-shadow removed`, `stats are not monospace`, `stats hanging indent retained`, and `badge wells retained` flipping to PASS.
+
+**Four checks still FAIL at the end of this task, and that is correct:** `no red
+values`, `no glow`, `no pixel hover lifts`, and `cert wall`. All four are sourced
+from the `.cert-item` / `.cert-item:hover` rules, which carry an
+`rgba(255,42,42,…)` border, a `box-shadow`, and a `translateY(-4px)` lift. Task 5
+deletes those rules outright, so flattening them here would be work discarded one
+task later and a scope violation besides. Leave them.
+
+Before committing, confirm rather than assume: for each of those three
+style checks, verify `.cert-item`/`.cert-item:hover` is the ONLY remaining source.
+A second source anywhere else in the stylesheet is in scope for this task.
 
 - [ ] **Step 8: Commit**
 
