@@ -6,7 +6,7 @@
     <title>Larry W. Harvey | Cybersecurity Portfolio</title>
     <meta name="description" content="Larry W. Harvey, AI security and governance professional. Enterprise AI adoption, AI risk strategy, responsible AI controls. CISSP, CCSP, AAISM, SecAI+.">
     <link rel="canonical" href="https://seriouslycyberllc.github.io/cybersecurity-portfolio/">
-    <meta name="theme-color" content="#0b0b0b">
+    <meta name="theme-color" content="#0f1115">
     <meta name="color-scheme" content="dark">
     <link rel="icon" type="image/svg+xml" href="assets/logo-orbital.svg">
 
@@ -110,7 +110,7 @@
             min-height: 100vh;
         }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
         /* ---------- Accessibility utilities ---------- */
         .skip-link {
@@ -179,7 +179,7 @@
         .btn:hover { background: #e9975c; border-color: #e9975c; }
         .btn-secondary {
             background: transparent; color: var(--ink);
-            border: 1px solid rgba(255,255,255,0.18);
+            border: 1px solid rgba(255,255,255,0.38);
         }
         .btn-secondary:hover { border-color: var(--accent); color: var(--accent); background: transparent; }
 
@@ -222,7 +222,6 @@
         .flagship-badge {
             display: flex; flex-direction: column; align-items: center;
             width: 172px; padding: 4px; text-decoration: none;
-            background: transparent; border: 0; border-radius: 0;
             transition: opacity .2s ease;
         }
         /* Badge well. ISC2 badge art is TRANSPARENT with black wordmarks, so on a dark
@@ -257,8 +256,6 @@
         .project:hover { border-color: rgba(223,133,68,0.45); }
         .project h3 { color: var(--ink); font-size: 1.15em; font-weight: 600; margin-bottom: 10px; }
         .project p { margin: 10px 0; color: var(--muted); }
-        .project a:not(.btn) { color: var(--accent); text-decoration: none; font-weight: 600; }
-        .project a:not(.btn):hover { text-decoration: underline; }
         /* auto top margin pushes every card's CTA to the same baseline regardless of
            how much copy sits above it; flex-start keeps it hugging its label rather
            than stretching to the card width the way a blockified flex item would. */
