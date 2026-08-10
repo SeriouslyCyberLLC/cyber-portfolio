@@ -145,6 +145,23 @@ check('contrast: every text pair meets 4.5:1', () => {
   return bad.length ? bad.join(', ') : true;
 });
 
+check('every var(--x) reference resolves to a declared property', () => {
+  // Renaming --amber to --accent orphans any rule still saying var(--amber).
+  // An orphaned reference renders as nothing — a silent visual failure that
+  // the hex-pattern checks above cannot see.
+  const declared = new Set([...style.matchAll(/--([a-z0-9-]+)\s*:/g)].map(m => m[1]));
+  const used = [...style.matchAll(/var\(\s*--([a-z0-9-]+)\s*\)/g)].map(m => m[1]);
+  const orphans = [...new Set(used.filter(u => !declared.has(u)))];
+  return orphans.length ? `undeclared: ${orphans.map(o => `--${o}`).join(', ')}` : true;
+});
+
+check('focus outline uses the accent and resolves', () => {
+  const m = style.match(/:focus-visible[^{]*\{([^}]*)\}/);
+  if (!m) return ':focus-visible rule not found';
+  return /outline:[^;]*var\(--accent\)/.test(m[1])
+    ? true : `focus outline does not use var(--accent): ${m[1].trim()}`;
+});
+
 check('no emoji', () => {
   const e = html.match(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu);
   return e ? [...new Set(e)].join(' ') : true;
@@ -185,8 +202,16 @@ process.exit(failed ? 1 : 0);
 - [ ] **Step 2: Run it against the unmodified page to confirm it detects the problem**
 
 Run: `node scripts/verify-page.mjs; echo "exit=$?"`
-Expected: `exit=1` and `6/16 passed`, with these ten FAIL lines — palette variables, no red values, no glow, background-clip:text, carbon weave, pixel hover lifts, logo drop-shadow, stats monospace, contrast (reported as `unresolved custom properties`, because `--bg` and `--accent` do not exist yet), and cert wall.
-Expected to already PASS, and to keep passing through every later task: hanging indent, badge wells, accessibility affordances, no emoji, 8 project cards, group labels.
+Expected: `exit=1` and `7/18 passed`, with these eleven FAIL lines — palette variables, no red values, no glow, background-clip:text, carbon weave, pixel hover lifts, logo drop-shadow, stats monospace, contrast (reported as `unresolved custom properties`, because `--bg` and `--accent` do not exist yet), focus outline (still `var(--amber)`), and cert wall.
+Expected to already PASS, and to keep passing through every later task: hanging indent, badge wells, accessibility affordances, var() references resolve, no emoji, 8 project cards, group labels.
+
+Note the two guards that exist specifically to catch silent failures: `every
+var(--x) reference resolves` passes now and must keep passing — renaming
+`--amber` to `--accent` in Task 2 will break it unless every reference is
+swept in the same task. And `focus outline uses the accent` fails now and
+must pass by Task 2, because a focus outline referencing an undeclared
+variable renders invisible while the string `:focus-visible` is still present
+for the coarser accessibility check to find.
 
 If any check that should fail passes, the check is wrong — fix the script, not the page.
 
@@ -246,12 +271,54 @@ Replace the entire `body { … }` rule with:
 
 Delete the entire `body::after { … }` rule and the `/* Subtle red ambient glow over the weave */` comment above it.
 
-- [ ] **Step 3: Run verification**
+- [ ] **Step 3: Sweep every orphaned variable reference**
+
+Step 1 drops `--amber`, `--red`, `--red-deep`, and `--panel-2`. Any rule still
+naming one renders that property as nothing — a silent visual failure. Find
+them all:
+
+```bash
+grep -n 'var(--amber)\|var(--red)\|var(--red-deep)\|var(--panel-2)' index.html
+```
+
+Expected: 6 matches. Apply these replacements:
+
+| Line | Current | Becomes |
+|---|---|---|
+| `a:focus-visible, button:focus-visible` | `var(--amber)` | `var(--accent)` |
+| `.cert-group--ai .cert-group__label::after` | `var(--amber)` | `var(--accent)` |
+| `.project a:not(.btn)` | `var(--amber)` | `var(--accent)` |
+| `.contact-links a:hover` | `var(--amber)` | `var(--accent)` |
+| `.flagship-badge` background | `linear-gradient(135deg, var(--panel) 0%, var(--panel-2) 100%)` | `var(--panel)` |
+| `.cert-item` background | `linear-gradient(135deg, var(--panel) 0%, var(--panel-2) 100%)` | `var(--panel)` |
+
+The `.btn` rule's `var(--red-deep)` sits inside a `linear-gradient` that Task 4
+replaces wholesale; change it to `var(--accent)` here anyway so no intermediate
+commit carries a dangling reference.
+
+The `:focus-visible` line is the one that matters most, because no later task
+revisits it and an unresolved outline color renders invisible:
+
+```css
+        a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+```
+
+Confirm none remain:
+
+```bash
+grep -c 'var(--amber)\|var(--red)\|var(--red-deep)\|var(--panel-2)' index.html
+```
+Expected: `0`.
+
+- [ ] **Step 4: Run verification**
 
 Run: `node scripts/verify-page.mjs`
-Expected: `palette variables`, `no carbon weave and no red ambient wash`, and `contrast` now PASS. `no red values`, `no glow`, `background-clip:text`, `pixel hover lifts`, `stats`, `cert wall` still FAIL.
+Expected: `palette variables`, `no carbon weave and no red ambient wash`, `contrast`, `focus outline uses the accent`, and `every var(--x) reference resolves` all PASS. `no red values`, `no glow`, `background-clip:text`, `pixel hover lifts`, `logo drop-shadow`, `stats`, `cert wall` still FAIL.
 
-- [ ] **Step 4: Commit**
+If `every var(--x) reference resolves` FAILS here, the sweep in Step 3 was
+incomplete — the failure message names the undeclared properties.
+
+- [ ] **Step 5: Commit**
 
 ```bash
 git add index.html
@@ -325,12 +392,25 @@ Replace the `.section-title { … }` and `.section-title h2 { … }` rules with:
         .section-title p { color: var(--faint); margin-top: 10px; }
 ```
 
-- [ ] **Step 4: Run verification**
+- [ ] **Step 4: Bring `.subtitle` into the palette**
+
+It currently hardcodes `#cfcfcf`, which sits outside the token system and
+cannot be checked. Replace the rule with:
+
+```css
+        .subtitle { font-size: 1.25em; color: var(--muted); margin-bottom: 14px; }
+```
+
+`--muted` measures 6.67:1 on `--panel`, so this is a contrast improvement as
+well as a consistency one. The size drops from 1.35em to 1.25em to sit under
+the reduced 2.6em `h1` rather than competing with it.
+
+- [ ] **Step 5: Run verification**
 
 Run: `node scripts/verify-page.mjs`
-Expected: `no background-clip:text and no .gradient-text class` now PASSES. Heading-related glow may still FAIL under `no glow` because `.project h3` and `footer h2` still carry `text-shadow` — those are Task 4.
+Expected: `no background-clip:text and no .gradient-text class` now PASSES, and `every var(--x) reference resolves` still PASSES. Heading-related glow may still FAIL under `no glow` because `.project h3` and `footer h2` still carry `text-shadow` — those are Task 4.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
 git add index.html
