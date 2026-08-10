@@ -90,45 +90,23 @@
     </script>
     <style>
         :root {
-            --red: #ff2a2a;
-            --red-deep: #cc0000;
-            --amber: #df8544;          /* brand-logo accent, used sparingly */
-            --ink: #e8e8e8;
-            --muted: #a8a8a8;
-            /* #6f6f6f measured 3.91:1 on the panel and failed WCAG 2.1 AA. */
-            --faint: #8f8f8f;
-            --panel: #141414;
-            --panel-2: #0d0d0d;
+            --bg: #0f1115;
+            --panel: #161920;
+            --ink: #ececee;
+            --muted: #9aa0a8;
+            --faint: #7f858d;
+            --accent: #df8544;          /* from the logo; the only accent on the page */
+            --line: rgba(255,255,255,0.08);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
             color: var(--ink);
-            /* Carbon-fiber weave (pure CSS, no image) */
-            background-color: #0b0b0b;
-            background-image:
-                linear-gradient(27deg,  #161616 5px, transparent 5px) 0 5px,
-                linear-gradient(207deg, #161616 5px, transparent 5px) 10px 0,
-                linear-gradient(27deg,  #0f0f0f 5px, transparent 5px) 0 10px,
-                linear-gradient(207deg, #0f0f0f 5px, transparent 5px) 10px 5px,
-                linear-gradient(90deg,  #131313 10px, transparent 10px),
-                linear-gradient(#181818 25%, #141414 25%, #141414 50%, transparent 50%, transparent 75%, #1c1c1c 75%, #1c1c1c);
-            background-size: 20px 20px;
+            background: var(--bg);
             min-height: 100vh;
-        }
-
-        /* Subtle red ambient glow over the weave */
-        body::after {
-            content: '';
-            position: fixed; inset: 0;
-            background-image:
-                radial-gradient(circle at 18% 12%, rgba(255,42,42,0.12) 0%, transparent 45%),
-                radial-gradient(circle at 85% 90%, rgba(122,0,0,0.14) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
         }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
@@ -152,7 +130,7 @@
             white-space: nowrap; border: 0;
         }
 
-        a:focus-visible, button:focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; }
+        a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 
         /* Shared gradient-text treatment. At line-height 1.1 the background-clip box
            cropped the descenders in "Larry W. Harvey"; 1.25 plus the padding clears
@@ -200,13 +178,13 @@
         /* ---------- Buttons ---------- */
         .btn {
             display: inline-block;
-            background: linear-gradient(135deg, var(--red-deep), #990000);
+            background: linear-gradient(135deg, var(--accent), #990000);
             color: #fff; padding: 12px 28px; border-radius: 6px;
             text-decoration: none; margin: 8px 10px 0 0; font-weight: 700;
             transition: all .25s ease; box-shadow: 0 4px 15px rgba(255,0,0,0.28);
             border: 1px solid rgba(255,42,42,0.5);
         }
-        .btn:hover { background: linear-gradient(135deg, var(--red), var(--red-deep)); box-shadow: 0 6px 25px rgba(255,0,0,0.5); transform: translateY(-2px); }
+        .btn:hover { background: linear-gradient(135deg, var(--accent), var(--accent)); box-shadow: 0 6px 25px rgba(255,0,0,0.5); transform: translateY(-2px); }
         .btn-secondary { background: linear-gradient(135deg, #2c2c2c, #181818); border: 1px solid rgba(255,255,255,0.18); }
         .btn-secondary:hover { background: linear-gradient(135deg, #3d3d3d, #2c2c2c); box-shadow: 0 6px 25px rgba(223,133,68,0.28); border-color: rgba(223,133,68,0.5); }
 
@@ -236,15 +214,15 @@
         }
         .cert-group__label::after {
             content: ''; display: block; height: 2px; width: 34px;
-            margin: 7px auto 0; background: var(--red); border-radius: 2px;
+            margin: 7px auto 0; background: var(--accent); border-radius: 2px;
         }
-        .cert-group--ai .cert-group__label::after { background: var(--amber); }
+        .cert-group--ai .cert-group__label::after { background: var(--accent); }
         .cert-group__items { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; list-style: none; }
 
         .flagship-badge {
             display: flex; flex-direction: column; align-items: center;
             width: 172px; padding: 18px 12px 15px; text-decoration: none;
-            background: linear-gradient(135deg, var(--panel) 0%, var(--panel-2) 100%);
+            background: var(--panel);
             border: 1px solid rgba(255,42,42,0.22); border-radius: 14px;
             transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
         }
@@ -275,7 +253,7 @@
            single orphan on a second row. */
         .cert-wall { display: grid; grid-template-columns: repeat(auto-fit, minmax(108px, 1fr)); gap: 18px; margin: 26px 0 10px; list-style: none; }
         .cert-item {
-            background: linear-gradient(135deg, var(--panel) 0%, var(--panel-2) 100%);
+            background: var(--panel);
             border: 1px solid rgba(255,42,42,0.16); border-radius: 12px;
             padding: 18px 12px 12px; text-align: center; transition: all .25s ease;
         }
@@ -298,7 +276,7 @@
         .project:hover { transform: translateY(-5px); box-shadow: 0 12px 42px rgba(255,0,0,0.35), 0 0 60px rgba(223,133,68,0.12); border-color: rgba(223,133,68,0.5); }
         .project h3 { color: #ff4d4d; font-size: 1.6em; margin-bottom: 12px; text-shadow: 0 0 20px rgba(255,0,0,0.4); }
         .project p { margin: 10px 0; color: var(--muted); }
-        .project a:not(.btn) { color: var(--amber); text-decoration: none; font-weight: 700; }
+        .project a:not(.btn) { color: var(--accent); text-decoration: none; font-weight: 700; }
         .project a:not(.btn):hover { text-shadow: 0 0 10px rgba(223,133,68,0.7); }
         /* auto top margin pushes every card's CTA to the same baseline regardless of
            how much copy sits above it; flex-start keeps it hugging its label rather
@@ -325,7 +303,7 @@
             min-height: 44px; padding: 0 14px; margin: 0 2px;
             color: #ff4d4d; text-decoration: none; font-weight: 700; transition: all .25s ease;
         }
-        .contact-links a:hover { color: var(--amber); text-shadow: 0 0 10px rgba(223,133,68,0.8); }
+        .contact-links a:hover { color: var(--accent); text-shadow: 0 0 10px rgba(223,133,68,0.8); }
         .footer-meta { margin-top: 20px; color: var(--muted); }
         .footer-legal { margin-top: 26px; font-size: .9em; color: var(--faint); }
 
