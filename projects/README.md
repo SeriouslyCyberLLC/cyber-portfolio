@@ -44,7 +44,7 @@ AI-powered system reducing client deliverable creation time by 95%. Generates pr
 ### 3. [Threat Intelligence Integration](threat-intelligence-integration.md)
 Multi-source threat intel platform with automated IOC enrichment. Integrated VirusTotal, AbuseIPDB, AlienVault OTX, and Hybrid Analysis.
 
-**Key Stats**: 2.3M IOCs indexed, 50K queries per day, four intel sources on a 5-minute enrichment cycle, threat_score 0-100 written to each alert
+**Key Stats**: Six intelligence sources (VirusTotal, AbuseIPDB, OTX, Hybrid Analysis, MISP, CISA KEV), enrichment lookup on every external source and destination IP
 
 ### 4. [Enterprise SOC Infrastructure](soc-infrastructure.md)
 Full-stack security monitoring platform with ELK Stack, Suricata IDS, Zeek NSM, and Velociraptor EDR.

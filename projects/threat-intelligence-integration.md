@@ -67,9 +67,9 @@ Low (1-39): Clean or insufficient data
 - **Historical Tracking**: Reputation changes over time are retained, so a newly-malicious host is visible as a change
 
 ### Data Volume
-- **Daily API Calls**: ~50K queries across all feeds
+- **Lookup Scope**: Every event with a public source or destination IP
 - **Cached Responses**: 85% hit rate (reduced redundant queries)
-- **Threat Intel Index**: 2.3M IOCs indexed in Elasticsearch
+- **Threat Intel Index**: tepes-tia-indicators (1,735 indicators as of 10 August 2026)
 
 ## Use Cases
 
