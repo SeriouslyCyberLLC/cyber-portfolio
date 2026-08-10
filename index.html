@@ -293,6 +293,15 @@
         @media (max-width: 768px) {
             header { grid-template-columns: 1fr; text-align: center; justify-items: center; }
             h1 { font-size: 2.1em; }
+            /* The logo and name stay centred, but the prose does not. Centring a
+               60-word paragraph leaves no stable left edge to return to and makes
+               every line a different length — the brochure voice this redesign is
+               getting away from, on the viewport where shared links actually open. */
+            .subtitle, header p { text-align: left; }
+            /* .btn carries `margin: 8px 10px 0 0`, which under a centred parent
+               offsets each stacked button 5px left of true centre with no shared
+               edge between them. */
+            .hero-cta .btn { margin-right: 0; }
             .projects { grid-template-columns: 1fr; }
             .cert-flagship { flex-direction: column; align-items: center; gap: 30px; }
         }
