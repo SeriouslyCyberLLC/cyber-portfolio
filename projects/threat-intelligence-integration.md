@@ -68,7 +68,7 @@ Low (1-39): Clean or insufficient data
 
 ### Data Volume
 - **Lookup Scope**: Every event with a public source or destination IP
-- **Cached Responses**: 85% hit rate (reduced redundant queries)
+- **Response Caching**: Lookup results cached in Elasticsearch to avoid repeat API calls against rate-limited feeds
 - **Threat Intel Index**: tepes-tia-indicators (1,735 indicators as of 10 August 2026)
 
 ## Use Cases
