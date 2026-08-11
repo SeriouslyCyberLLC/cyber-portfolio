@@ -158,6 +158,31 @@ check('4 flagship badges retained, cert wall replaced by text', () => {
 check('group labels preserved', () =>
   html.includes('Core security') && html.includes('AI security') ? true : 'group labels changed');
 
+check('telemetry strip is intact and machine-generated', () => {
+  const block = html.match(/<!-- TELEMETRY:START[\s\S]*?<!-- TELEMETRY:END -->/);
+  if (!block) return 'TELEMETRY markers missing — did someone hand-edit the strip out?';
+  const b = block[0];
+  if (!/class="spark-line"[^>]*d="M/.test(b)) return 'sparkline path missing or empty';
+  const rows = [...b.matchAll(/<tr><td>/g)].length;
+  if (rows < 12) return `data table has only ${rows} rows; the plot must stay readable without color`;
+  if (!/<title id="spark-title">/.test(b)) return 'sparkline has no accessible title';
+  return true;
+});
+
+/* The whole point of the strip is that its numbers are measured and dated. A
+   stamp nobody refreshes decays into exactly the unverifiable counter this site
+   has already had to strip out once, so let the harness fail before a reader
+   catches it. Re-run: node scripts/update-telemetry.mjs (on the SOC host). */
+check('telemetry figures are not stale', () => {
+  const m = html.match(/<b>([A-Z][a-z]{2} \d{2}, \d{4}, [^<]+)<\/b>/);
+  if (!m) return 'no measurement timestamp found in the strip';
+  const when = new Date(m[1].replace(/\s[A-Z]{2,4}$/, ''));
+  if (isNaN(when)) return `unparseable timestamp: ${m[1]}`;
+  const days = (Date.now() - when) / 86400000;
+  if (days > 120) return `measured ${Math.round(days)} days ago — re-run scripts/update-telemetry.mjs`;
+  return true;
+});
+
 // ---- run ----
 let failed = 0;
 for (const { name, fn } of checks) {
