@@ -417,8 +417,8 @@
             <!-- ================= PROJECTS ================= -->
             <section id="projects" aria-labelledby="projects-title">
                 <div class="section-title">
-                    <h2 id="projects-title">8 Production Systems</h2>
-                    <p>Live infrastructure, not lab demos</p>
+                    <h2 id="projects-title">8 Systems Built</h2>
+                    <p>Seven running in production. One retired on measurement — that writeup is the honest one.</p>
                 </div>
 
                 <ul class="projects">
@@ -475,16 +475,16 @@
                     </li>
 
                     <li class="project">
-                        <h3>DNS Behavioral Monitoring</h3>
-                        <p>Real-time DNS threat detection using DGA analysis, tunneling detection, and behavioral scoring.</p>
+                        <h3>DNS Behavioral Monitoring (retired)</h3>
+                        <p>DGA and tunneling detector over Zeek DNS. Ran 17 days, was measured against its own output, and was retired on the evidence rather than left paging.</p>
                         <ul class="stats">
-                            <li>626K DNS records in 24 hours</li>
-                            <li>DGA and tunneling detection</li>
-                            <li>Zeek dns.log into Elasticsearch</li>
-                            <li>Pushover alerting</li>
+                            <li>2.6M detections logged in 17 days</li>
+                            <li>96.6% were one local hostname</li>
+                            <li>61 false pages per day</li>
+                            <li>Retired Jan 2026; writeup kept</li>
                         </ul>
-                        <p><strong>Tech:</strong> Python, Zeek, Elasticsearch, Behavioral Analysis, Threat Intelligence</p>
-                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/dns-behavioral-monitoring.md" class="project-link">Read More<span class="visually-hidden"> about DNS Behavioral Monitoring</span></a>
+                        <p><strong>Tech:</strong> Python, Zeek, entropy and n-gram scoring, Pushover</p>
+                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/dns-behavioral-monitoring.md" class="project-link">Read More<span class="visually-hidden"> about DNS Behavioral Monitoring, retired</span></a>
                     </li>
 
                     <li class="project">

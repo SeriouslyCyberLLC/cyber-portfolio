@@ -51,10 +51,10 @@ Full-stack security monitoring platform with ELK Stack, Suricata IDS, Zeek NSM, 
 
 **Key Stats**: 307M events across the SOC indices, 118 GB of Suricata and Zeek telemetry, mirrored capture on a dedicated interface, 3 monitored endpoints
 
-### 5. [DNS Behavioral Monitoring](dns-behavioral-monitoring.md)
-Real-time DNS threat detection using DGA analysis, tunneling detection, and behavioral scoring. Integrated with Pushover alerting and ELK Stack.
+### 5. [DNS Behavioral Monitoring — built, measured, retired](dns-behavioral-monitoring.md)
+DGA and tunneling detector over Zeek DNS. Ran 17 days, was measured against its own output, and was retired on the evidence. The post-mortem covers both the precision failure and the silent-failure mode that hid it for seven months.
 
-**Key Stats**: 626K DNS records in 24 hours, DGA and tunneling detection, Zeek dns.log into Elasticsearch
+**Key Stats**: 2.6M detections in 17.2 days, 99.9% at the score floor, 96.6% of output was the host's own hostname, 61 false pages/day
 
 ### 6. [Firewalla Network Security Architecture](firewalla-network-security.md)
 Defense-in-depth network architecture with multi-VLAN segmentation, threat prevention, and comprehensive traffic monitoring.
