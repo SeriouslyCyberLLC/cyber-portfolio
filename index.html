@@ -184,7 +184,7 @@
         .btn-secondary:hover { border-color: var(--accent); color: var(--accent); background: transparent; }
 
         /* ---------- Section titles ---------- */
-        .section-title { text-align: left; margin: 56px 0 24px; }
+        .section-title { text-align: center; margin: 56px 0 24px; }
         .section-title h2 {
             font-size: 1.75em;
             line-height: 1.25;
@@ -194,7 +194,7 @@
         /* 34px matches .cert-group__label::after so the two rules read as one system. */
         .section-title h2::after {
             content: ''; display: block; height: 2px; width: 34px;
-            margin-top: 10px; background: var(--accent); border-radius: 2px;
+            margin: 10px auto 0; background: var(--accent); border-radius: 2px;
         }
         .section-title p { color: var(--faint); margin-top: 10px; }
 
@@ -204,24 +204,26 @@
            lives on the GROUP LABEL RULE instead: issuer art has its own mandated
            palette and must never be recoloured, tinted or ringed to match a theme.
            Core (ISC2) badges render larger than the AI pair to hold priority. */
-        /* Left-aligned to the same edge as the section title and its rule. This
-           block used to centre its badges, verify note and text line under a
-           hard-left heading, which read as a section that had been converted
-           rather than designed. Every section now shares one left edge. */
+        /* Centred on the page axis, together with the section heading and its rule.
+           The earlier left-aligned pass centred the badges under a hard-left
+           heading, which read as a section that had been converted rather than
+           designed; the heading is centred here too so the whole block shares one
+           axis. Multi-line body copy (hero prose, project cards) stays left —
+           centring paragraphs costs readability. */
         .cert-flagship {
-            display: flex; justify-content: flex-start; align-items: flex-start;
+            display: flex; justify-content: center; align-items: flex-start;
             gap: clamp(30px, 5vw, 64px); flex-wrap: wrap; margin: 0 0 12px;
         }
-        .cert-group { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+        .cert-group { display: flex; flex-direction: column; align-items: center; gap: 16px; }
         .cert-group__label {
             font-size: .72em; font-weight: 700; letter-spacing: .22em;
             text-transform: uppercase; color: var(--muted);
         }
         .cert-group__label::after {
             content: ''; display: block; height: 2px; width: 34px;
-            margin: 7px 0 0; background: var(--accent); border-radius: 2px;
+            margin: 7px auto 0; background: var(--accent); border-radius: 2px;
         }
-        .cert-group__items { display: flex; gap: 18px; flex-wrap: wrap; justify-content: flex-start; list-style: none; }
+        .cert-group__items { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; list-style: none; }
 
         .flagship-badge {
             display: flex; flex-direction: column; align-items: center;
@@ -243,10 +245,10 @@
         .cert-group--ai .flagship-badge { width: 148px; }
         .cert-group--ai .flagship-badge img { width: 118px; height: 118px; }
         .flagship-badge:hover, .flagship-badge:focus-visible { opacity: .82; }
-        .cert-verify-note { text-align: left; font-size: .8em; color: var(--faint); margin: 0 0 24px; }
+        .cert-verify-note { text-align: center; font-size: .8em; color: var(--faint); margin: 0 0 24px; }
 
         .cert-also {
-            max-width: 72ch; margin: 22px 0 0; text-align: left;
+            max-width: 72ch; margin: 22px auto 0; text-align: center;
             color: var(--muted); font-size: .92em;
         }
         .cert-also strong { color: var(--ink); font-weight: 600; }
@@ -322,7 +324,7 @@
             header { text-align: left; justify-items: stretch; }
             .brand-logo { display: block; margin: 0 auto; }
             .projects { grid-template-columns: 1fr; }
-            .cert-flagship { flex-direction: column; align-items: flex-start; gap: 30px; }
+            .cert-flagship { flex-direction: column; align-items: center; gap: 30px; }
         }
 
         @media (prefers-reduced-motion: reduce) {

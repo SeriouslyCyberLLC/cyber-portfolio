@@ -9,7 +9,7 @@ This document contains all commands, procedures, and technical details for maint
 
 - **GitHub Repo**: https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio
 - **Live Site**: https://seriouslycyberllc.github.io/cybersecurity-portfolio/
-- **Local Directory**: `/home/cyberguy/portfolio/`
+- **Local Directory**: `/home/cyberguy/cybersecurity-portfolio/`
 - **GitHub Username**: SeriouslyCyberLLC
 - **Email**: larry.harvey.cyber@protonmail.com
 
@@ -19,8 +19,8 @@ This document contains all commands, procedures, and technical details for maint
 
 ### 1. Created Local Portfolio Structure
 ```bash
-mkdir -p ~/portfolio/{projects,docs,scripts,screenshots}
-cd ~/portfolio
+mkdir -p ~/cybersecurity-portfolio/{projects,docs,scripts,screenshots}
+cd ~/cybersecurity-portfolio
 ```
 
 ### 2. Initialized Git Repository
@@ -71,7 +71,7 @@ git push -u origin main
 
 ### Check Status
 ```bash
-cd ~/portfolio
+cd ~/cybersecurity-portfolio
 git status
 ```
 
@@ -115,7 +115,7 @@ git log --oneline
 
 ### Edit Main Website
 ```bash
-cd ~/portfolio
+cd ~/cybersecurity-portfolio
 nano index.html
 
 # After editing:
@@ -126,7 +126,7 @@ git push origin main
 
 ### Edit Project Documentation
 ```bash
-cd ~/portfolio/projects
+cd ~/cybersecurity-portfolio/projects
 nano project-name.md
 
 # After editing:
@@ -139,7 +139,7 @@ git push origin main
 
 1. **Create project documentation:**
 ```bash
-cd ~/portfolio/projects
+cd ~/cybersecurity-portfolio/projects
 nano new-project-name.md
 ```
 
@@ -173,7 +173,7 @@ git push origin main
 
 If you get permission errors (happens when using `sudo` for git commands):
 ```bash
-cd ~/portfolio
+cd ~/cybersecurity-portfolio
 sudo chown -R cyberguy:cyberguy .git/
 ```
 
@@ -217,7 +217,7 @@ Site builds automatically on every push (takes 1-2 minutes).
 
 ## Directory Structure
 ```
-~/portfolio/
+~/cybersecurity-portfolio/
 ├── .git/                          # Git repository data
 ├── .gitignore                     # Files to exclude from git
 ├── index.html                     # Main website (portfolio landing page)
@@ -253,12 +253,12 @@ Site builds automatically on every push (takes 1-2 minutes).
 
 ### "Permission denied" errors
 ```bash
-sudo chown -R cyberguy:cyberguy ~/portfolio/.git/
+sudo chown -R cyberguy:cyberguy ~/cybersecurity-portfolio/.git/
 ```
 
 ### "divergent branches" error
 ```bash
-cd ~/portfolio
+cd ~/cybersecurity-portfolio
 git config pull.rebase false
 git pull origin main
 # Resolve any conflicts, then:
@@ -300,7 +300,7 @@ git push origin main
 ## Quick Reference - Most Common Commands
 ```bash
 # Navigate to portfolio
-cd ~/portfolio
+cd ~/cybersecurity-portfolio
 
 # Check what changed
 git status
@@ -326,7 +326,7 @@ nano project-name.md
 
 1. **Make changes locally**
 ```bash
-   cd ~/portfolio
+   cd ~/cybersecurity-portfolio
    nano index.html  # or edit project files
 ```
 
@@ -356,7 +356,7 @@ nano project-name.md
 ## Adding Screenshots
 ```bash
 # Copy screenshots to portfolio
-cp ~/Pictures/Screenshots/[filename].png ~/portfolio/screenshots/portfolio-picks/
+cp ~/Pictures/Screenshots/[filename].png ~/cybersecurity-portfolio/screenshots/portfolio-picks/
 
 # Add to git
 git add screenshots/portfolio-picks/
@@ -393,7 +393,7 @@ Edit in `index.html`, footer section:
 ## Backup Strategy
 
 Portfolio is backed up in multiple places:
-1. **Local**: `/home/cyberguy/portfolio/`
+1. **Local**: `/home/cyberguy/cybersecurity-portfolio/`
 2. **GitHub**: https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio
 3. **Live Site**: https://seriouslycyberllc.github.io/cybersecurity-portfolio/
 
@@ -441,7 +441,7 @@ tar -czf portfolio-backup-$(date +%Y%m%d).tar.gz portfolio/
 ### Configuration Location
 - Main config: `~/.config/conky/tepes.conf`
 - Auto-start: `~/.config/autostart/conky-tepes.desktop`
-- Full docs: `~/portfolio/docs/conky-system-monitoring.md`
+- Full docs: `~/cybersecurity-portfolio/docs/conky-system-monitoring.md`
 
 ### Quick Commands
 ```bash
