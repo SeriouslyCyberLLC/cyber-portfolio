@@ -204,20 +204,24 @@
            lives on the GROUP LABEL RULE instead: issuer art has its own mandated
            palette and must never be recoloured, tinted or ringed to match a theme.
            Core (ISC2) badges render larger than the AI pair to hold priority. */
+        /* Left-aligned to the same edge as the section title and its rule. This
+           block used to centre its badges, verify note and text line under a
+           hard-left heading, which read as a section that had been converted
+           rather than designed. Every section now shares one left edge. */
         .cert-flagship {
-            display: flex; justify-content: center; align-items: flex-start;
-            gap: clamp(30px, 5vw, 64px); flex-wrap: wrap; margin: 0 auto 12px;
+            display: flex; justify-content: flex-start; align-items: flex-start;
+            gap: clamp(30px, 5vw, 64px); flex-wrap: wrap; margin: 0 0 12px;
         }
-        .cert-group { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+        .cert-group { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
         .cert-group__label {
             font-size: .72em; font-weight: 700; letter-spacing: .22em;
             text-transform: uppercase; color: var(--muted);
         }
         .cert-group__label::after {
             content: ''; display: block; height: 2px; width: 34px;
-            margin: 7px auto 0; background: var(--accent); border-radius: 2px;
+            margin: 7px 0 0; background: var(--accent); border-radius: 2px;
         }
-        .cert-group__items { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; list-style: none; }
+        .cert-group__items { display: flex; gap: 18px; flex-wrap: wrap; justify-content: flex-start; list-style: none; }
 
         .flagship-badge {
             display: flex; flex-direction: column; align-items: center;
@@ -236,10 +240,10 @@
         .cert-group--ai .flagship-badge { width: 148px; }
         .cert-group--ai .flagship-badge img { width: 100px; height: 100px; }
         .flagship-badge:hover, .flagship-badge:focus-visible { opacity: .82; }
-        .cert-verify-note { text-align: center; font-size: .8em; color: var(--faint); margin: 0 auto 24px; }
+        .cert-verify-note { text-align: left; font-size: .8em; color: var(--faint); margin: 0 0 24px; }
 
         .cert-also {
-            max-width: 72ch; margin: 22px auto 0; text-align: center;
+            max-width: 72ch; margin: 22px 0 0; text-align: left;
             color: var(--muted); font-size: .92em;
         }
         .cert-also strong { color: var(--ink); font-weight: 600; }
@@ -260,10 +264,23 @@
            how much copy sits above it; flex-start keeps it hugging its label rather
            than stretching to the card width the way a blockified flex item would. */
         .project .btn { margin-top: auto; align-self: flex-start; }
-        /* Cards carrying two CTAs share one bottom-pinned row, so the buttons stay
-           side by side and still align with the single-button cards beside them. */
-        .project-actions { margin-top: auto; display: flex; flex-wrap: wrap; align-items: flex-start; }
-        .project-actions .btn { margin-top: 8px; }
+        /* Eight identical amber buttons running down the grid stopped reading as
+           priority and started reading as wallpaper. "Read More" is a text link;
+           the button treatment is reserved for the one real call to action on the
+           page, "Visit seriouslycyber.com". min-height holds the 44px pointer
+           target that the button padding used to provide. */
+        .project-link {
+            margin-top: auto; align-self: flex-start;
+            display: inline-flex; align-items: center; min-height: 44px;
+            color: var(--accent); font-weight: 600;
+            text-decoration: underline; text-underline-offset: 3px;
+        }
+        .project-link:hover { text-decoration-thickness: 2px; }
+        /* The single card carrying both a button and a link shares one bottom-pinned
+           row, and its link drops the auto margin so the row governs placement. */
+        .project-actions { margin-top: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 18px; }
+        .project-actions .btn { margin-top: 8px; margin-right: 0; }
+        .project-actions .project-link { margin-top: 8px; align-self: center; }
 
         .stats { margin: 14px 0; color: var(--muted); list-style: none; }
         /* Hanging indent + inter-item gap. These lines wrap at card width, and with
@@ -293,17 +310,16 @@
         @media (max-width: 768px) {
             header { grid-template-columns: 1fr; text-align: center; justify-items: center; }
             h1 { font-size: 2.1em; }
-            /* The logo and name stay centred, but the prose does not. Centring a
-               60-word paragraph leaves no stable left edge to return to and makes
-               every line a different length — the brochure voice this redesign is
-               getting away from, on the viewport where shared links actually open. */
-            .subtitle, header p { text-align: left; }
-            /* .btn carries `margin: 8px 10px 0 0`, which under a centred parent
-               offsets each stacked button 5px left of true centre with no shared
-               edge between them. */
-            .hero-cta .btn { margin-right: 0; }
+            /* Only the logo centres. Everything textual shares the left edge the
+               rest of the page uses: centring a 60-word paragraph leaves no stable
+               edge to return to and makes every line a different length, which is
+               the brochure voice this redesign is getting away from, on the
+               viewport where shared links actually open. Centring the name and
+               buttons but not the prose gave the block three alignments at once. */
+            header { text-align: left; justify-items: stretch; }
+            .brand-logo { display: block; margin: 0 auto; }
             .projects { grid-template-columns: 1fr; }
-            .cert-flagship { flex-direction: column; align-items: center; gap: 30px; }
+            .cert-flagship { flex-direction: column; align-items: flex-start; gap: 30px; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -411,7 +427,7 @@
                             <li>Runs on a 24GB RX 7900 XTX</li>
                         </ul>
                         <p><strong>Tech:</strong> Ollama, mistral:7b, mistral-small:22b, RAG, ChromaDB, AMD ROCm, Python, MITRE ATT&amp;CK</p>
-                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/ai-enhanced-security-analysis.md" class="btn">Read More<span class="visually-hidden"> about AI-Enhanced Security Analysis</span></a>
+                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/ai-enhanced-security-analysis.md" class="project-link">Read More<span class="visually-hidden"> about AI-Enhanced Security Analysis</span></a>
                     </li>
 
                     <li class="project">
@@ -424,7 +440,7 @@
                             <li>Automated rubric scoring</li>
                         </ul>
                         <p><strong>Tech:</strong> Ollama, mistral:7b, mistral-small:22b, Python, python-docx, RAG, Template Engineering</p>
-                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/automated-report-generation.md" class="btn">Read More<span class="visually-hidden"> about Automated Report Generation</span></a>
+                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/automated-report-generation.md" class="project-link">Read More<span class="visually-hidden"> about Automated Report Generation</span></a>
                     </li>
 
                     <li class="project">
@@ -437,7 +453,7 @@
                             <li>threat_score 0-100 written to each alert</li>
                         </ul>
                         <p><strong>Tech:</strong> VirusTotal, AbuseIPDB, AlienVault OTX, Hybrid Analysis, Elasticsearch, Logstash, Python</p>
-                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/threat-intelligence-integration.md" class="btn">Read More<span class="visually-hidden"> about Threat Intelligence Integration</span></a>
+                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/threat-intelligence-integration.md" class="project-link">Read More<span class="visually-hidden"> about Threat Intelligence Integration</span></a>
                     </li>
 
                     <li class="project">
@@ -450,7 +466,7 @@
                             <li>Velociraptor and Elastic Defend on 3 endpoints</li>
                         </ul>
                         <p><strong>Tech:</strong> Elasticsearch, Logstash, Kibana, Suricata, Zeek, Velociraptor, Python, AMD ROCm</p>
-                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/soc-infrastructure.md" class="btn">Read More<span class="visually-hidden"> about Enterprise SOC Infrastructure</span></a>
+                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/soc-infrastructure.md" class="project-link">Read More<span class="visually-hidden"> about Enterprise SOC Infrastructure</span></a>
                     </li>
 
                     <li class="project">
@@ -463,7 +479,7 @@
                             <li>Pushover alerting</li>
                         </ul>
                         <p><strong>Tech:</strong> Python, Zeek, Elasticsearch, Behavioral Analysis, Threat Intelligence</p>
-                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/dns-behavioral-monitoring.md" class="btn">Read More<span class="visually-hidden"> about DNS Behavioral Monitoring</span></a>
+                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/dns-behavioral-monitoring.md" class="project-link">Read More<span class="visually-hidden"> about DNS Behavioral Monitoring</span></a>
                     </li>
 
                     <li class="project">
@@ -476,7 +492,7 @@
                             <li>Inter-VLAN policy enforced at the gateway</li>
                         </ul>
                         <p><strong>Tech:</strong> Firewalla Gold Pro, VLANs, IDS/IPS, Threat Intelligence, NetFlow, Python</p>
-                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/firewalla-network-security.md" class="btn">Read More<span class="visually-hidden"> about Network Security Architecture</span></a>
+                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/firewalla-network-security.md" class="project-link">Read More<span class="visually-hidden"> about Network Security Architecture</span></a>
                     </li>
 
                     <li class="project">
@@ -491,7 +507,7 @@
                         <p><strong>Tech:</strong> Cloudflare Tunnel, Nginx, Python, Ubuntu 24, DNS Management</p>
                         <div class="project-actions">
                             <a href="https://seriouslycyber.com" class="btn" target="_blank" rel="noopener noreferrer">Visit seriouslycyber.com</a>
-                            <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/business-infrastructure-platform.md" class="btn btn-secondary">Read More<span class="visually-hidden"> about Business Infrastructure Platform</span></a>
+                            <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/business-infrastructure-platform.md" class="project-link">Read More<span class="visually-hidden"> about Business Infrastructure Platform</span></a>
                         </div>
                     </li>
 
@@ -505,7 +521,7 @@
                             <li>Browser extension and system hotkey</li>
                         </ul>
                         <p><strong>Tech:</strong> OpenAI Whisper, AMD ROCm, Python, WebSocket, JavaScript, Browser Extensions</p>
-                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/whisper-speech-to-text.md" class="btn">Read More<span class="visually-hidden"> about Local Speech-to-Text</span></a>
+                        <a href="https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/blob/main/projects/whisper-speech-to-text.md" class="project-link">Read More<span class="visually-hidden"> about Local Speech-to-Text</span></a>
                     </li>
                 </ul>
             </section>
