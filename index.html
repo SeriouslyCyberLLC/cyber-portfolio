@@ -229,16 +229,19 @@
             transition: opacity .2s ease;
         }
         /* Badge well. ISC2 badge art is TRANSPARENT with black wordmarks, so on a dark
-           panel "CISSP" renders black-on-black and is unreadable. A neutral light well
-           makes every issuer's art legible without recolouring any of it. */
+           panel "CISSP" renders black-on-black and is unreadable. A light well makes
+           every issuer's art legible without recolouring any of it.
+           Pure white rather than an off-white, and 140px rather than 118px: at the
+           smaller size the ISC2 wordmarks rendered about 50px wide, thin enough that
+           the black strokes stopped reading as crisp text against the dark page. */
         .flagship-badge img {
-            width: 118px; height: 118px; object-fit: contain;
-            background: #f4f4f5; border-radius: 8px; padding: 9px;
+            width: 140px; height: 140px; object-fit: contain;
+            background: #ffffff; border-radius: 8px; padding: 12px;
         }
         .flagship-badge .mark { margin-top: 12px; font-size: .95em; font-weight: 600; color: var(--ink); }
         .flagship-badge .full { font-size: .75em; color: var(--muted); line-height: 1.3; margin-top: 4px; text-align: center; }
         .cert-group--ai .flagship-badge { width: 148px; }
-        .cert-group--ai .flagship-badge img { width: 100px; height: 100px; }
+        .cert-group--ai .flagship-badge img { width: 118px; height: 118px; }
         .flagship-badge:hover, .flagship-badge:focus-visible { opacity: .82; }
         .cert-verify-note { text-align: left; font-size: .8em; color: var(--faint); margin: 0 0 24px; }
 

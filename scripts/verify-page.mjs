@@ -73,8 +73,19 @@ check('stats hanging indent retained', () =>
   /\.stats li\s*\{[^}]*padding-left:\s*15px[^}]*text-indent:\s*-15px/.test(style)
     ? true : 'hanging indent missing from .stats li');
 
-check('badge wells retained (#f4f4f5)', () =>
-  (style.match(/#f4f4f5/g) || []).length >= 1 ? true : 'badge well background missing');
+check('badge well retained and light enough for black wordmarks', () => {
+  // Was a literal match on #f4f4f5. That pinned one hex without checking the
+  // property it existed to guarantee. ISC2 art is transparent with black
+  // wordmarks, so what actually matters is that the well stays light enough for
+  // black-on-well to clear 4.5:1 — measure that instead of the spelling.
+  const m = style.match(/\.flagship-badge img\s*\{([^}]*)\}/);
+  if (!m) return '.flagship-badge img rule not found';
+  const bg = (m[1].match(/background:\s*(#[0-9a-fA-F]{3,6})/) || [])[1];
+  if (!bg) return 'no background colour declared on the badge well';
+  const full = bg.length === 4 ? '#' + [...bg.slice(1)].map(c => c + c).join('') : bg;
+  const r = ratio('#000000', full);
+  return r >= 4.5 ? true : `well ${full} gives only ${r.toFixed(2)}:1 against black wordmarks`;
+});
 
 check('accessibility affordances retained', () => {
   const need = [
