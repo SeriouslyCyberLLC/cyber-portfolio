@@ -28,7 +28,7 @@ left behind is the entire basis for this writeup:
 | Rate | 151,340/day, 32 MB/day |
 | Scored exactly 50 (the floor) | **99.9%** |
 | Phone alerts fired (≥80) | 1,057 — **61 per day** |
-| Most-detected "threat" | **`tepes`** — the monitoring host's own hostname |
+| Most-detected "threat" | **`soc`** — the monitoring host's own hostname |
 | Share of output that was that one string | **96.6%** |
 
 The rest of the top detections were `mail.proton.me`, `mail.yahoo.com`,
@@ -41,7 +41,7 @@ roughly one useful signal per never.
 ## Why it failed
 
 The scoring was not wrong so much as unanchored. Entropy over a short bare hostname is
-meaningless — `tepes` is five characters with one vowel, which the consonant-run and
+meaningless — `soc` is five characters with one vowel, which the consonant-run and
 vowel-ratio checks read as textbook DGA. Nothing in the design distinguished a local mDNS
 lookup from a resolved public domain, so the host's own name became 96.6% of the corpus.
 

@@ -25,7 +25,7 @@ Designed and deployed a comprehensive, defense-in-depth security monitoring infr
 - **Kibana 8.19.19**: Custom dashboards for security operations
 - **Cluster Total**: 6.09B documents and 1.51 TB across 443 indices. Network telemetry is 5% of that; the rest is Elastic Defend endpoint data.
 - **Data Volume**: ~1.5M network security events/day; ~41M endpoint telemetry events/day from Elastic Defend
-- **Index Strategy**: ILM rollover behind the `tepes-security-write` alias (replaced daily `tepes-security-YYYY.MM.DD` indices in July 2026, cutting the cluster from 814 to 589 shards)
+- **Index Strategy**: ILM rollover behind the `soc-security-write` alias (replaced daily `soc-security-YYYY.MM.DD` indices in July 2026, cutting the cluster from 814 to 589 shards)
 
 #### 2. Network Security Monitoring
 - **Suricata 7.0.3**: 44,983 threat signatures, IDS mode
@@ -63,7 +63,7 @@ Designed and deployed a comprehensive, defense-in-depth security monitoring infr
 
 ### Current Metrics (measured 2026-08-08)
 - **Cluster Total**: 6.09B documents, 1.51 TB across 443 indices
-- **Network Telemetry**: 307M Suricata and Zeek events in 118 GB — `tepes-security-*`, 5% of the cluster
+- **Network Telemetry**: 307M Suricata and Zeek events in 118 GB — `soc-security-*`, 5% of the cluster
 - **Endpoint Telemetry**: 4.81B Elastic Defend events in 1.21 TB across 3 hosts, dominated by file events
 - **Daily Throughput**: ~1.5M network security events/day, ~41M endpoint events/day
 - **Zeek 24-hour sample**: 243,971 connection and 625,943 DNS records
@@ -72,7 +72,7 @@ Designed and deployed a comprehensive, defense-in-depth security monitoring infr
 
 ### Index Management
 ```
-tepes-security-*:       307M events (Suricata + Zeek), ILM rollover
+soc-security-*:       307M events (Suricata + Zeek), ILM rollover
 logs-endpoint.events.*: 4.81B events (Elastic Defend)
 velociraptor-hunts-*:   EDR collections
 ```

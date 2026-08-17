@@ -13,7 +13,7 @@ Designed and implemented defense-in-depth network architecture using Firewalla G
 
 ### VLAN Segmentation Strategy
 ```
-VLAN 20: Secondary Linux node (Anubis)
+VLAN 20: Secondary Linux node (node-01)
 VLAN 40: Guest network (isolated, restricted egress)
 VLAN 60: Primary workstation
 VLAN 70: Windows endpoint (EDR agent)

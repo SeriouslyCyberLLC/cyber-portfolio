@@ -1,14 +1,14 @@
 # Conky System Monitoring Configuration
 
 ## Overview
-Custom Conky system monitoring overlay providing real-time visibility into system performance, security stack operations, and network activity on the Tepes security operations workstation.
+Custom Conky system monitoring overlay providing real-time visibility into system performance, security stack operations, and network activity on the soc-01 security operations workstation.
 
 ## Configuration Files
 
 ### Main Configuration
-- **Location**: `~/.config/conky/tepes.conf`
-- **Auto-start**: `~/.config/autostart/conky-tepes.desktop`
-- **Lua Scripts**: `~/.config/conky/tepes_disks.lua`, `gauges.lua`
+- **Location**: `~/.config/conky/soc.conf`
+- **Auto-start**: `~/.config/autostart/conky-soc.desktop`
+- **Lua Scripts**: `~/.config/conky/soc_disks.lua`, `gauges.lua`
 - **Helper Scripts**: 
   - `read_gpu.sh` - AMD GPU metrics
   - `read_power.sh` - Power consumption
@@ -54,7 +54,7 @@ Custom Conky system monitoring overlay providing real-time visibility into syste
 
 ## Lua Gauges Implementation
 
-### Disk Monitoring Gauge (`tepes_disks.lua`)
+### Disk Monitoring Gauge (`soc_disks.lua`)
 - Circular gauge visualization for disk usage
 - Color-coded based on utilization percentage
 - Displays used/total capacity
@@ -69,13 +69,13 @@ Custom Conky system monitoring overlay providing real-time visibility into syste
 ## Auto-start Configuration
 
 ### Desktop Entry
-**File**: `~/.config/autostart/conky-tepes.desktop`
+**File**: `~/.config/autostart/conky-soc.desktop`
 ```ini
 [Desktop Entry]
 Type=Application
-Name=Conky (Tepes)
+Name=Conky (soc-01)
 Comment=System Monitor
-Exec=/usr/bin/conky -c /home/cyberguy/.config/conky/tepes.conf
+Exec=/usr/bin/conky -c /home/analyst/.config/conky/soc.conf
 Terminal=false
 Categories=System;Monitor;
 ```
@@ -153,13 +153,13 @@ Categories=System;Monitor;
 ## Customization
 
 ### Adding New Metrics
-1. Edit `~/.config/conky/tepes.conf`
+1. Edit `~/.config/conky/soc.conf`
 2. Add conky variable or script call
 3. Update Lua gauges if visual representation needed
-4. Reload Conky: `killall conky && conky -c ~/.config/conky/tepes.conf`
+4. Reload Conky: `killall conky && conky -c ~/.config/conky/soc.conf`
 
 ### Color Theme Customization
-Edit color definitions in `tepes.conf`:
+Edit color definitions in `soc.conf`:
 ```lua
 color0 = '#FFFFFF'  -- White (default text)
 color1 = '#00FF00'  -- Green (healthy)
@@ -181,10 +181,10 @@ gap_y = 20
 ### Conky Not Starting
 ```bash
 # Check autostart file exists
-ls -la ~/.config/autostart/conky-tepes.desktop
+ls -la ~/.config/autostart/conky-soc.desktop
 
 # Test manually
-conky -c ~/.config/conky/tepes.conf
+conky -c ~/.config/conky/soc.conf
 
 # Check for errors
 journalctl --user -u conky -n 50
@@ -204,7 +204,7 @@ chmod +x ~/.config/conky/read_*.sh
 ```bash
 # Kill and restart Conky
 killall conky
-conky -c ~/.config/conky/tepes.conf &
+conky -c ~/.config/conky/soc.conf &
 
 # Check X11 display
 echo $DISPLAY
@@ -213,10 +213,10 @@ echo $DISPLAY
 ### Permission Issues
 ```bash
 # Fix ownership
-sudo chown -R cyberguy:cyberguy ~/.config/conky/
+sudo chown -R analyst:analyst ~/.config/conky/
 
 # Fix permissions
-chmod 644 ~/.config/conky/tepes.conf
+chmod 644 ~/.config/conky/soc.conf
 chmod 755 ~/.config/conky/*.sh
 ```
 
@@ -252,15 +252,15 @@ Comment out sections not needed:
 ## Files Reference
 ```
 ~/.config/conky/
-├── tepes.conf              # Main configuration
-├── tepes_disks.lua         # Disk gauge visualization
+├── soc.conf              # Main configuration
+├── soc_disks.lua         # Disk gauge visualization
 ├── gauges.lua              # Performance gauges
 ├── read_gpu.sh             # GPU metrics script
 ├── read_power.sh           # Power monitoring script
 └── read_temp.sh            # Temperature aggregation
 
 ~/.config/autostart/
-└── conky-tepes.desktop     # Auto-start configuration
+└── conky-soc.desktop     # Auto-start configuration
 
 ~/.conkyrc                  # Fallback/default config (not used)
 ```

@@ -23,7 +23,7 @@ Scope of Assessment
 
 **Target Environment:**
 
--   Tepes SOC - Enterprise security operations infrastructure
+-   soc-01 - Enterprise security operations infrastructure
 -   13 Python security applications
 -   Elasticsearch cluster (127 active shards, 230 total)
 -   Automated threat intelligence pipeline
@@ -49,8 +49,8 @@ disruption
 
 **Location:**
 
--   */home/cyberguy/security-alerts/api\_config.json*
--   */opt/tepes/threat-intel/config.yaml*
+-   */home/analyst/security-alerts/api\_config.json*
+-   */opt/soc/threat-intel/config.yaml*
 
 **Vulnerability Details:** Six third-party API keys stored in plaintext
 JSON configuration files with world-readable permissions:
@@ -68,7 +68,7 @@ bash
 
 **\# Any user or compromised process could harvest credentials**
 
-**cat** /home/cyberguy/security-alerts/api\_config.json**
+**cat** /home/analyst/security-alerts/api\_config.json**
 
 **\# Result: Immediate access to all threat intelligence API keys**
 
@@ -82,7 +82,7 @@ bash
 
 **Remediation Implemented:**
 
-1.  Created secure secrets directory at */etc/tepes-soc/* with 700
+1.  Created secure secrets directory at */etc/soc/* with 700
     permissions
 2.  Migrated all API keys to *secrets.env* file with 600 permissions
 3.  Implemented python-dotenv for environment variable loading
@@ -95,9 +95,9 @@ bash
 
 bash
 
-**ls** -la /etc/tepes-soc/secrets.env**
+**ls** -la /etc/soc/secrets.env**
 
-**\# Output: -rw\-\-\-\-\-\-- 1 cyberguy cyberguy 140 Feb 3 11:39**
+**\# Output: -rw\-\-\-\-\-\-- 1 analyst analyst 140 Feb 3 11:39**
 
 ### CRITICAL \#2: Command Injection via shell=True with Untrusted Input
 
@@ -106,7 +106,7 @@ bash
 compromise
 
 **Location:**
-*/home/cyberguy/security-alerts/automated\_response.py:70-71*
+*/home/analyst/security-alerts/automated\_response.py:70-71*
 
 **Vulnerability Details:** IP addresses from Suricata network packet
 analysis were directly interpolated into shell commands without
@@ -194,7 +194,7 @@ python
 bash
 
 **grep** -c **\"shell=True\"**
-/home/cyberguy/security-alerts/automated\_response.py**
+/home/analyst/security-alerts/automated\_response.py**
 
 **\# Output: 0**
 
@@ -235,7 +235,7 @@ python
 2.  Generated strong passwords for 6 built-in users (elastic,
     kibana\_system, logstash\_system, beats\_system, apm\_system,
     remote\_monitoring\_user)
-3.  Created dedicated *tepes\_soc* service account with superuser role
+3.  Created dedicated *soc\_soc* service account with superuser role
 4.  Updated all 13 applications to use basic\_auth
 5.  Stored credentials in secure secrets.env file
 6.  Updated Kibana configuration for authenticated access
@@ -248,7 +248,7 @@ python
 
 **import** os**
 
-**load\_dotenv(**\'/etc/tepes-soc/secrets.env\'**)**
+**load\_dotenv(**\'/etc/soc/secrets.env\'**)**
 
 **es **=** Elasticsearch(**
 
@@ -275,7 +275,7 @@ authentication credentials\"}}**
 **Impact:** Potential environment variable injection, establishes
 dangerous precedent
 
-**Location:** */home/cyberguy/security-alerts/automated\_response.py:78*
+**Location:** */home/analyst/security-alerts/automated\_response.py:78*
 
 **Vulnerability Details:**
 
@@ -362,7 +362,7 @@ action\"**
 **Impact:** Resource exhaustion, denial of service
 
 **Location:**
-*/home/cyberguy/security-alerts/threat\_intel\_enrichment.py*
+*/home/analyst/security-alerts/threat\_intel\_enrichment.py*
 
 **Vulnerability Details:** External API calls to VirusTotal, Shodan, and
 other threat intelligence providers lacked timeout parameters, enabling
@@ -377,7 +377,7 @@ requests.post() calls throughout threat intelligence pipeline.
 **Impact:** Information disclosure, arbitrary code execution via
 debugger
 
-**Location:** */home/cyberguy/ir-diagrammer/ir-diagrammer/app.py:195*
+**Location:** */home/analyst/ir-diagrammer/ir-diagrammer/app.py:195*
 
 **Vulnerability Details:**
 
@@ -640,9 +640,9 @@ disruption
 
 \- Location:
 
-• /home/cyberguy/security-alerts/api\_config.json
+• /home/analyst/security-alerts/api\_config.json
 
-• /opt/tepes/threat-intel/config.yaml
+• /opt/soc/threat-intel/config.yaml
 
 Vulnerability Details: Six third-party API keys stored in plaintext JSON
 configuration files with world-readable permissions:
@@ -671,7 +671,7 @@ Business Impact:
 
 Remediation Implemented:
 
-1. Created secure secrets directory at /etc/tepes-soc/ with 700
+1. Created secure secrets directory at /etc/soc/ with 700
 permissions
 
 2. Migrated all API keys to secrets.env file with 600 permissions
@@ -692,7 +692,7 @@ CRITICAL \#2: Command Injection via shell=True with Untrusted Input
 \- Impact: Remote code execution as root (sudo), complete system
 compromise
 
-\- Location: /home/cyberguy/security-alerts/automated\_response.py:70-71
+\- Location: /home/analyst/security-alerts/automated\_response.py:70-71
 
 Vulnerability Details: IP addresses from Suricata network packet
 analysis were directly interpolated into shell commands without
@@ -761,7 +761,7 @@ Remediation Implemented:
 kibana\_system, logstash\_system, beats\_system, apm\_system,
 remote\_monitoring\_user)
 
-3. Created dedicated tepes\_soc service account with superuser role
+3. Created dedicated soc\_soc service account with superuser role
 
 4. Updated all 13 applications to use basic\_auth
 
@@ -776,7 +776,7 @@ CRITICAL \#4: Unsafe Shell Command Pattern
 \- Impact: Potential environment variable injection, establishes
 dangerous precedent
 
-\- Location: /home/cyberguy/security-alerts/automated\_response.py:78
+\- Location: /home/analyst/security-alerts/automated\_response.py:78
 
 Vulnerability Details: While this specific command uses no variables,
 shell=True with output redirection can enable attacks via environment
@@ -810,7 +810,7 @@ HIGH \#6: Missing Request Timeouts on External API Calls
 
 \- Impact: Resource exhaustion, denial of service
 
-\- Location: /home/cyberguy/security-alerts/threat\_intel\_enrichment.py
+\- Location: /home/analyst/security-alerts/threat\_intel\_enrichment.py
 
 Vulnerability Details: External API calls to VirusTotal, Shodan, and
 other threat intelligence providers lacked timeout parameters, enabling
@@ -825,7 +825,7 @@ HIGH \#7: Debug Mode Enabled in Production Flask Application
 
 \- Impact: Information disclosure, arbitrary code execution via debugger
 
-\- Location: /home/cyberguy/ir-diagrammer/ir-diagrammer/app.py:195
+\- Location: /home/analyst/ir-diagrammer/ir-diagrammer/app.py:195
 
 Vulnerability Details:
 

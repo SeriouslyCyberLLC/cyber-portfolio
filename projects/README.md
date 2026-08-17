@@ -80,7 +80,7 @@ Leveraged Trail of Bits Claude Code security analysis skills to perform automate
 - Tools Used: Claude Code with Trail of Bits security skills, insecure-defaults skill, static-analysis skill
 
 Target Environment:
-    • Tepes SOC - Enterprise security operations infrastructure 
+    • soc-01 - Enterprise security operations infrastructure 
     • 13 Python security applications 
     • Elasticsearch cluster (127 active shards, 230 total) 
     • Automated threat intelligence pipeline 

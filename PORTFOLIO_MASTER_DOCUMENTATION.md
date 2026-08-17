@@ -9,7 +9,7 @@ This document contains all commands, procedures, and technical details for maint
 
 - **GitHub Repo**: https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio
 - **Live Site**: https://seriouslycyberllc.github.io/cybersecurity-portfolio/
-- **Local Directory**: `/home/cyberguy/cybersecurity-portfolio/`
+- **Local Directory**: `/home/analyst/cybersecurity-portfolio/`
 - **GitHub Username**: SeriouslyCyberLLC
 - **Email**: larry.harvey.cyber@protonmail.com
 
@@ -174,7 +174,7 @@ git push origin main
 If you get permission errors (happens when using `sudo` for git commands):
 ```bash
 cd ~/cybersecurity-portfolio
-sudo chown -R cyberguy:cyberguy .git/
+sudo chown -R analyst:analyst .git/
 ```
 
 ---
@@ -253,7 +253,7 @@ Site builds automatically on every push (takes 1-2 minutes).
 
 ### "Permission denied" errors
 ```bash
-sudo chown -R cyberguy:cyberguy ~/cybersecurity-portfolio/.git/
+sudo chown -R analyst:analyst ~/cybersecurity-portfolio/.git/
 ```
 
 ### "divergent branches" error
@@ -393,7 +393,7 @@ Edit in `index.html`, footer section:
 ## Backup Strategy
 
 Portfolio is backed up in multiple places:
-1. **Local**: `/home/cyberguy/cybersecurity-portfolio/`
+1. **Local**: `/home/analyst/cybersecurity-portfolio/`
 2. **GitHub**: https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio
 3. **Live Site**: https://seriouslycyberllc.github.io/cybersecurity-portfolio/
 
@@ -439,23 +439,23 @@ tar -czf portfolio-backup-$(date +%Y%m%d).tar.gz portfolio/
 ## Conky System Monitoring
 
 ### Configuration Location
-- Main config: `~/.config/conky/tepes.conf`
-- Auto-start: `~/.config/autostart/conky-tepes.desktop`
+- Main config: `~/.config/conky/soc.conf`
+- Auto-start: `~/.config/autostart/conky-soc.desktop`
 - Full docs: `~/cybersecurity-portfolio/docs/conky-system-monitoring.md`
 
 ### Quick Commands
 ```bash
 # Restart Conky
-killall conky && conky -c ~/.config/conky/tepes.conf &
+killall conky && conky -c ~/.config/conky/soc.conf &
 
 # Edit configuration
-nano ~/.config/conky/tepes.conf
+nano ~/.config/conky/soc.conf
 
 # Test without persistence
-conky -c ~/.config/conky/tepes.conf
+conky -c ~/.config/conky/soc.conf
 
 # Check auto-start status
-ls -la ~/.config/autostart/conky-tepes.desktop
+ls -la ~/.config/autostart/conky-soc.desktop
 ```
 
 ### Display Metrics
@@ -470,10 +470,10 @@ ls -la ~/.config/autostart/conky-tepes.desktop
 If Conky not showing after boot:
 ```bash
 # Verify auto-start file
-cat ~/.config/autostart/conky-tepes.desktop
+cat ~/.config/autostart/conky-soc.desktop
 
 # Test manually
-conky -c ~/.config/conky/tepes.conf
+conky -c ~/.config/conky/soc.conf
 
 # Check for errors
 journalctl --user | grep conky

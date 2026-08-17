@@ -10,10 +10,10 @@ systems?
 
 ****What You Have:****
 
--   Tepes SOC with Suricata, Zeek, Velociraptor, ELK stack
+-   soc-01 with Suricata, Zeek, Velociraptor, ELK stack
 -   Automated threat intel enrichment (VirusTotal, Shodan, etc.)
 -   Firewalla network security appliance
--   Three endpoints (Tepes, Anubis, cyberguy-TUF)
+-   Three endpoints (soc-01, node-01, workstation-01)
 -   Multiple private subnets (192.168.20-81.0/24)
 
 ****What You Just Fixed:****
@@ -30,7 +30,7 @@ systems?
 
 ### ****1. Backup and Disaster Recovery****
 
-****Current Risk:**** No mention of backups. If Tepes dies or gets
+****Current Risk:**** No mention of backups. If soc-01 dies or gets
 ransomwared, you lose:
 
 -   All Elasticsearch security data (230 shards)
@@ -44,7 +44,7 @@ bash
 
 *\# Create backup automation script*
 
-*nano /opt/tepes/backup-soc-data.sh*
+*nano /opt/soc/backup-soc-data.sh*
 
 bash
 
@@ -56,7 +56,7 @@ bash
 
 *DATE=\$(date +%Y%m%d)*
 
-*LOG=\"/var/log/tepes-backup.log\"*
+*LOG=\"/var/log/soc-backup.log\"*
 
 *echo \"\[\$(date)\] Starting SOC backup\" \>\> \$LOG*
 
@@ -66,8 +66,8 @@ bash
 \"localhost:9200/\_snapshot/daily\_backup/snapshot\_\${DATE}?wait\_for\_completion=true\"
 \\*
 
-* -u \"\$(grep ES\_USERNAME /etc/tepes-soc/secrets.env \| cut -d=
--f2):\$(grep ES\_PASSWORD /etc/tepes-soc/secrets.env \| cut -d= -f2)\"
+* -u \"\$(grep ES\_USERNAME /etc/soc/secrets.env \| cut -d=
+-f2):\$(grep ES\_PASSWORD /etc/soc/secrets.env \| cut -d= -f2)\"
 \\*
 
 * \>\> \$LOG 2\>&1*
@@ -80,11 +80,11 @@ bash
 
 * /opt/zeek/share/zeek/site/ \\*
 
-* /home/cyberguy/security-alerts/ \\*
+* /home/analyst/security-alerts/ \\*
 
-* /opt/tepes/ \\*
+* /opt/soc/ \\*
 
-* /etc/tepes-soc/secrets.env*
+* /etc/soc/secrets.env*
 
 *\# Backup Velociraptor data*
 
@@ -104,11 +104,11 @@ bash
 
 bash
 
-*sudo chmod +x /opt/tepes/backup-soc-data.sh*
+*sudo chmod +x /opt/soc/backup-soc-data.sh*
 
 *sudo crontab -e*
 
-*\# Add: 0 2 \* \* \* /opt/tepes/backup-soc-data.sh*
+*\# Add: 0 2 \* \* \* /opt/soc/backup-soc-data.sh*
 
 ****Also Need:****
 
@@ -118,7 +118,7 @@ bash
 
 ### ****2. Systemd Service Management for All SOC Components****
 
-****Current Risk:**** If Tepes reboots, your SOC components may not
+****Current Risk:**** If soc-01 reboots, your SOC components may not
 restart. You\'re manually starting processes.
 
 ****What You Need:****
@@ -127,13 +127,13 @@ bash
 
 *\# Create systemd service for automated response*
 
-*sudo nano /etc/systemd/system/tepes-auto-response.service*
+*sudo nano /etc/systemd/system/soc-auto-response.service*
 
 ini
 
 *\[Unit\]*
 
-*Description=Tepes SOC Automated Response System*
+*Description=soc-01 Automated Response System*
 
 *After=network.target elasticsearch.service*
 
@@ -143,26 +143,26 @@ ini
 
 *Type=simple*
 
-*User=cyberguy*
+*User=analyst*
 
-*Group=cyberguy*
+*Group=analyst*
 
-*WorkingDirectory=/home/cyberguy/security-alerts*
+*WorkingDirectory=/home/analyst/security-alerts*
 
 *Environment=\"PATH=/usr/local/bin:/usr/bin:/bin\"*
 
-*EnvironmentFile=/etc/tepes-soc/secrets.env*
+*EnvironmentFile=/etc/soc/secrets.env*
 
 *ExecStart=/usr/bin/python3
-/home/cyberguy/security-alerts/automated\_response.py*
+/home/analyst/security-alerts/automated\_response.py*
 
 *Restart=always*
 
 *RestartSec=10*
 
-*StandardOutput=append:/var/log/tepes-ips/auto-response.log*
+*StandardOutput=append:/var/log/soc-ips/auto-response.log*
 
-*StandardError=append:/var/log/tepes-ips/auto-response-error.log*
+*StandardError=append:/var/log/soc-ips/auto-response-error.log*
 
 *\[Install\]*
 
@@ -179,28 +179,28 @@ bash
 
 *sudo systemctl daemon-reload*
 
-*sudo systemctl enable tepes-auto-response*
+*sudo systemctl enable soc-auto-response*
 
-*sudo systemctl start tepes-auto-response*
+*sudo systemctl start soc-auto-response*
 
-*sudo systemctl status tepes-auto-response*
+*sudo systemctl status soc-auto-response*
 
 ### ****3. Log Rotation and Disk Space Management****
 
-****Current Risk:**** Your */var/log/tepes-ips/* and Elasticsearch
+****Current Risk:**** Your */var/log/soc-ips/* and Elasticsearch
 indices will fill your disk.
 
 ****What You Need:****
 
 bash
 
-*sudo nano /etc/logrotate.d/tepes-soc*
+*sudo nano /etc/logrotate.d/soc*
 
 *\`\`\`*
 
 *\`\`\`*
 
-*/var/log/tepes-ips/\*.log {*
+*/var/log/soc-ips/\*.log {*
 
 * daily*
 
@@ -214,13 +214,13 @@ bash
 
 * notifempty*
 
-* create 0640 cyberguy cyberguy*
+* create 0640 analyst analyst*
 
 * sharedscripts*
 
 * postrotate*
 
-* systemctl reload tepes-auto-response \> /dev/null 2\>&1 \|\| true*
+* systemctl reload soc-auto-response \> /dev/null 2\>&1 \|\| true*
 
 * endscript*
 
@@ -230,9 +230,9 @@ bash
 
 bash
 
-*curl -X PUT \"localhost:9200/\_ilm/policy/tepes-retention-policy\" \\*
+*curl -X PUT \"localhost:9200/\_ilm/policy/soc-retention-policy\" \\*
 
-* -u tepes\_soc:YourPassword \\*
+* -u soc\_soc:YourPassword \\*
 
 * -H \"Content-Type: application/json\" \\*
 
@@ -285,7 +285,7 @@ you check manually.
 
 bash
 
-*nano /opt/tepes/soc-watchdog.sh*
+*nano /opt/soc/soc-watchdog.sh*
 
 bash
 
@@ -296,7 +296,7 @@ bash
 *ALERT\_EMAIL=\"your-phone-carrier-sms\@gateway.com\" \# SMS via email
 gateway*
 
-*LOG=\"/var/log/tepes-watchdog.log\"*
+*LOG=\"/var/log/soc-watchdog.log\"*
 
 *check\_service() {*
 
@@ -306,7 +306,7 @@ gateway*
 
 * echo \"\[\$(date)\] CRITICAL: \$SERVICE is down\" \>\> \$LOG*
 
-* echo \"\$SERVICE is DOWN on Tepes SOC\" \| mail -s \"SOC ALERT\"
+* echo \"\$SERVICE is DOWN on soc-01\" \| mail -s \"SOC ALERT\"
 \$ALERT\_EMAIL*
 
 * systemctl restart \$SERVICE*
@@ -323,7 +323,7 @@ gateway*
 
 * echo \"\[\$(date)\] CRITICAL: \$PROCESS not running\" \>\> \$LOG*
 
-* echo \"\$PROCESS is NOT RUNNING on Tepes SOC\" \| mail -s \"SOC
+* echo \"\$PROCESS is NOT RUNNING on soc-01\" \| mail -s \"SOC
 ALERT\" \$ALERT\_EMAIL*
 
 * fi*
@@ -346,7 +346,7 @@ ALERT\" \$ALERT\_EMAIL*
 
 *\# Check Elasticsearch health*
 
-*ES\_STATUS=\$(curl -s -u tepes\_soc:YourPassword
+*ES\_STATUS=\$(curl -s -u soc\_soc:YourPassword
 localhost:9200/\_cluster/health \| jq -r \'.status\')*
 
 *if \[ \"\$ES\_STATUS\" != \"green\" \] && \[ \"\$ES\_STATUS\" !=
@@ -369,7 +369,7 @@ ALERT\" \$ALERT\_EMAIL*
 * echo \"\[\$(date)\] WARNING: Disk usage at \${DISK\_USAGE}%\" \>\>
 \$LOG*
 
-* echo \"Tepes disk usage: \${DISK\_USAGE}%\" \| mail -s \"SOC WARNING\"
+* echo \"soc-01 disk usage: \${DISK\_USAGE}%\" \| mail -s \"SOC WARNING\"
 \$ALERT\_EMAIL*
 
 *fi*
@@ -378,11 +378,11 @@ ALERT\" \$ALERT\_EMAIL*
 
 bash
 
-*sudo chmod +x /opt/tepes/soc-watchdog.sh*
+*sudo chmod +x /opt/soc/soc-watchdog.sh*
 
 *sudo crontab -e*
 
-*\# Add: \*/5 \* \* \* \* /opt/tepes/soc-watchdog.sh*
+*\# Add: \*/5 \* \* \* \* /opt/soc/soc-watchdog.sh*
 
 ****HIGH Priority Gaps (Fix This Month)****
 -------------------------------------------
@@ -405,7 +405,7 @@ Create calendar reminders to rotate API keys quarterly:
 
 bash
 
-*nano /opt/tepes/check-key-age.sh*
+*nano /opt/soc/check-key-age.sh*
 
 bash
 
@@ -413,7 +413,7 @@ bash
 
 *\# Alert when secrets file hasn\'t been updated in 90 days*
 
-*SECRETS\_FILE=\"/etc/tepes-soc/secrets.env\"*
+*SECRETS\_FILE=\"/etc/soc/secrets.env\"*
 
 *LAST\_MODIFIED=\$(stat -c %Y \$SECRETS\_FILE)*
 
@@ -441,7 +441,7 @@ but:
 
 bash
 
-*nano /opt/tepes/iptables-cleanup.sh*
+*nano /opt/soc/iptables-cleanup.sh*
 
 bash
 
@@ -460,7 +460,7 @@ bash
 *if \[ \$BLOCK\_COUNT -gt 10000 \]; then*
 
 * echo \"\[\$(date)\] WARNING: \$BLOCK\_COUNT IPs blocked, flushing old
-rules\" \>\> /var/log/tepes-ips/cleanup.log*
+rules\" \>\> /var/log/soc-ips/cleanup.log*
 
 * \# Flush and reload from baseline*
 
@@ -518,9 +518,9 @@ bash
 
 *\# Create snapshot repository*
 
-*curl -X PUT \"localhost:9200/\_snapshot/tepes\_backup\" \\*
+*curl -X PUT \"localhost:9200/\_snapshot/soc\_backup\" \\*
 
-* -u tepes\_soc:YourPassword \\*
+* -u soc\_soc:YourPassword \\*
 
 * -H \"Content-Type: application/json\" \\*
 
@@ -542,7 +542,7 @@ bash
 
 *curl -X PUT \"localhost:9200/\_slm/policy/daily-snapshots\" \\*
 
-* -u tepes\_soc:YourPassword \\*
+* -u soc\_soc:YourPassword \\*
 
 * -H \"Content-Type: application/json\" \\*
 
@@ -552,7 +552,7 @@ bash
 
 * \"name\": \"\<daily-snap-{now/d}\>\",*
 
-* \"repository\": \"tepes\_backup\",*
+* \"repository\": \"soc\_backup\",*
 
 * \"config\": {*
 
@@ -578,14 +578,14 @@ bash
 
 ### ****8. Security Alerting on Anomalous Admin Actions****
 
-****Current Risk:**** If an attacker compromises Tepes, they could
+****Current Risk:**** If an attacker compromises soc-01, they could
 disable your SOC without you noticing.
 
 ****What You Need:****
 
 bash
 
-*nano /opt/tepes/admin-action-monitor.sh*
+*nano /opt/soc/admin-action-monitor.sh*
 
 bash
 
@@ -595,7 +595,7 @@ bash
 
 *\# Alert on systemd service stops*
 
-*journalctl -u tepes-auto-response -f \| while read line; do*
+*journalctl -u soc-auto-response -f \| while read line; do*
 
 * if echo \"\$line\" \| grep -q \"Stopped\\\|Failed\"; then*
 
@@ -641,9 +641,9 @@ ACTIVITY\" your\@email.com*
 
 ****Audit Your Firewalla Rules:****
 
--   Can IoT devices reach Tepes SOC?
+-   Can IoT devices reach soc-01?
 -   Are guest network devices isolated?
--   Is Tepes on a dedicated management VLAN?
+-   Is soc-01 on a dedicated management VLAN?
 -   Can compromised endpoints reach Elasticsearch directly?
 
 ### ****11. Velociraptor Agent Health Monitoring****
@@ -658,7 +658,7 @@ python
 
 * \# Query Velociraptor for agent heartbeats*
 
-* \# Alert if Tepes, Anubis, or cyberguy-TUF offline \> 15 minutes*
+* \# Alert if soc-01, node-01, or workstation-01 offline \> 15 minutes*
 
 * pass*
 
@@ -678,7 +678,7 @@ bash
 
 bash
 
-*nano /opt/tepes/emergency-lockdown.sh*
+*nano /opt/soc/emergency-lockdown.sh*
 
 bash
 
@@ -687,7 +687,7 @@ bash
 *\# EMERGENCY: Isolate network, preserve evidence*
 
 *echo \"\[\$(date)\] EMERGENCY LOCKDOWN INITIATED\" \>\>
-/var/log/tepes-emergency.log*
+/var/log/soc-emergency.log*
 
 *\# Block ALL outbound except to logging server*
 
@@ -701,7 +701,7 @@ bash
 
 *\# Alert you via SMS*
 
-*echo \"TEPES IS IN LOCKDOWN MODE\" \| mail -s \"EMERGENCY\"
+*echo \"SOC IS IN LOCKDOWN MODE\" \| mail -s \"EMERGENCY\"
 your\@email.com*
 
 ****LOW Priority (Nice to Have)****
@@ -778,7 +778,7 @@ bash
 
 *\# 7. Document recovery procedures*
 
-*\# Write runbook for \"Tepes is down, how do I restore?\"*
+*\# Write runbook for \"soc-01 is down, how do I restore?\"*
 
 *\# 8. Test restoration from backup*
 

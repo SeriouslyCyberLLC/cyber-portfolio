@@ -1,7 +1,7 @@
-**PORTFOLIO DOCUMENTATION: Tepes SOC Infrastructure Hardening &
+**PORTFOLIO DOCUMENTATION: soc-01 Infrastructure Hardening &
 Automation**
 
-**PORTFOLIO CASE STUDY: Tepes SOC Infrastructure Hardening & Automation**
+**PORTFOLIO CASE STUDY: soc-01 Infrastructure Hardening & Automation**
 =========================================================================
 
 **Executive Summary**
@@ -15,7 +15,7 @@ monitoring systems, and established service resilience
 architecture---all within a single working session spanning
 approximately 6 hours.
 
-**Environment:** Tepes SOC - Home enterprise security operations
+**Environment:** soc-01 - Home enterprise security operations
 infrastructure\
 **Date:** February 3, 2026\
 **Engagement Type:** Security remediation, infrastructure automation,
@@ -50,13 +50,13 @@ files, systemd services
 
 **Remediation Steps:**
 
-1.  Created secure secrets directory */etc/tepes-soc/* with 700
+1.  Created secure secrets directory */etc/soc/* with 700
     permissions
 2.  Migrated 6 API keys (VirusTotal, Hybrid Analysis, AlienVault OTX,
     AbuseIPDB, Shodan, Firewalla) to encrypted storage
 3.  Implemented python-dotenv for environment variable management
 4.  Updated 13 applications to load credentials from
-    */etc/tepes-soc/secrets.env* (600 permissions)
+    */etc/soc/secrets.env* (600 permissions)
 5.  Removed compromised plaintext configuration files
 
 **Technical Implementation:**
@@ -69,7 +69,7 @@ python
 
 **import** os**
 
-**load\_dotenv(**\'/etc/tepes-soc/secrets.env\'**)**
+**load\_dotenv(**\'/etc/soc/secrets.env\'**)**
 
 **config **=** {**
 
@@ -87,9 +87,9 @@ os.getenv(**\'SHODAN\_API\_KEY\'**)},**
 
 bash
 
-**ls** -la /etc/tepes-soc/secrets.env**
+**ls** -la /etc/soc/secrets.env**
 
-**\# Output: -rw\-\-\-\-\-\-- 1 cyberguy cyberguy 140 Feb 3 11:39**
+**\# Output: -rw\-\-\-\-\-\-- 1 analyst analyst 140 Feb 3 11:39**
 
 ### **CRITICAL Vulnerability \#2: Command Injection via shell=True**
 
@@ -159,7 +159,7 @@ python
 bash
 
 **grep** -c **\"shell=True\"**
-/home/cyberguy/security-alerts/automated\_response.py**
+/home/analyst/security-alerts/automated\_response.py**
 
 **\# Output: 0 (no instances found)**
 
@@ -188,7 +188,7 @@ yaml
 
 bash
 
-**curl** -X POST **\"localhost:9200/\_security/user/tepes\_soc\"** \\**
+**curl** -X POST **\"localhost:9200/\_security/user/soc\_soc\"** \\**
 
 * *-u elastic:password \\**
 
@@ -298,7 +298,7 @@ bash
 
 **\#!/bin/bash**
 
-**\# /home/cyberguy/backup-soc-critical.sh**
+**\# /home/analyst/backup-soc-critical.sh**
 
 **BACKUP\_DIR=**\"/mnt/raid\_storage/soc-backups\"**
 
@@ -306,9 +306,9 @@ bash
 
 **tar** czf **\${BACKUP\_DIR}**/soc-critical-**\${DATE}**.tar.gz \\**
 
-* */etc/tepes-soc/secrets.env \\**
+* */etc/soc/secrets.env \\**
 
-* */home/cyberguy/security-alerts/ \\**
+* */home/analyst/security-alerts/ \\**
 
 * */etc/suricata/suricata.yaml \\**
 
@@ -331,7 +331,7 @@ bash
 
 bash
 
-**0** **2** \* \* \* /home/cyberguy/backup-soc-critical.sh**
+**0** **2** \* \* \* /home/analyst/backup-soc-critical.sh**
 
 ### **Service Resilience Architecture**
 
@@ -340,13 +340,13 @@ to ensure automatic restart after system reboot or service failure.
 
 #### **Services Implemented:**
 
-**1. tepes-tier1.service** - Tier 1 Alert Monitor
+**1. soc-tier1.service** - Tier 1 Alert Monitor
 
 ini
 
 **\[**Unit**\]**
 
-**Description**=**Tepes SOC Tier 1 Alert Monitor**
+**Description**=**soc-01 Tier 1 Alert Monitor**
 
 **After**=**network.target elasticsearch.service**
 
@@ -356,36 +356,36 @@ ini
 
 **Type**=**simple**
 
-**User**=**cyberguy**
+**User**=**analyst**
 
-**WorkingDirectory**=**/home/cyberguy/security-alerts**
+**WorkingDirectory**=**/home/analyst/security-alerts**
 
-**EnvironmentFile**=**/etc/tepes-soc/secrets.env**
+**EnvironmentFile**=**/etc/soc/secrets.env**
 
 **ExecStart**=**/usr/bin/python3
-/home/cyberguy/security-alerts/tier1\_simple.py**
+/home/analyst/security-alerts/tier1\_simple.py**
 
 **Restart**=**always**
 
 **RestartSec**=**10**
 
-**StandardOutput**=**append:/var/log/tepes-tier1.log**
+**StandardOutput**=**append:/var/log/soc-tier1.log**
 
-**StandardError**=**append:/var/log/tepes-tier1-error.log**
+**StandardError**=**append:/var/log/soc-tier1-error.log**
 
 **\[**Install**\]**
 
 **WantedBy**=**multi-user.target**
 
-**2. tepes-tier2.service** - Tier 2 Alert Monitor\
-**3. tepes-alert-monitor.service** - Critical Alert Logger\
-**4. tepes-health-monitor.service** - SOC Health Monitoring
+**2. soc-tier2.service** - Tier 2 Alert Monitor\
+**3. soc-alert-monitor.service** - Critical Alert Logger\
+**4. soc-health-monitor.service** - SOC Health Monitoring
 
 **Service Configuration Features:**
 
 -   Automatic restart on failure (RestartSec=10)
 -   Dependency management (requires Elasticsearch)
--   Centralized logging (*/var/log/tepes-\*.log*)
+-   Centralized logging (*/var/log/soc-\*.log*)
 -   Secure credential injection via EnvironmentFile
 -   Boot-time activation (WantedBy=multi-user.target)
 
@@ -393,11 +393,11 @@ ini
 
 bash
 
-**sudo** systemctl **enable** tepes-tier1 tepes-tier2
-tepes-alert-monitor tepes-health-monitor**
+**sudo** systemctl **enable** soc-tier1 soc-tier2
+soc-alert-monitor soc-health-monitor**
 
-**sudo** systemctl start tepes-tier1 tepes-tier2 tepes-alert-monitor
-tepes-health-monitor**
+**sudo** systemctl start soc-tier1 soc-tier2 soc-alert-monitor
+soc-health-monitor**
 
 ### **Automated Health Monitoring (Watchdog)**
 
@@ -407,7 +407,7 @@ bash
 
 **\#!/bin/bash**
 
-**\# /opt/tepes/soc-watchdog.sh - Runs every 5 minutes via cron**
+**\# /opt/soc/soc-watchdog.sh - Runs every 5 minutes via cron**
 
 **check\_service**() {**
 
@@ -416,12 +416,12 @@ bash
 * *if** **!** systemctl is-active \--quiet **\$SERVICE**; **then**
 
 * *echo** **\"\[**\$(date)**\] CRITICAL: **\$SERVICE** is down\"**
-**\>\>** /var/log/tepes-watchdog.log**
+**\>\>** /var/log/soc-watchdog.log**
 
 * *systemctl restart **\$SERVICE**
 
 * *echo** **\"\[**\$(date)**\] Attempted restart of **\$SERVICE**\"**
-**\>\>** /var/log/tepes-watchdog.log**
+**\>\>** /var/log/soc-watchdog.log**
 
 * *fi**
 
@@ -431,24 +431,24 @@ bash
 
 **check\_service elasticsearch**
 
-**check\_service tepes-tier1**
+**check\_service soc-tier1**
 
-**check\_service tepes-tier2**
+**check\_service soc-tier2**
 
-**check\_service tepes-alert-monitor**
+**check\_service soc-alert-monitor**
 
-**check\_service tepes-health-monitor**
+**check\_service soc-health-monitor**
 
 **\# Elasticsearch cluster health check**
 
-**ES\_STATUS=\$(curl -s -u tepes\_soc:password
+**ES\_STATUS=\$(curl -s -u soc\_soc:password
 localhost:9200/\_cluster/health \| jq -r **\'.status\'**)**
 
 **if** \[ **\"**\$ES\_STATUS**\"** **!=** **\"green\"** \] **&&** \[
 **\"**\$ES\_STATUS**\"** **!=** **\"yellow\"** \]; **then**
 
 * *echo** **\"\[**\$(date)**\] WARNING: Elasticsearch cluster status:
-**\$ES\_STATUS**\"** **\>\>** /var/log/tepes-watchdog.log**
+**\$ES\_STATUS**\"** **\>\>** /var/log/soc-watchdog.log**
 
 **fi**
 
@@ -460,7 +460,7 @@ localhost:9200/\_cluster/health \| jq -r **\'.status\'**)**
 **if** \[ **\$DISK\_USAGE** -gt **85** \]; **then**
 
 * *echo** **\"\[**\$(date)**\] WARNING: Disk usage at
-**\${DISK\_USAGE}**%\"** **\>\>** /var/log/tepes-watchdog.log**
+**\${DISK\_USAGE}**%\"** **\>\>** /var/log/soc-watchdog.log**
 
 **fi**
 
@@ -469,13 +469,13 @@ localhost:9200/\_cluster/health \| jq -r **\'.status\'**)**
 -   Service health checks with automatic restart
 -   Elasticsearch cluster status monitoring
 -   Disk space utilization alerts (\>85% threshold)
--   Centralized logging to */var/log/tepes-watchdog.log*
+-   Centralized logging to */var/log/soc-watchdog.log*
 
 **Cron Schedule:**
 
 bash
 
-**\*/5 \* \* \* \* /opt/tepes/soc-watchdog.sh **\# Every 5 minutes**
+**\*/5 \* \* \* \* /opt/soc/soc-watchdog.sh **\# Every 5 minutes**
 
 **Testing Verification:**
 
@@ -483,17 +483,17 @@ bash
 
 **\# Simulated service failure test**
 
-**sudo** systemctl stop tepes-tier1**
+**sudo** systemctl stop soc-tier1**
 
-**sudo** /opt/tepes/soc-watchdog.sh**
+**sudo** /opt/soc/soc-watchdog.sh**
 
-**cat** /var/log/tepes-watchdog.log**
+**cat** /var/log/soc-watchdog.log**
 
 **\# Output: **
 
-**\# \[Tue Feb 3 17:25:49 EST 2026\] CRITICAL: tepes-tier1 is down**
+**\# \[Tue Feb 3 17:25:49 EST 2026\] CRITICAL: soc-tier1 is down**
 
-**\# \[Tue Feb 3 17:25:49 EST 2026\] Attempted restart of tepes-tier1**
+**\# \[Tue Feb 3 17:25:49 EST 2026\] Attempted restart of soc-tier1**
 
 **Technical Challenges & Solutions**
 ------------------------------------
@@ -563,7 +563,7 @@ service failures
 
 ### **After State:**
 
--   ✅ API keys encrypted in */etc/tepes-soc/secrets.env* (600
+-   ✅ API keys encrypted in */etc/soc/secrets.env* (600
     permissions)
 -   ✅ Command injection eliminated via input validation and secure
     subprocess calls

@@ -17,7 +17,7 @@ Deployed local Large Language Model (LLM) infrastructure for security log analys
 - **Triage Model**: mistral:7b (4.4GB) for first-pass classification
 - **Overseer Model**: mistral-small:22b (12GB) for verification and harder cases
 - **Hardware**: AMD RX 7900 XTX (24GB) with ROCm acceleration
-- **Server**: Tepes, a dedicated Debian system (Intel i9-13900K, 24 cores / 32 threads)
+- **Server**: soc-01, a dedicated Debian system (Intel i9-13900K, 24 cores / 32 threads)
 
 ### RAG (Retrieval Augmented Generation) System
 - **Knowledge Base**: MITRE ATT&CK framework, security procedures, threat intel

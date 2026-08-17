@@ -35,7 +35,7 @@ Developed automated report generation system using AI and template-based documen
 - Analyst time redirected from document assembly to the exercise itself
 
 ## Technical Implementation
-- Server: Tepes (Debian, Intel i9-13900K, 24 cores / 32 threads, RX 7900 XTX 24GB)
+- Server: soc-01 (Debian, Intel i9-13900K, 24 cores / 32 threads, RX 7900 XTX 24GB)
 - Model: mistral-small:22b (12GB) for document generation
 - Resource isolation from security monitoring
 - Template versioning and management
