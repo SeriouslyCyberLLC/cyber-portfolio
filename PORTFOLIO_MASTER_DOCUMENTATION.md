@@ -19,7 +19,7 @@ This document contains all commands, procedures, and technical details for maint
 
 ### 1. Created Local Portfolio Structure
 ```bash
-mkdir -p ~/cybersecurity-portfolio/{projects,docs,scripts,screenshots}
+mkdir -p ~/cybersecurity-portfolio/{projects,docs,scripts,assets/screenshots}
 cd ~/cybersecurity-portfolio
 ```
 
@@ -34,8 +34,7 @@ git config user.email "larry.harvey.cyber@protonmail.com"
 ```bash
 cat > .gitignore << 'GITIGNORE'
 screenshots/*
-!screenshots/portfolio-picks/
-!screenshots/portfolio-picks/*.png
+*.pdf
 __pycache__/
 *.py[cod]
 *env/
@@ -229,8 +228,8 @@ Site builds automatically on every push (takes 1-2 minutes).
 │   ├── automated-report-generation.md
 │   ├── whisper-speech-to-text.md
 │   └── threat-intelligence-integration.md
-└── screenshots/
-    └── portfolio-picks/           # Selected screenshots for portfolio
+└── assets/
+    └── screenshots/               # Sanitised captures only -- see the rule below
         ├── Screenshot from 2025-12-31 05-05-31.png
         ├── Screenshot from 2025-12-31 04-09-11.png
         ├── Screenshot from 2025-12-28 22-27-58.png
@@ -355,11 +354,11 @@ nano project-name.md
 
 ## Adding Screenshots
 ```bash
-# Copy screenshots to portfolio
-cp ~/Pictures/Screenshots/[filename].png ~/cybersecurity-portfolio/screenshots/portfolio-picks/
+# Copy screenshots to portfolio -- READ THE RULE BELOW FIRST
+cp ~/Pictures/Screenshots/[filename].png ~/cybersecurity-portfolio/assets/screenshots/
 
 # Add to git
-git add screenshots/portfolio-picks/
+git add assets/screenshots/
 git commit -m "Add new screenshots"
 git push origin main
 ```
@@ -478,3 +477,32 @@ conky -c ~/.config/conky/soc.conf
 # Check for errors
 journalctl --user | grep conky
 ```
+
+
+## Screenshot rule (added 2026-08-17, after a real incident)
+
+**A text sanitisation pass cannot reach a screenshot.** Every host name, index
+name, internal address and device name in an image survives every find-replace
+you will ever run, and survives it invisibly.
+
+Six screenshots sat in `screenshots/portfolio-picks/` from the initial commit
+until 2026-08-17. Two of them were a client tabletop-exercise deliverable with
+the engagement's letterhead block and, on one page, unredacted environment
+detail. One of those two was *linked from this portfolio* as "Threat Analysis".
+Two more showed the real host name in the Kibana index picker and the Grafana
+datasource name, months after the prose had been scrubbed of it.
+
+They were removed from the entire history with `git filter-repo`, not merely
+deleted -- deleting a file leaves it fetchable at its blob SHA forever, and
+making the repository public again would have re-exposed all six.
+
+Before committing any image:
+
+1. Does it show a client, employer, or engagement? Do not commit it. Ever.
+2. Does it show a real host name, index name, or internal address? Rewrite it in
+   the DOM before capture -- see `scripts/` for the Playwright approach used for
+   `assets/screenshots/soc-discover-24h.png` -- or do not commit it.
+3. Does it show raw log records? Crop them out. Aggregates are the evidence;
+   records are topology.
+4. Is a machine-generated figure available instead? Prefer it. The telemetry
+   strip is reproducible and dated; a screenshot is neither.

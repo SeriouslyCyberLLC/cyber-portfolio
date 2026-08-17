@@ -115,10 +115,21 @@ cluster size.
 - **Scalability**: Headroom is constrained by disk throughput, which is the documented next upgrade
 
 ## Screenshots
-- [Full SIEM Dashboard](../screenshots/portfolio-picks/Screenshot from 2025-12-31 05-05-31.png)
-- [Event Correlation View](../screenshots/portfolio-picks/Screenshot from 2025-12-31 04-09-11.png)
-- [Index Management](../screenshots/portfolio-picks/Screenshot from 2025-12-28 22-27-58.png)
-- [Threat Analysis](../screenshots/portfolio-picks/Screenshot from 2025-12-22 15-47-55.png)
+
+![Discover over the security indices: 3.05M documents in 24 hours across 290 fields](../assets/screenshots/soc-discover-24h.png)
+
+*Kibana Discover across the security indices — 3,050,369 documents in a rolling
+24 hours, 290 mapped fields. The gap after 14:00 is an ingest pause, not a
+rendering artefact.*
+
+Host names are rewritten and the document table is cropped out before capture:
+raw records carry internal addressing and device names, and a screenshot is the
+one artefact a text sanitisation pass cannot reach.
+
+The dated figures in the telemetry strip on the [site homepage](https://seriouslycyberllc.github.io/cybersecurity-portfolio/)
+are regenerated directly from the cluster by `scripts/update-telemetry.mjs`, and
+are better evidence than any screenshot — reproducible, timestamped, and not
+hand-composed.
 
 ---
 

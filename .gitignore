@@ -1,7 +1,21 @@
-# Exclude personal screenshots (keep only portfolio picks)
-screenshots/*
-!screenshots/portfolio-picks/
-!screenshots/portfolio-picks/*.png
+# Screenshots are excluded with NO exception.
+#
+# The previous rule ignored screenshots/ but re-included
+# screenshots/portfolio-picks/*.png, which is how six raw desktop captures
+# reached the initial commit and stayed in a public repository until
+# 2026-08-17. Two were a client tabletop-exercise deliverable, letterhead and
+# all; one of those was linked from a project page as "Threat Analysis". An
+# allowlisted directory becomes a place things get dropped without a second
+# look, which is precisely what happened.
+#
+# Curated, sanitised images live in assets/screenshots/ and are added
+# deliberately by path. See the screenshot rule in
+# PORTFOLIO_MASTER_DOCUMENTATION.md before committing any image.
+#
+# Leading slash is load-bearing: a bare `screenshots/` matches the directory at
+# ANY depth, so it silently swallowed assets/screenshots/ too -- caught only
+# because the replacement image failed to stage.
+/screenshots/
 
 # Python
 __pycache__/
