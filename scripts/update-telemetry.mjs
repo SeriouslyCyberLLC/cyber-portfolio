@@ -28,13 +28,38 @@ const DRY = process.argv.includes('--dry');
    NODE_TLS_REJECT_UNAUTHORIZED=0 would disable verification process-wide and
    leave this open to anything that can occupy the port. If the CA is missing we
    stop, rather than quietly downgrading to no verification. */
-const CA_PATH = process.env.TEPES_ES_CA || '/etc/prometheus/certs/ca.crt';
+const CA_PATH = process.env.SOC_ES_CA || '/etc/prometheus/certs/ca.crt';
 if (!existsSync(CA_PATH)) {
-  console.error(`CA not found at ${CA_PATH}. Set TEPES_ES_CA to the cluster CA.`);
+  console.error(`CA not found at ${CA_PATH}. Set SOC_ES_CA to the cluster CA.`);
   console.error('Refusing to run without certificate verification.');
   process.exit(1);
 }
 const CA = readFileSync(CA_PATH);
+
+/* The index pattern is an OPERATIONAL identifier, not prose, and it is not
+   hardcoded here because this repository is public and the real prefix carries
+   the host name the rest of the site was scrubbed of.
+
+   It has no default on purpose. The sanitisation pass that scrubbed the prose
+   also rewrote this query path, and the renamed pattern matched nothing on the
+   cluster — 0 indices against 93 real ones.
+
+   That case survived on an implementation detail, not on any check here. A
+   wildcard matching no index returns HTTP *200* with hits.total 0 — not an
+   error — so es() resolves happily; it is only because Elasticsearch then omits
+   the `aggregations` key entirely that the next line throws and the wrapper
+   alerts. Had it returned empty buckets instead, exactly as it does for a real
+   index holding no documents, the strip would have regenerated as zeros and
+   published clean. So: no default. A wrong-but-plausible one puts the outcome
+   back on that coin-flip. Unset stops the run, the same way a missing CA does. */
+const ES_INDEX = process.env.SOC_ES_INDEX;
+if (!ES_INDEX) {
+  console.error('SOC_ES_INDEX is not set. Export the security index pattern');
+  console.error('(e.g. SOC_ES_INDEX=<prefix>-security-*) before running.');
+  console.error('Refusing to guess: a pattern that matches nothing returns an');
+  console.error('empty result, not an error, and would publish a strip of zeros.');
+  process.exit(1);
+}
 
 function creds() {
   const raw = readFileSync(join(homedir(), '.elastic_credentials'), 'utf8');
@@ -80,7 +105,7 @@ function es(path, body) {
 const fmt = n => n.toLocaleString('en-US');
 
 // ---- gather -----------------------------------------------------------------
-const hist = await es('/tepes-security-*/_search', {
+const hist = await es(`/${ES_INDEX}/_search`, {
   size: 0,
   query: { range: { '@timestamp': { gte: 'now-24h' } } },
   aggs: { per_hour: { date_histogram: { field: '@timestamp', fixed_interval: '1h', min_doc_count: 0 } } },
@@ -90,7 +115,7 @@ const buckets = hist.aggregations.per_hour.buckets.slice(1, -1);
 const series = buckets.map(b => b.doc_count);
 const last24 = hist.aggregations.per_hour.buckets.reduce((s, b) => s + b.doc_count, 0);
 
-const cat = await es('/_cat/indices/tepes-security-*?h=docs.count,store.size&bytes=b&format=json');
+const cat = await es(`/_cat/indices/${ES_INDEX}?h=docs.count,store.size&bytes=b&format=json`);
 const socDocs = cat.reduce((s, r) => s + Number(r['docs.count'] || 0), 0);
 const socBytes = cat.reduce((s, r) => s + Number(r['store.size'] || 0), 0);
 
