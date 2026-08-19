@@ -479,28 +479,24 @@ journalctl --user | grep conky
 ```
 
 
-## Screenshot rule (added 2026-08-17, after a real incident)
+## Image policy
 
 **A text sanitisation pass cannot reach a screenshot.** Every host name, index
 name, internal address and device name in an image survives every find-replace
 you will ever run, and survives it invisibly.
 
-Six screenshots sat in `screenshots/portfolio-picks/` from the initial commit
-until 2026-08-17. Two of them were a client tabletop-exercise deliverable with
-the engagement's letterhead block and, on one page, unredacted environment
-detail. One of those two was *linked from this portfolio* as "Threat Analysis".
-Two more showed the real host name in the Kibana index picker and the Grafana
-datasource name, months after the prose had been scrubbed of it.
-
-They were removed from the entire history with `git filter-repo`, not merely
-deleted -- deleting a file leaves it fetchable at its blob SHA forever, and
-making the repository public again would have re-exposed all six.
+Raw desktop captures were committed to this repository early on and went
+unreviewed for months. They were removed from the entire history with
+`git filter-repo` and the repository was recreated -- deleting a file is not
+enough, because the blob stays fetchable at its SHA.
 
 Before committing any image:
 
-1. Does it show a client, employer, or engagement? Do not commit it. Ever.
-2. Does it show a real host name, index name, or internal address? Rewrite it in
-   the DOM before capture -- see `scripts/` for the Playwright approach used for
+1. Does it show a client, an employer, or any engagement material? Do not
+   commit it. Ever. This is not a redaction problem; it is a do-not-commit
+   problem.
+2. Does it show a real host name, index name, or internal address? Rewrite it
+   in the DOM before capture -- see the Playwright approach used for
    `assets/screenshots/soc-discover-24h.png` -- or do not commit it.
 3. Does it show raw log records? Crop them out. Aggregates are the evidence;
    records are topology.
