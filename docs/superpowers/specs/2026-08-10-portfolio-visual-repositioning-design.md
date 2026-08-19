@@ -11,9 +11,10 @@ The portfolio's copy was repositioned around AI security and governance in commi
 in a "hacker/gamer" idiom while the hero text speaks in boardroom language about
 "executive-ready recommendations, control requirements, residual-risk decisions."
 
-When copy and design disagree, readers trust the design. For an audience of hiring
-managers at regulated SaaS companies, the current styling actively undercuts the
-credibility the copy is trying to establish.
+When copy and design disagree, readers trust the design. For both audiences this page
+serves — technical leadership evaluating a senior hire, and organisations evaluating
+Seriously Cyber Consulting — the current styling actively undercuts the credibility the
+copy is trying to establish.
 
 ### What specifically produces the effect
 
@@ -34,9 +35,16 @@ layered on top of it.
 
 ## Audience
 
-Primary: hiring managers for AI security and governance roles, weighted over
-consultancy buyers. The page should read as a serious professional — not a company
-marketing brochure, and not a peer-facing technical flex.
+Two audiences, weighted equally, because the same page serves both:
+
+1. **Technical and hiring leadership** assessing depth in AI security and governance.
+2. **Prospective consulting clients** evaluating Seriously Cyber Consulting, LLC.
+
+They want different things from the same page — evidence of judgement on one side,
+evidence of delivery on the other — but they respond to the same register. It should
+read as a serious practitioner: not a marketing brochure, and not a peer-facing
+technical flex. Anything that reads as optimised for one audience reads as a tell to
+the other, so the design commits to neither idiom.
 
 ## Design
 
