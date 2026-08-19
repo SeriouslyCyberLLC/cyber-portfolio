@@ -126,7 +126,7 @@ Host names are rewritten and the document table is cropped out before capture:
 raw records carry internal addressing and device names, and a screenshot is the
 one artefact a text sanitisation pass cannot reach.
 
-The dated figures in the telemetry strip on the [site homepage](https://seriouslycyberllc.github.io/cybersecurity-portfolio/)
+The dated figures in the telemetry strip on the [site homepage](https://seriouslycyberllc.github.io/cyber-portfolio/)
 are regenerated directly from the cluster by `scripts/update-telemetry.mjs`, and
 are better evidence than any screenshot — reproducible, timestamped, and not
 hand-composed.

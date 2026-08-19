@@ -820,7 +820,7 @@ Run: `git push origin main`
 
 Wait for Pages to rebuild, then run:
 ```bash
-node -e "fetch('https://seriouslycyberllc.github.io/cybersecurity-portfolio/')
+node -e "fetch('https://seriouslycyberllc.github.io/cyber-portfolio/')
   .then(r=>r.text()).then(h=>{
     const red=/#ff2a2a|#cc0000|rgba\(\s*255\s*,\s*0\s*,\s*0/.test(h);
     const grad=/gradient-text/.test(h);

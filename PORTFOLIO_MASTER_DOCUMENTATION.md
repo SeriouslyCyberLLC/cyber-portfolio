@@ -1,14 +1,14 @@
 # Portfolio Master Documentation
 
 ## Overview
-This document contains all commands, procedures, and technical details for maintaining and updating the cybersecurity portfolio hosted at https://seriouslycyberllc.github.io/cybersecurity-portfolio/
+This document contains all commands, procedures, and technical details for maintaining and updating the cybersecurity portfolio hosted at https://seriouslycyberllc.github.io/cyber-portfolio/
 
 ---
 
 ## Repository Information
 
-- **GitHub Repo**: https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio
-- **Live Site**: https://seriouslycyberllc.github.io/cybersecurity-portfolio/
+- **GitHub Repo**: https://github.com/SeriouslyCyberLLC/cyber-portfolio
+- **Live Site**: https://seriouslycyberllc.github.io/cyber-portfolio/
 - **Local Directory**: `/home/analyst/cybersecurity-portfolio/`
 - **GitHub Username**: SeriouslyCyberLLC
 - **Email**: larry.harvey.cyber@protonmail.com
@@ -57,7 +57,7 @@ git commit -m "Initial commit: Cybersecurity portfolio with 4 major projects"
 
 ### 5. Connected to GitHub
 ```bash
-git remote add origin https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio.git
+git remote add origin https://github.com/SeriouslyCyberLLC/cyber-portfolio.git
 git branch -M main
 git push -u origin main
 ```
@@ -202,7 +202,7 @@ When pushing/pulling, Git will ask for credentials:
 ## GitHub Pages Configuration
 
 ### Enable GitHub Pages
-1. Go to: https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio
+1. Go to: https://github.com/SeriouslyCyberLLC/cyber-portfolio
 2. Click "Settings"
 3. Click "Pages" (left sidebar)
 4. Source: **Deploy from branch**
@@ -266,7 +266,7 @@ git push origin main
 
 ### Changes not showing on website
 - Wait 1-2 minutes after pushing
-- Check GitHub Actions: https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio/actions
+- Check GitHub Actions: https://github.com/SeriouslyCyberLLC/cyber-portfolio/actions
 - Hard refresh browser (Ctrl+Shift+R)
 
 ### "Authentication failed"
@@ -393,8 +393,8 @@ Edit in `index.html`, footer section:
 
 Portfolio is backed up in multiple places:
 1. **Local**: `/home/analyst/cybersecurity-portfolio/`
-2. **GitHub**: https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio
-3. **Live Site**: https://seriouslycyberllc.github.io/cybersecurity-portfolio/
+2. **GitHub**: https://github.com/SeriouslyCyberLLC/cyber-portfolio
+3. **Live Site**: https://seriouslycyberllc.github.io/cyber-portfolio/
 
 To create local backup:
 ```bash

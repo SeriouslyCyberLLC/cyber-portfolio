@@ -125,7 +125,7 @@ Assessment Methodology:
 
 ## Contact
 - Website: seriouslycyber.com
-- GitHub: https://github.com/SeriouslyCyberLLC/cybersecurity-portfolio
+- GitHub: https://github.com/SeriouslyCyberLLC/cyber-portfolio
 - Location: Fayetteville, North Carolina Metro Area
 - Clearance: Public Trust
 
