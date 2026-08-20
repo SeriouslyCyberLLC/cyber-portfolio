@@ -1,5 +1,7 @@
 # Larry's Cybersecurity Portfolio
 
+**Live portfolio: https://seriouslycyberllc.github.io/cyber-portfolio/**
+
 ## Professional Summary
 AI security and governance professional focused on enterprise AI adoption, AI risk strategy, responsible AI controls, and secure use of generative and agentic systems.
 
@@ -124,6 +126,7 @@ Assessment Methodology:
 - Prompt engineering
 
 ## Contact
+- Portfolio: https://seriouslycyberllc.github.io/cyber-portfolio/
 - Website: seriouslycyber.com
 - GitHub: https://github.com/SeriouslyCyberLLC/cyber-portfolio
 - Location: Fayetteville, North Carolina Metro Area
