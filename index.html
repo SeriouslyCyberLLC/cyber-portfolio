@@ -642,6 +642,19 @@
                     </li>
 
                     <li class="project">
+                        <h3>SOC Assurance Audit</h3>
+                        <p>Audited a running SOC's own reliability rather than adding sensors. Eleven defects, every one invisible to status commands and exit codes, all found by measuring output.</p>
+                        <ul class="stats">
+                            <li>5 services healthy while producing nothing</li>
+                            <li>3 controls reporting success with no effect</li>
+                            <li>Intel pipeline dead 35 and 73 days</li>
+                            <li>Auto-blocker could never unblock</li>
+                        </ul>
+                        <p><strong>Tech:</strong> Python, Prometheus, iptables, Elasticsearch, pytest</p>
+                        <a href="https://github.com/SeriouslyCyberLLC/cyber-portfolio/blob/main/projects/assurance-audit.md" class="project-link">Read More<span class="visually-hidden"> about the SOC Assurance Audit</span></a>
+                    </li>
+
+                    <li class="project">
                         <h3>DNS Behavioral Monitoring (retired)</h3>
                         <p>DGA and tunneling detector over Zeek DNS. Ran 17 days, was measured against its own output, and was retired on the evidence rather than left paging.</p>
                         <ul class="stats">
