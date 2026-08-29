@@ -655,6 +655,19 @@
                     </li>
 
                     <li class="project">
+                        <h3>Hardening Telemetry</h3>
+                        <p>Two scanners had run daily for months and nothing had ever read them. Turned both into tracked metrics, then decided — with measurements — what was allowed to page.</p>
+                        <ul class="stats">
+                            <li>Hardening index 66&nbsp;&rarr;&nbsp;71 and 59&nbsp;&rarr;&nbsp;70 across two hosts</li>
+                            <li>Rootkit findings were piped into a dead mail path</li>
+                            <li>Of 8 rules, exactly 1 may page; it has never fired</li>
+                            <li>Unreadable reports emit no score, never a zero</li>
+                        </ul>
+                        <p><strong>Tech:</strong> Lynis, chkrootkit, Prometheus, Alertmanager, node-exporter, systemd, Python, pytest</p>
+                        <a href="https://github.com/SeriouslyCyberLLC/cyber-portfolio/blob/main/projects/hardening-telemetry.md" class="project-link">Read More<span class="visually-hidden"> about Hardening Telemetry</span></a>
+                    </li>
+
+                    <li class="project">
                         <h3>DNS Behavioral Monitoring (retired)</h3>
                         <p>DGA and tunneling detector over Zeek DNS. Ran 17 days, was measured against its own output, and was retired on the evidence rather than left paging.</p>
                         <ul class="stats">
