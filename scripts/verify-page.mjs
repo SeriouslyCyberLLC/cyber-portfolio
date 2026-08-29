@@ -4,7 +4,25 @@ import { readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { findChrome, probe } from './render-probe.mjs';
 
-const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+/* Default target is the working tree, so the harness gates a push. `--url <addr>` runs
+   the SAME checks against a deployed page instead, which covers what file:// cannot:
+   CSP headers, real MIME types, HTTPS delivery, and whatever the host rewrote. Use it
+   after a deploy; use the default before one. */
+const urlFlag = process.argv.indexOf('--url');
+const TARGET_URL = urlFlag !== -1 ? process.argv[urlFlag + 1] : null;
+if (urlFlag !== -1 && !TARGET_URL) {
+  console.error('--url needs an address, e.g. --url https://example.com/');
+  process.exit(2);
+}
+
+const html = TARGET_URL
+  ? await (async () => {
+      const res = await fetch(TARGET_URL, { redirect: 'follow' });
+      if (!res.ok) { console.error(`FATAL  ${TARGET_URL} returned HTTP ${res.status}`); process.exit(2); }
+      return res.text();
+    })()
+  : readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+
 const style = (html.match(/<style>([\s\S]*?)<\/style>/) || [, ''])[1];
 
 // ---- contrast helpers (WCAG 2.1 relative luminance) ----
@@ -258,7 +276,8 @@ if (!renderOff) {
     render.why = 'no Chrome or Chromium on PATH (re-run with --no-render to skip)';
   } else {
     try {
-      const url = pathToFileURL(new URL('../index.html', import.meta.url).pathname).href;
+      const url = TARGET_URL
+        ?? pathToFileURL(new URL('../index.html', import.meta.url).pathname).href;
       render.data = await probe(url, { chrome });
       render.ok = true;
     } catch (e) {
@@ -266,6 +285,8 @@ if (!renderOff) {
     }
   }
 }
+
+console.log(`target: ${TARGET_URL ?? 'working tree (index.html)'}\n`);
 
 let failed = 0;
 for (const { name, fn } of checks) {
