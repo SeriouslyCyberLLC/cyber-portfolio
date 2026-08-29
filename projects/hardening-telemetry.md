@@ -138,31 +138,45 @@ Current state, read live: 0 infected, 29 suspicious, 142 checks, report readable
 
 ## 3. "0 updates" was not a patched host
 
-The second host's login banner reported `0 updates can be applied immediately` — while
-separately mentioning 35 additional security updates available only through extended
-maintenance.
+The second host runs Ubuntu 24.04. Its login banner reported `0 updates can be applied
+immediately` — while separately noting that 35 additional security updates were available
+through **ESM Apps**.
 
-Those were CVEs in the community package set. The automatic updater can never reach them:
-it applies security updates from the archives the host is *subscribed to*, and that
-pocket was not one of them.
+Those 35 were CVEs in **universe**, the community-maintained package set.
+`unattended-upgrades` can never reach them: it applies security updates from the archives
+the host is *subscribed to*, and without an **Ubuntu Pro** subscription the universe
+security pocket is not one of them.
 
 > **A host reading "0 updates" is not a patched host. It is a host that cannot see the
 > rest.**
 
-After enabling extended maintenance, the count went from 0 to **30 upgradable packages,
-every one of them a security update.** Nothing in the set touched the kernel, the C
-library, TLS, the init system, remote access, the web server, or the container runtime —
-so it applied without a reboot and without risking the host's remote tunnel.
+After attaching Ubuntu Pro — free for personal use on up to five machines — the count
+went from 0 to **30 upgradable packages, every one of them a security update**: the
+`ffmpeg` and `libav*` stack, ImageMagick, `libcjson1`, `libmbedcrypto7t64`, `python3-pip`,
+Syncthing, and the Prometheus node exporter.
+
+Nothing in the set touched the kernel, `libc`, OpenSSL, systemd, SSH, nginx, or Docker, so
+it applied without a reboot and without risking the host's Cloudflare tunnel. Livepatch,
+enabled at the same time, covers kernel CVEs between reboots — though it deliberately does
+not change the on-disk kernel, so `uname -r` remains the truth for actual kernel upgrades.
+
+**`pro attach` exiting 0 is not proof the services enabled.** Each one is re-read from
+`pro status` afterwards and the script fails loudly on any that is not `enabled` — the
+same lesson as the mask in section 4. The subscription token is passed via a `0600`
+attach-config file, never as a command-line argument: `ps` is world-readable, so
+`pro attach <token>` leaks the token to every user on the box for the duration of the call.
 
 ### The trap inside the fix
 
-The metrics collector **was itself in that upgrade list**, and the flag that tells it
-where to read exported metrics lives in a package configuration file — the kind an
-upgrade may replace, silently, with no error.
+Note what was in that upgrade list: **`prometheus-node-exporter` — the exporter this
+whole system reports through.** Its `--collector.textfile.directory` flag lives in
+`/etc/default/prometheus-node-exporter`, a dpkg **conffile**, and a package upgrade can
+replace a conffile and take the flag with it. Silently, with no error. So the upgrade
+runs with `--force-confold` and then verifies.
 
 That is not hypothetical: deploying to this host had already surfaced the same shape.
-The export directory existed, which made it look configured, but the flag pointing the
-collector at it had never been passed. Everything written there was being discarded
+The textfile directory existed, which made it look configured, but the flag pointing the
+exporter at it had never been passed. Everything written there was being discarded
 without complaint.
 
 So the upgrade script verifies by **counting the series actually being served**, not by
