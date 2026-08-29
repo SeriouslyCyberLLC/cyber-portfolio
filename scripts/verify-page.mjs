@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 // Dependency-free verification for index.html. Run: node scripts/verify-page.mjs
 import { readFileSync } from 'node:fs';
+import { pathToFileURL } from 'node:url';
+import { findChrome, probe } from './render-probe.mjs';
 
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const style = (html.match(/<style>([\s\S]*?)<\/style>/) || [, ''])[1];
@@ -204,12 +206,76 @@ check('telemetry figures are not stale', () => {
   return true;
 });
 
+/* ---- render checks ----------------------------------------------------------
+   Everything above reads what the file SAYS. These four read what a browser DOES
+   with it, which is a different question — the stale "9 Systems Built" above eleven
+   cards passed every static check in this file for weeks.
+
+   Chrome missing is a FAILURE, not a skip. A harness that quietly drops four checks
+   on a machine without Chrome reports 21/21 while testing 17 things, which is the
+   fail-open pattern this codebase keeps getting bitten by. Opt out deliberately with
+   --no-render and the output says so on every line. */
+const renderOff = process.argv.includes('--no-render');
+const render = { ok: false, why: 'not run', data: null };
+
+const RENDER_NAMES = Object.create(null);
+const renderCheck = (name, fn) => {
+  RENDER_NAMES[name] = true;
+  check(name, () => {
+    if (renderOff) return true;             // reported as SKIP by the runner below
+    if (!render.ok) return `render probe unavailable: ${render.why}`;
+    return fn(render.data);
+  });
+};
+
+renderCheck('renders with no console errors', d =>
+  d.consoleErrors.length ? `${d.consoleErrors.length}: ${d.consoleErrors.slice(0, 3).join(' | ')}` : true);
+
+renderCheck('every resource loads', d =>
+  d.failedRequests.length ? `${d.failedRequests.length} failed: ${[...new Set(d.failedRequests)].slice(0, 3).join(' | ')}` : true);
+
+/* A page that scrolls sideways on a phone is the most common real-world layout bug
+   and is invisible in source. Checked at 390px, the narrow end of current handsets. */
+renderCheck('no horizontal overflow at any width', d => {
+  const bad = d.viewports.filter(v => v.overflow);
+  return bad.length
+    ? bad.map(v => `${v.width}px: content is ${v.scrollWidth}px wide`).join('; ')
+    : true;
+});
+
+/* Catches a card that parses fine but collapses to nothing — a CSS rule that hides it,
+   a grid that gives it no track. The static card-order check cannot see this. */
+renderCheck('every project card has a visible box', d => {
+  if (!d.cards) return 'no card metrics collected';
+  if (d.cards.count !== 11) return `browser sees ${d.cards.count} cards, expected 11`;
+  return d.cards.zeroSized.length ? `zero-sized: ${d.cards.zeroSized.join(', ')}` : true;
+});
+
 // ---- run ----
+if (!renderOff) {
+  const chrome = findChrome();
+  if (!chrome) {
+    render.why = 'no Chrome or Chromium on PATH (re-run with --no-render to skip)';
+  } else {
+    try {
+      const url = pathToFileURL(new URL('../index.html', import.meta.url).pathname).href;
+      render.data = await probe(url, { chrome });
+      render.ok = true;
+    } catch (e) {
+      render.why = e.message;
+    }
+  }
+}
+
 let failed = 0;
 for (const { name, fn } of checks) {
-  let r; try { r = fn(); } catch (e) { r = `threw: ${e.message}`; }
-  if (r === true) console.log(`PASS  ${name}`);
+  let r; try { r = await fn(); } catch (e) { r = `threw: ${e.message}`; }
+  const skipped = renderOff && name in RENDER_NAMES;
+  if (skipped) console.log(`SKIP  ${name}  (--no-render)`);
+  else if (r === true) console.log(`PASS  ${name}`);
   else { failed++; console.log(`FAIL  ${name}\n        ${r}`); }
 }
-console.log(`\n${checks.length - failed}/${checks.length} passed`);
+const skippedCount = renderOff ? Object.keys(RENDER_NAMES).length : 0;
+const ran = checks.length - skippedCount;
+console.log(`\n${ran - failed}/${ran} passed${skippedCount ? ` (${skippedCount} render checks skipped)` : ''}`);
 process.exit(failed ? 1 : 0);

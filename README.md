@@ -13,7 +13,7 @@ measurement — that writeup is the honest one.
 | `index.html` | The portfolio itself. Single file, inline CSS, no build step. |
 | `projects/` | Per-project writeups in Markdown. |
 | `docs/` | Longer case studies, plus the design spec and plan behind the current visual language. |
-| `scripts/` | `update-telemetry.mjs` regenerates the measured figures on the page; `verify-page.mjs` is a 20-check harness that must pass before anything is published. |
+| `scripts/` | `update-telemetry.mjs` regenerates the measured figures on the page; `verify-page.mjs` is a 25-check harness that must pass before anything is published — 21 static checks plus 4 that render the page in headless Chrome (console errors, failed resources, horizontal overflow at 390/1440px, every card having a visible box). Missing Chrome fails the render checks rather than skipping them; use `--no-render` to opt out deliberately. |
 | `assets/` | Certification badges and sanitised screenshots. |
 
 ## The numbers on the page are measured, not asserted
