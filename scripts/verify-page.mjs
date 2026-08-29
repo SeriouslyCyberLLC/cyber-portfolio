@@ -146,6 +146,26 @@ check('11 project cards present, in order', () => {
   return JSON.stringify(got) === JSON.stringify(want) ? true : `got ${got.length}: ${got.join(' | ')}`;
 });
 
+// The heading counts the cards below it. It had drifted to "9 Systems Built" above
+// ten cards, then eleven — a stale number is the one claim on this page a reader can
+// disprove by scrolling. Derive both figures from the markup rather than trusting prose.
+check('projects heading count matches the cards', () => {
+  const cards = [...html.matchAll(/<li class="project">/g)].length;
+  const retired = [...html.matchAll(/<h3>[^<]*\(retired\)<\/h3>/g)].length;
+  const words = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight',
+    'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen'];
+
+  const h = html.match(/<h2 id="projects-title">(\d+) Systems Built<\/h2>/);
+  if (!h) return 'heading missing or not in "<n> Systems Built" form';
+  if (Number(h[1]) !== cards) return `heading says ${h[1]}, but ${cards} cards are present`;
+
+  const live = cards - retired;
+  const sub = html.match(/<h2 id="projects-title">[^<]*<\/h2>\s*\n\s*<p>(\w+) running in production\./);
+  if (!sub) return 'subtitle missing or not in "<Word> running in production." form';
+  if (sub[1] !== words[live]) return `subtitle says "${sub[1]}" running, but ${live} are not retired`;
+  return true;
+});
+
 check('4 flagship badges retained, cert wall replaced by text', () => {
   const marks = [...html.matchAll(/<span class="mark">([^<]+)<\/span>/g)].map(m => m[1].trim());
   const want = ['CISSP', 'CCSP', 'AAISM', 'SecAI+'];
