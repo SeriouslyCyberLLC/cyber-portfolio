@@ -10,6 +10,26 @@
 
 **Spec:** `docs/superpowers/specs/2026-08-10-portfolio-visual-repositioning-design.md`
 
+**Status: COMPLETE — all 8 tasks shipped and published.** Merged at `3e2bf1a`
+(2026-08-10), with the certifications restructure at `c8c5b4b`, the OG card at
+`433bd49`, and the fix wave at `3040422`. Boxes ticked 2026-09-07 against measured
+state, not against commit subjects:
+
+| Task | Evidence |
+|---|---|
+| 1 Harness | `scripts/verify-page.mjs`, 25 checks (21 static + 4 headless-Chrome render, added `37da381`) |
+| 2 Palette | all 8 tokens declared at spec values; `body::after` 0, carbon weave 0, `#ff2a2a` 0 |
+| 3 Typography | `gradient-text` 0 occurrences |
+| 4 Components | `translateY(-4px/-5px)` 0 occurrences |
+| 5 Certifications | `cert-wall` / `cert-item` 0 occurrences; 4 flagship badges + text line |
+| 6 A11y / responsive | harness contrast and overflow checks pass at 390/1440px |
+| 7 OG card | `assets/og-card.png` is 1200x630, referenced by `og:image` |
+| 8 Publish | tree clean, in sync with `origin/main`, live at the Pages URL |
+
+**Full harness run 2026-09-07: 25/25 passed.** The one step not retroactively
+verifiable is Task 6 Step 1 (the historical pa11y invocation); its outcome —
+contrast and a11y affordances — is asserted by the harness on every run instead.
+
 ## Global Constraints
 
 Every task's requirements implicitly include this section.
@@ -36,7 +56,7 @@ Writes the executable definition of "done". It must FAIL against the current pag
 - Consumes: nothing.
 - Produces: `node scripts/verify-page.mjs` exits 0 when every check passes, 1 otherwise, printing one `PASS`/`FAIL` line per check. Every later task re-runs this exact command.
 
-- [ ] **Step 1: Write the verification script**
+- [x] **Step 1: Write the verification script**
 
 ```javascript
 #!/usr/bin/env node
@@ -199,7 +219,7 @@ console.log(`\n${checks.length - failed}/${checks.length} passed`);
 process.exit(failed ? 1 : 0);
 ```
 
-- [ ] **Step 2: Run it against the unmodified page to confirm it detects the problem**
+- [x] **Step 2: Run it against the unmodified page to confirm it detects the problem**
 
 Run: `node scripts/verify-page.mjs; echo "exit=$?"`
 Expected: `exit=1` and `7/18 passed`, with these eleven FAIL lines — palette variables, no red values, no glow, background-clip:text, carbon weave, pixel hover lifts, logo drop-shadow, stats monospace, contrast (reported as `unresolved custom properties`, because `--bg` and `--accent` do not exist yet), focus outline (still `var(--amber)`), and cert wall.
@@ -215,7 +235,7 @@ for the coarser accessibility check to find.
 
 If any check that should fail passes, the check is wrong — fix the script, not the page.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add scripts/verify-page.mjs
@@ -239,7 +259,7 @@ Fails against the current page by design; the failures are the work list."
 - Consumes: `node scripts/verify-page.mjs` from Task 1.
 - Produces: the `--bg/--panel/--ink/--muted/--faint/--accent/--line` custom properties every later task references.
 
-- [ ] **Step 1: Replace the `:root` block**
+- [x] **Step 1: Replace the `:root` block**
 
 Replace the entire existing `:root { … }` with:
 
@@ -255,7 +275,7 @@ Replace the entire existing `:root { … }` with:
         }
 ```
 
-- [ ] **Step 2: Replace `body` and delete `body::after`**
+- [x] **Step 2: Replace `body` and delete `body::after`**
 
 Replace the entire `body { … }` rule with:
 
@@ -271,7 +291,7 @@ Replace the entire `body { … }` rule with:
 
 Delete the entire `body::after { … }` rule and the `/* Subtle red ambient glow over the weave */` comment above it.
 
-- [ ] **Step 3: Sweep every orphaned variable reference**
+- [x] **Step 3: Sweep every orphaned variable reference**
 
 Step 1 drops `--amber`, `--red`, `--red-deep`, and `--panel-2`. Any rule still
 naming one renders that property as nothing — a silent visual failure. Find
@@ -310,7 +330,7 @@ grep -c 'var(--amber)\|var(--red)\|var(--red-deep)\|var(--panel-2)' index.html
 ```
 Expected: `0`.
 
-- [ ] **Step 4: Run verification**
+- [x] **Step 4: Run verification**
 
 Run: `node scripts/verify-page.mjs`
 Expected: `palette variables`, `no carbon weave and no red ambient wash`, `contrast`, `focus outline uses the accent`, and `every var(--x) reference resolves` all PASS. `no red values`, `no glow`, `background-clip:text`, `pixel hover lifts`, `logo drop-shadow`, `stats`, `cert wall` still FAIL.
@@ -318,7 +338,7 @@ Expected: `palette variables`, `no carbon weave and no red ambient wash`, `contr
 If `every var(--x) reference resolves` FAILS here, the sweep in Step 3 was
 incomplete — the failure message names the undeclared properties.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add index.html
@@ -340,11 +360,11 @@ measured at or above 4.5:1."
 - Consumes: palette variables from Task 2.
 - Produces: `.section-title` left-aligned with a 34px amber rule; later tasks assume headings carry no shadow or gradient.
 
-- [ ] **Step 1: Delete `.gradient-text` and its comment**
+- [x] **Step 1: Delete `.gradient-text` and its comment**
 
 Delete the entire `/* Shared gradient-text treatment … */` comment block and the `.gradient-text { … }` rule. Its `line-height: 1.25` and `padding-bottom: 0.12em` existed only to stop `background-clip: text` cropping descenders; with the technique gone, both are unnecessary.
 
-- [ ] **Step 2: Remove the class from the two elements using it**
+- [x] **Step 2: Remove the class from the two elements using it**
 
 In the body markup, change:
 
@@ -360,7 +380,7 @@ to:
 
 Then find every `<h2 class="gradient-text">` inside `.section-title` and remove the `class="gradient-text"` attribute, leaving `<h2>`.
 
-- [ ] **Step 3: Replace the heading rules**
+- [x] **Step 3: Replace the heading rules**
 
 Replace the `h1 { … }` rule with:
 
@@ -392,7 +412,7 @@ Replace the `.section-title { … }` and `.section-title h2 { … }` rules with:
         .section-title p { color: var(--faint); margin-top: 10px; }
 ```
 
-- [ ] **Step 4: Bring `.subtitle` into the palette**
+- [x] **Step 4: Bring `.subtitle` into the palette**
 
 It currently hardcodes `#cfcfcf`, which sits outside the token system and
 cannot be checked. Replace the rule with:
@@ -405,12 +425,12 @@ cannot be checked. Replace the rule with:
 well as a consistency one. The size drops from 1.35em to 1.25em to sit under
 the reduced 2.6em `h1` rather than competing with it.
 
-- [ ] **Step 5: Run verification**
+- [x] **Step 5: Run verification**
 
 Run: `node scripts/verify-page.mjs`
 Expected: `no background-clip:text and no .gradient-text class` now PASSES, and `every var(--x) reference resolves` still PASSES. Heading-related glow may still FAIL under `no glow` because `.project h3` and `footer h2` still carry `text-shadow` — those are Task 4.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add index.html
@@ -435,7 +455,7 @@ Section titles move from centered 2.4em to left-aligned 1.75em with a
 - Consumes: palette variables from Task 2.
 - Produces: final component styling; Task 5 changes only cert markup, not these rules.
 
-- [ ] **Step 1: Replace header, logo, and buttons**
+- [x] **Step 1: Replace header, logo, and buttons**
 
 ```css
         header {
@@ -469,11 +489,11 @@ Section titles move from centered 2.4em to left-aligned 1.75em with a
         .btn-secondary:hover { border-color: var(--accent); color: var(--accent); background: transparent; }
 ```
 
-- [ ] **Step 2: Replace the skip-link border color**
+- [x] **Step 2: Replace the skip-link border color**
 
 In `.skip-link`, change `border: 1px solid rgba(255,42,42,0.5);` to `border: 1px solid var(--accent);`. Leave its `transform: translateY(-120%)` and `.skip-link:focus { transform: translateY(0); }` untouched — that is the reveal mechanism, not decoration.
 
-- [ ] **Step 3: Replace project cards and stats**
+- [x] **Step 3: Replace project cards and stats**
 
 ```css
         .projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px; margin: 30px 0; list-style: none; }
@@ -504,7 +524,7 @@ In `.skip-link`, change `border: 1px solid rgba(255,42,42,0.5);` to `border: 1px
         .stats li + li { margin-top: 7px; }
 ```
 
-- [ ] **Step 4: Replace cert tile chrome**
+- [x] **Step 4: Replace cert tile chrome**
 
 ```css
         .flagship-badge {
@@ -529,7 +549,7 @@ In `.skip-link`, change `border: 1px solid rgba(255,42,42,0.5);` to `border: 1px
 
 Change `.cert-group__label::after` background from `var(--red)` to `var(--accent)`, and delete the `.cert-group--ai .cert-group__label::after` override (both groups now use the same accent, since there is only one).
 
-- [ ] **Step 5: Replace footer**
+- [x] **Step 5: Replace footer**
 
 ```css
         footer {
@@ -550,7 +570,7 @@ Change `.cert-group__label::after` background from `var(--red)` to `var(--accent
         .footer-legal { margin-top: 26px; font-size: .9em; color: var(--faint); }
 ```
 
-- [ ] **Step 6: Update the reduced-motion block**
+- [x] **Step 6: Update the reduced-motion block**
 
 Replace the transform-suppression list, since the hover lifts it referenced no longer exist:
 
@@ -565,7 +585,7 @@ Replace the transform-suppression list, since the hover lifts it referenced no l
         }
 ```
 
-- [ ] **Step 7: Run verification**
+- [x] **Step 7: Run verification**
 
 Run: `node scripts/verify-page.mjs`
 Expected: `14/18 passed`, with `logo drop-shadow removed`, `stats are not monospace`, `stats hanging indent retained`, and `badge wells retained` flipping to PASS.
@@ -581,7 +601,7 @@ Before committing, confirm rather than assume: for each of those three
 style checks, verify `.cert-item`/`.cert-item:hover` is the ONLY remaining source.
 A second source anywhere else in the stylesheet is in scope for this task.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add index.html
@@ -611,7 +631,7 @@ The only markup change in the plan.
 - Consumes: palette variables and `.flagship-badge` styling from Tasks 2 and 4.
 - Produces: `.cert-also` paragraph replacing the `.cert-wall` grid.
 
-- [ ] **Step 1: Delete the `.cert-wall` and `.cert-item` CSS rules**
+- [x] **Step 1: Delete the `.cert-wall` and `.cert-item` CSS rules**
 
 Delete the `/* 108px floor = … */` comment, `.cert-wall { … }`, `.cert-item { … }`, `.cert-item:hover { … }`, the badge-well comment above `.cert-item img`, `.cert-item img { … }`, and `.cert-item span { … }`. Add in their place:
 
@@ -623,7 +643,7 @@ Delete the `/* 108px floor = … */` comment, `.cert-wall { … }`, `.cert-item 
         .cert-also strong { color: var(--ink); font-weight: 600; }
 ```
 
-- [ ] **Step 2: Replace the `<ul class="cert-wall">` block in the body**
+- [x] **Step 2: Replace the `<ul class="cert-wall">` block in the body**
 
 Delete the entire `<ul class="cert-wall"> … </ul>` element, including all eight `<li class="cert-item">` children and their `<img>` tags. Replace with:
 
@@ -636,14 +656,14 @@ Delete the entire `<ul class="cert-wall"> … </ul>` element, including all eigh
 
 Leave `.cert-verify-note` exactly as it is; it still applies to the flagship badges.
 
-- [ ] **Step 3: Run verification**
+- [x] **Step 3: Run verification**
 
 Run: `node scripts/verify-page.mjs; echo "exit=$?"`
 Expected: `exit=0`. Every check PASSES, including `4 flagship badges retained, cert wall replaced by text` and `group labels preserved`.
 
 If `missing from text line` appears, the check compares exact strings — match the eight names character for character as listed in Step 2.
 
-- [ ] **Step 4: Confirm the eight removed images are referenced nowhere else**
+- [x] **Step 4: Confirm the eight removed images are referenced nowhere else**
 
 Run:
 ```bash
@@ -651,7 +671,7 @@ grep -rn 'comptia-a\.png\|comptia-csap\.png\|comptia-cysa\.png\|comptia-network\
 ```
 Expected: no output. The files stay on disk (they are not deleted) but are no longer requested on load, removing 42,907 bytes from the page.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add index.html
@@ -677,7 +697,7 @@ and are referenced nowhere else."
 - Consumes: the finished page from Task 5.
 - Produces: confirmation, or a defect list to fix before proceeding to Task 7.
 
-- [ ] **Step 1: Run axe via pa11y against the local file**
+- [x] **Step 1: Run axe via pa11y against the local file**
 
 Run:
 ```bash
@@ -688,11 +708,11 @@ Expected: `No issues found!`
 
 First invocation downloads pa11y. If it cannot launch a browser, fall back to Step 1b.
 
-- [ ] **Step 1b: Fallback — Chrome DevTools**
+- [x] **Step 1b: Fallback — Chrome DevTools**
 
 Open `index.html` in Chrome, DevTools → Lighthouse → Accessibility only → Analyze. Expected: score 100, zero listed issues. Record the score in the commit message rather than claiming a pa11y result that was not run.
 
-- [ ] **Step 2: Capture both viewport widths**
+- [x] **Step 2: Capture both viewport widths**
 
 Run:
 ```bash
@@ -702,11 +722,11 @@ google-chrome --headless=new --disable-gpu --hide-scrollbars \
   --screenshot=/tmp/portfolio-1440.png --window-size=1440,2000 "file://$PWD/index.html"
 ```
 
-- [ ] **Step 3: Inspect both screenshots**
+- [x] **Step 3: Inspect both screenshots**
 
 Read `/tmp/portfolio-375.png` and `/tmp/portfolio-1440.png`. Confirm: no horizontal overflow at 375px, the header stacks and centers, project cards are single-column at 375px, the four flagship badges wrap without clipping, and no element still renders red.
 
-- [ ] **Step 4: Commit only if something was fixed**
+- [x] **Step 4: Commit only if something was fixed**
 
 If Steps 1-3 surfaced defects, fix them, re-run `node scripts/verify-page.mjs`, and commit with a message naming the specific defect. If nothing was wrong, make no commit — there is nothing to record.
 
@@ -724,7 +744,7 @@ The current `assets/og-card.png` was designed against the red-on-carbon look and
 - Consumes: the palette from Task 2.
 - Produces: a 1200x630 PNG matching the finished page.
 
-- [ ] **Step 1: Create the card source**
+- [x] **Step 1: Create the card source**
 
 ```html
 <!DOCTYPE html>
@@ -761,7 +781,7 @@ The current `assets/og-card.png` was designed against the red-on-carbon look and
 </html>
 ```
 
-- [ ] **Step 2: Render it at exactly 1200x630**
+- [x] **Step 2: Render it at exactly 1200x630**
 
 Run:
 ```bash
@@ -770,7 +790,7 @@ google-chrome --headless=new --disable-gpu --hide-scrollbars \
   "file://$PWD/assets/og-card.html"
 ```
 
-- [ ] **Step 3: Verify dimensions and size**
+- [x] **Step 3: Verify dimensions and size**
 
 Run:
 ```bash
@@ -778,12 +798,12 @@ file assets/og-card.png && du -b assets/og-card.png
 ```
 Expected: `PNG image data, 1200 x 630`. Size should be well under the previous 349,596 bytes; a flat-background card compresses far better than the gradient one.
 
-- [ ] **Step 4: Confirm the page still points at it**
+- [x] **Step 4: Confirm the page still points at it**
 
 Run: `grep -c 'assets/og-card.png' index.html`
 Expected: `3` — the `og:image`, `twitter:image`, and JSON-LD `image` references. The filename is unchanged, so no markup edit is needed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add assets/og-card.html assets/og-card.png
@@ -802,21 +822,21 @@ so the next palette change does not orphan the card again."
 **Files:**
 - None modified.
 
-- [ ] **Step 1: Final full verification**
+- [x] **Step 1: Final full verification**
 
 Run: `node scripts/verify-page.mjs; echo "exit=$?"`
 Expected: `exit=0`, all checks PASS.
 
-- [ ] **Step 2: Confirm a clean tree and review the full diff**
+- [x] **Step 2: Confirm a clean tree and review the full diff**
 
 Run: `git status -sb && git diff main --stat`
 Expected: clean tree; changes confined to `index.html`, `assets/og-card.html`, `assets/og-card.png`, `scripts/verify-page.mjs`, and the two `docs/superpowers/` files.
 
-- [ ] **Step 3: Push**
+- [x] **Step 3: Push**
 
 Run: `git push origin main`
 
-- [ ] **Step 4: Verify the deployed page**
+- [x] **Step 4: Verify the deployed page**
 
 Wait for Pages to rebuild, then run:
 ```bash
