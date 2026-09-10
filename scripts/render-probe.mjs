@@ -130,17 +130,32 @@ export async function probe(fileUrl, { chrome, widths = [1440, 390], quietMs = 7
     const cdp = await CDP.attach(port);
     const consoleErrors = [], failedRequests = [];
 
+    /* Network.loadingFailed carries only a requestId, so the URL has to be
+       remembered from the matching requestWillBeSent. Without it a failure reads
+       "Script: net::ERR_FAILED" and names nothing — true of every failure this
+       harness has ever reported, and useless for deciding whether the broken
+       resource is ours or a third party's. */
+    const urlByRequestId = new Map();
+
     cdp.on(msg => {
       if (msg.method === 'Runtime.exceptionThrown') {
         const d = msg.params.exceptionDetails;
-        consoleErrors.push(d.exception?.description || d.text || 'uncaught exception');
+        consoleErrors.push({ text: d.exception?.description || d.text || 'uncaught exception', url: d.url || '' });
       } else if (msg.method === 'Log.entryAdded' && msg.params.entry.level === 'error') {
         const e = msg.params.entry;
+        /* The URL is carried alongside the text, not folded into it. Chrome's
+           text for a failed subresource is the bare "Failed to load resource:
+           net::ERR_FAILED" with the offending URL only in entry.url, so any
+           caller filtering on the message string alone cannot tell WHICH
+           resource failed. */
         // favicon is requested by the browser, not the document; not a page defect.
-        if (!/favicon\.ico/.test(e.url || '')) consoleErrors.push(e.text);
+        if (!/favicon\.ico/.test(e.url || '')) consoleErrors.push({ text: e.text, url: e.url || '' });
+      } else if (msg.method === 'Network.requestWillBeSent') {
+        urlByRequestId.set(msg.params.requestId, msg.params.request?.url || '');
       } else if (msg.method === 'Network.loadingFailed') {
         const p = msg.params;
-        if (!p.canceled) failedRequests.push(`${p.type}: ${p.errorText}`);
+        const url = urlByRequestId.get(p.requestId) || '';
+        if (!p.canceled) failedRequests.push({ type: p.type, error: p.errorText, url });
       }
     });
 

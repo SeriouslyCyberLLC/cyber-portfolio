@@ -742,5 +742,24 @@
             </p>
         </footer>
     </div>
+    <!-- Cloudflare Web Analytics. Cookieless, no fingerprinting, no cross-site
+         identifiers, so no consent banner is required. This page is on GitHub
+         Pages, which is not proxied by Cloudflare, so the beacon has to be
+         installed by hand here; seriouslycyber.com gets it injected at the edge
+         instead and carries no such tag. The token is a write-only site
+         identifier, not a credential: it only lets a browser report a page view.
+         scripts/verify-page.mjs deliberately EXEMPTS this host from its network
+         checks, so the harness cannot tell you whether this is working. The
+         Cloudflare dashboard showing a non-zero count is the only proof.
+
+         NO integrity="sha384-..." ON PURPOSE. Subresource Integrity pins a hash
+         of the exact bytes, and Cloudflare ships new builds of beacon.min.js
+         whenever it likes -- the next one would fail the hash check and the
+         browser would refuse to run it, silently, forever. SRI is correct for a
+         version-pinned library and wrong for a vendor-updated beacon. The
+         accepted residual risk is that Cloudflare can execute arbitrary script
+         on this page; the CSP on seriouslycyber.com narrows the same exposure to
+         this one file path, which is as far as it can be narrowed. -->
+    <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "8af2cb31b12d4c44ae9c702f13b31a48"}'></script>
 </body>
 </html>

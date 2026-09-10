@@ -246,11 +246,50 @@ const renderCheck = (name, fn) => {
   });
 };
 
-renderCheck('renders with no console errors', d =>
-  d.consoleErrors.length ? `${d.consoleErrors.length}: ${d.consoleErrors.slice(0, 3).join(' | ')}` : true);
+/* The one third-party resource on this page is the Cloudflare Web Analytics beacon.
+   It is exempt from the two network checks below, deliberately and narrowly.
 
-renderCheck('every resource loads', d =>
-  d.failedRequests.length ? `${d.failedRequests.length} failed: ${[...new Set(d.failedRequests)].slice(0, 3).join(' | ')}` : true);
+   WHY: the default target is file:// on the working tree, so this harness gates a
+   push from a developer machine. If it treated the beacon like our own assets, then
+   an offline laptop, a DNS hiccup or a Cloudflare outage would FAIL THE PUSH GATE
+   for a page that is completely fine. A gate that fails for reasons outside the
+   artifact teaches you to pass --no-render, and then four real checks stop running.
+
+   WHAT THIS COSTS, stated plainly: a beacon that never loads is now invisible here.
+   This harness can no longer tell you whether analytics works. The place to confirm
+   that is the Cloudflare Web Analytics dashboard showing a non-zero count — nothing
+   in this repo asserts it. Exempting by exact host, not by substring, so a typo in
+   the beacon URL still fails the check rather than being waved through.
+
+   TWO hosts, not one, and this was measured rather than assumed: the script is
+   served from static.cloudflareinsights.com, but it REPORTS to a different host,
+   cloudflareinsights.com with no subdomain. Exempting only the first left the
+   harness at 23/25 on a page that was fine. Under file:// the report is refused
+   by CORS anyway (the beacon sends origin 'unknown://'), so this failure is an
+   artifact of how the harness loads the page, not a defect in the page. */
+const BEACON_HOSTS = new Set(['static.cloudflareinsights.com', 'cloudflareinsights.com']);
+const isBeacon = url => { try { return BEACON_HOSTS.has(new URL(url).host); } catch { return false; } };
+
+/* A CORS violation is reported as a console message with NO entry.url -- the text
+   is the only place the offending host appears. Matching the host inside the text
+   is the weaker test of the two, so it is scoped to messages that also mention
+   CORS, rather than being a general substring pass. */
+const isBeaconText = text =>
+  /CORS|Access-Control/i.test(text) && [...BEACON_HOSTS].some(h => text.includes(h));
+
+renderCheck('renders with no console errors', d => {
+  const errs = d.consoleErrors.filter(e => !isBeacon(e.url) && !isBeaconText(e.text));
+  const fmt = e => `${e.text}${e.url ? ` (${e.url})` : ''}`;
+  return errs.length ? `${errs.length}: ${errs.slice(0, 3).map(fmt).join(' | ')}` : true;
+});
+
+renderCheck('every resource loads', d => {
+  const bad = d.failedRequests.filter(r => !isBeacon(r.url));
+  const fmt = r => `${r.type}: ${r.error}${r.url ? ` (${r.url})` : ''}`;
+  return bad.length
+    ? `${bad.length} failed: ${[...new Set(bad.map(fmt))].slice(0, 3).join(' | ')}`
+    : true;
+});
 
 /* A page that scrolls sideways on a phone is the most common real-world layout bug
    and is invisible in source. Checked at 390px, the narrow end of current handsets. */
