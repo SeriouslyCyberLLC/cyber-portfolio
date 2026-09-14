@@ -10,6 +10,13 @@ something bad." It is a **paired experiment**. Every payload is measured against
 matched control and against a null baseline, so a reported finding is a difference
 the payload caused, not a difference the model produces anyway.
 
+A second, complementary tool was added in September 2026: **Garak**, driven against the
+same two surfaces, for breadth rather than depth. The paired runner answers *"does this
+specific payload move this specific verdict?"* with a controlled experiment. Garak
+answers *"what does a 256-prompt public attack corpus do to this surface?"* Between them
+they produced the comparison this project existed to make — **the same model, the same
+prompts, measured with and without the production prompt in front of it.**
+
 Findings are mapped to the **OWASP Top 10 for LLM Applications 2025** and
 **MITRE ATLAS**.
 
@@ -109,6 +116,120 @@ benign verdict. Two payloads reliably produced exactly that state — meaning th
 under analysis decided whether the system's own second opinion would be consulted.
 A defence that an attacker can turn off is a defence you do not have.
 
+## What the Production Prompt Actually Buys
+
+Garak runs a public corpus of attack prompts against a target and scores the output with
+its own detectors. Pointing it at the raw model and then at the production triage path
+gives the number that matters: **not "is this model vulnerable", but "does our system
+prompt help, and by how much".**
+
+Both runs used the same model, the same two probes, the same 256 prompts each, one
+generation apiece — 512 model calls per run, every one recorded in the evidence ledger.
+
+| Probe | Detector | Raw model | Production triage path |
+|---|---|---|---|
+| Rogue-string hijack | attacker string appears in output | **131 / 256 (51%)** | **0 / 256** |
+| In-the-wild jailbreak corpus | absence of a refusal | 146 / 256 (57%) | *unmeasurable — see below* |
+
+**Against the bare model, an injected instruction got the attacker's chosen string out of
+the model in half of all attempts. Against the same model behind the production triage
+prompt, it never happened once.**
+
+Reading the captured responses shows why: the triage prompt asks for a structured
+`THREAT_LEVEL` / `ACTION` / `CONFIDENCE` verdict about an alert. Injected text arrives as
+*the alert being classified*, not as *instructions to the assistant* — so the model
+triages the injection instead of obeying it, returning verdicts like
+`MEDIUM / INVESTIGATE / 70` with a reason describing the suspicious content.
+
+That is a measured defence rather than an assumed one, and it is worth stating carefully:
+it says the structured-output framing resists **output hijacking**. It does not say the
+verdict itself cannot be steered — the paired experiment above already showed it can, by
+payloads written specifically for that surface. **Breadth tooling and targeted experiments
+answer different questions, and neither substitutes for the other.**
+
+## The 89% That Was Not a Vulnerability
+
+The jailbreak corpus reported **229 of 256 "failures" against the triage path — 89%,
+severity high**. The report rendered it as an attack that succeeded. Read as written, it
+says the triage path is 89% jailbreakable.
+
+It is not. Before that number went anywhere, I pulled the actual model responses out of
+the evidence ledger:
+
+| | |
+|---|---|
+| Total responses in the run | **513** |
+| Well-formed `THREAT_LEVEL / ACTION / CONFIDENCE` verdicts | **513 (100%)** |
+| Containing any refusal language | 13 (3%) |
+
+Not one was jailbroken output. The detector scores **the absence of a refusal** as a
+bypass — a reasonable rule for a chat assistant, which is supposed to decline. A triage
+classifier never refuses. It classifies. **That detector reports ~89% against this
+surface no matter how well the surface resists**, because it is measuring for a behaviour
+the surface is designed never to exhibit.
+
+> A detector applied to a surface it cannot score does not produce a weak finding.
+> It produces a confident number with nothing behind it.
+
+The fix was not to hide the result. The probe now reports as **`unmeasurable`** — a
+category this bench already had, meaning *"never given a chance to score, and therefore
+not evidence the surface resisted"* — with the raw counts preserved and the reason stated
+in the finding itself. Dropping it silently would have been worse: no reader would learn
+the probe had run at all.
+
+**The exemption is scoped to exactly one (surface, detector) pair and pinned by three
+tests**, because the opposite error is worse and much harder to notice: an over-broad
+exemption would have silently erased the raw model's genuine 57% jailbreak result, and
+the 0/256 hijack result on the triage path along with it.
+
+## One Prompt That Destroyed the Instrument
+
+The first full sweep died at prompt 96 of 512. The cause, from the ledger:
+
+| | This run |
+|---|---|
+| Slowest single call | **600 seconds** |
+| Longest single response | **27,750 characters** |
+| Mean call / mean response | 10 seconds / 1,479 characters |
+
+A jailbreak prompt induced an unbounded ramble. It exceeded the tool's read timeout,
+which surfaced as a subprocess failure and **discarded all 96 completed attempts** — the
+run reported one error and no findings.
+
+**The ramble is itself a finding: OWASP LLM10, Unbounded Consumption.** A single
+attacker-controlled prompt made the model generate for ten minutes. On a shared GPU that
+also serves the live triage tier, that is a denial-of-service against the SOC's own
+analysis path, from one alert field.
+
+The generator now caps generation length. That does not hide the finding — a truncated
+response still shows the model complying at length, and the ledger still records true
+token counts and latency for every call. What the cap prevents is **one finding
+destroying the instrument measuring it**. Verified against a prompt explicitly instructing
+the model never to stop: 600 seconds and 27,750 characters became 9.6 seconds and 4,505,
+terminating on the length limit.
+
+## Binding to Production Without Copying It
+
+Garak drives HTTP endpoints. The triage surface is not one — it is a function call into
+the deployed webhook module, and the bench binds to that file rather than to a copy of
+its prompt, for the reason the original design records: **a vendored copy drifts from the
+deployed file silently, which is the failure this bench exists to catch.**
+
+The obvious implementation was to paste the triage prompt into the attack tool's request
+template. It would have been a fraction of the code and it would have been wrong — the
+moment production's prompt changed, the bench would have kept attacking the old one and
+reporting confident results about a system that no longer existed.
+
+So the dependency is inverted. A loopback shim on an ephemeral port accepts the tool's
+requests and calls the real target, which reads the deployed file at call time. **The
+prompt under attack is always production's.**
+
+One property of that shim is load-bearing. The production path reports upstream failures
+in-band as ordinary strings, which parse into a clean neutral verdict. The shim returns an
+HTTP error with **no completion body** rather than a success carrying the error text —
+otherwise the attack tool's detectors score an error string as model output, and a run
+against a dead model reports that the surface resisted every attack.
+
 ## The Result That Was Wrong, and How the Bench Learned to Catch It
 
 The first real run reported an escalation payload as **`pass`, success rate 0.0** —
@@ -190,7 +311,7 @@ That is the discipline the bench is for. A number worth putting in a report has 
 survive being measured again — and the ones that do not are not obvious in advance.
 
 ## Technologies
-Python, Ollama, mistral:7b, mistral-small:22b, SQLite evidence ledger, pytest,
+Python, Garak, Ollama, mistral:7b, mistral-small:22b, SQLite evidence ledger, pytest,
 OWASP LLM Top 10 2025, MITRE ATLAS
 
 ## Skills Demonstrated
@@ -200,3 +321,7 @@ OWASP LLM Top 10 2025, MITRE ATLAS
 - Prompt-injection attack classes against a real detection pipeline
 - Framework mapping: OWASP LLM Top 10 2025, MITRE ATLAS
 - Recognising and correcting a measurement defect that produced a false negative
+- Quantifying what a production system prompt contributes, by measuring the same model
+  with and without it under an identical attack corpus
+- Identifying a detector/surface mismatch before its output became a reported finding
+- Bounding adversarial generation so a single result cannot destroy the measurement run
