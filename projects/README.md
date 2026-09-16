@@ -34,9 +34,9 @@ Transitioned from military and fire rescue into cybersecurity in May 2024, with 
 ## Technical Projects
 
 ### 1. [AI-Enhanced Security Analysis](ai-enhanced-security-analysis.md)
-Local LLM infrastructure with Mistral and a RAG system for automated log analysis, threat research, and incident response assistance. On-premise processing throughout.
+Local LLM that triages endpoint collections, rebuilt around an eval harness that measures recall as well as noise. The verdicts turned out to be sampled, not decided.
 
-**Key Stats**: Two-tier triage with overseer verification, RAG over ATT&CK, D3FEND, Sigma and CISA KEV, local inference only, 24GB RX 7900 XTX
+**Key Stats**: CRITICAL rate 37.8% to 0 over 10 days either side, 8 of 8 attack cases unstable at the default temperature, deterministic severity floor catching 8/8 with 0/117 false positives on real flows, one production false positive documented and open
 
 ### 2. [AI Red-Team Bench](ai-redteam-bench.md)
 Paired-experiment harness that red-teams the SOC's own LLM triage tier and proves, with retained evidence, whether an attacker-controlled alert field can steer the verdict.

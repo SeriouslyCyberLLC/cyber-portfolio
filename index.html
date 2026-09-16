@@ -578,14 +578,14 @@
                 <ul class="projects">
                     <li class="project">
                         <h3>AI-Enhanced Security Analysis</h3>
-                        <p>Local LLM infrastructure with RAG system for automated log analysis, threat research, and incident response.</p>
+                        <p>Local LLM that triages endpoint collections, rebuilt around an eval harness that measures recall as well as noise before any model or prompt change ships.</p>
                         <ul class="stats">
-                            <li>Two-tier triage, fast model then overseer verification</li>
-                            <li>RAG over ATT&amp;CK, D3FEND, Sigma, CISA KEV</li>
-                            <li>Local inference only, no external API calls</li>
-                            <li>Runs on a 24GB RX 7900 XTX</li>
+                            <li>CRITICAL verdicts 37.8% to 0 across 10 days either side</li>
+                            <li>Root cause: verdicts sampled at temperature 0.8, 8 of 8 unstable</li>
+                            <li>Deterministic severity floor: 8/8 attacks caught, 0/117 routine flows</li>
+                            <li>Local inference; frontier model only on sanitised eval data</li>
                         </ul>
-                        <p><strong>Tech:</strong> Ollama, mistral:7b, mistral-small:22b, RAG, ChromaDB, AMD ROCm, Python, MITRE ATT&amp;CK</p>
+                        <p><strong>Tech:</strong> Ollama, mistral:7b, Foundation-Sec-8B, Claude Opus 5, ChromaDB, Velociraptor, AMD ROCm, Python, pytest, NIST AI RMF</p>
                         <a href="https://github.com/SeriouslyCyberLLC/cyber-portfolio/blob/main/projects/ai-enhanced-security-analysis.md" class="project-link">Read More<span class="visually-hidden"> about AI-Enhanced Security Analysis</span></a>
                     </li>
 

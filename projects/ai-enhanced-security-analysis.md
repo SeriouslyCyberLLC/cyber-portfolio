@@ -1,232 +1,235 @@
-# AI-Enhanced Security Analysis Platform
+# A Triage Model You Can Measure — the SOC's LLM hunt analyzer
 
-## Overview
-Deployed local Large Language Model (LLM) infrastructure for security log analysis, threat investigation, and automated incident response. Provides AI-powered context and recommendations while maintaining complete data privacy through on-premise processing.
+**Status:** Production, local-only. Rebuilt and measured August–September 2026 on a running
+SOC. Every number below comes from a verdict log or a frozen eval set, not an estimate.
 
-## Business Problem
-- Security analysts overwhelmed by alert volume
-- Complex log analysis requires specialized expertise
-- Manual threat research is time-consuming
-- Need for consistent, documented investigation procedures
-- Privacy concerns with cloud-based AI services
+A local LLM reads the output of scheduled endpoint collections (Velociraptor process lists,
+network sockets, crontabs, shell history, Windows persistence keys) and returns a structured
+verdict: threat level, action, confidence, MITRE ATT&CK techniques, and a reason. It is
+grounded with RAG over ATT&CK, D3FEND, Sigma, CISA KEV and LOLBAS/GTFOBins in ChromaDB, and
+runs on a single 24 GB AMD GPU through Ollama.
 
-## Technical Solution
+Getting it running was the easy part. The work worth writing up was finding out whether its
+verdicts meant anything:
 
-### AI Infrastructure
-- **Platform**: Ollama for local LLM hosting
-- **Triage Model**: mistral:7b (4.4GB) for first-pass classification
-- **Overseer Model**: mistral-small:22b (12GB) for verification and harder cases
-- **Hardware**: AMD RX 7900 XTX (24GB) with ROCm acceleration
-- **Server**: soc-01, a dedicated Debian system (Intel i9-13900K, 24 cores / 32 threads)
+> **For ten days the analyzer called 37.8% of routine collections CRITICAL, and 52% of its
+> verdicts reported a confidence of zero. The model wasn't the main problem. The verdicts
+> were being sampled at random rather than decided, the prompt never defined half the fields
+> the schema required, and no one had ever measured recall.**
 
-### RAG (Retrieval Augmented Generation) System
-- **Knowledge Base**: MITRE ATT&CK framework, security procedures, threat intel
-- **Vector Database**: ChromaDB for semantic search
-- **Embedding Model**: sentence-transformers/all-MiniLM-L6-v2
-- **Context Window**: 32K tokens for long-form analysis
+## Before and after, in production
 
-## Implementation Architecture
+The same service and the same three endpoints, ten days either side of the fix:
 
-### Data Processing Pipeline
+| | 10 days before | 10 days after |
+|---|---|---|
+| verdicts | 1,050 | 1,150 |
+| CRITICAL | **397 (37.8%)** | **0** |
+| `confidence == 0` | **52%** | **0%** |
+| LOW / MEDIUM / HIGH | 568 / 45 / 40 | 940 / 204 / 6 |
+
+A drop in alerts proves nothing by itself. A model that answers LOW to everything would also
+produce the right-hand column. The rest of this writeup covers how that case was ruled out.
+
+## 1. The verdicts were sampled, not decided
+
+The shared LLM client sent **no sampling options** for any role, and no Modelfile set any,
+so every verdict ran at Ollama's defaults: temperature 0.8, top_p 0.9. That is a sensible
+default for a chat assistant and the wrong one for a classifier.
+
+I measured it with the prompt unchanged, the collected evidence frozen, and five identical
+reruns on the model then in production (Foundation-Sec-8B):
+
+| | temperature 0.8 | temperature 0 |
+|---|---|---|
+| malicious test cases that got *different* verdicts across reruns | **8 of 8** | 0 of 8 |
+
+A root shell running from `/tmp` with an established connection to a public IP on port 4444
+came back as:
+
 ```
-Security Event → Log Parsing → LLM Analysis → Contextualized Alert
-                       ↓
-              RAG System (ATT&CK, TI) → Enhanced Context → Recommended Actions
-```
-
-### Integration Points
-1. **ELK Stack**: Automated analysis of suspicious events
-2. **Velociraptor**: Artifact analysis and hunt recommendations
-3. **DNS Monitor**: Behavioral pattern explanation
-4. **Threat Intel**: IOC contextualization and attribution
-
-## Use Cases
-
-### 1. Log Analysis & Correlation
-**Input**: Complex security event with multiple data sources
-**Process**: LLM analyzes logs, correlates events, identifies patterns
-**Output**: Natural language summary with technical details and recommendations
-
-**Example**:
-```
-Alert: Suspicious PowerShell execution on workstation
-LLM Analysis:
-- Identified Base64-encoded command execution
-- Correlated with previous failed login attempts
-- Matched MITRE ATT&CK T1059.001 (PowerShell)
-- Recommended: Memory dump, network traffic analysis, user interview
+LOW, LOW, HIGH, LOW, CRITICAL     at confidence 0, 0, 95, 70, 99
 ```
 
-### 2. Threat Intelligence Research
-**Input**: Unknown IOC or suspicious domain
-**Process**: RAG system searches threat intel database, LLM synthesizes findings
-**Output**: Threat actor attribution, campaign details, defensive recommendations
+**So the high CRITICAL rate and the missed detections were one defect, not two.** It also
+means any conclusion drawn from a single run of this analyzer was unsound, including some I
+had already written down.
 
-**Example**:
+**Setting temperature to 0 was not the fix.** Paired on the same 39 routine flows, greedy
+decoding raised the share rated HIGH or above from 41.0% to **79.5%**, and agreed with the
+sampled verdicts only 38% of the time. It was stable, but more alarmist. Determinism makes
+the analyzer measurable. It does not make it accurate. Production now pins temperature 0 for
+this role anyway, as insurance: reproducibility should come from the config, not from which
+model tag happens to be installed.
+
+## 2. The eval harness, and why it has two halves
+
+The harness replays **117 real collections** (39 per host, the production artifact mix),
+with evidence rows and RAG snippets frozen, so every experiment is paired on identical
+input. Next to it is a **control set of 8 malicious cases** in the exact collection schema:
+a deleted binary running from `/tmp`, a reverse shell, `curl | bash` persistence in cron, a
+credential harvest followed by history wiping, encoded PowerShell from AppData, a rundll32
+beacon, a Base64 Run key, and a process posing as a kernel thread.
+
+**The control set is not optional.** If you only measure false positives on routine data,
+the best possible score goes to a model that never fires. That happened: one candidate model
+rated all 156 routine verdicts LOW across four prompt variants, which looked like noise had
+been eliminated and was actually a detector that could not fire. A frontier model posted the
+same routine score *while catching every attack*. Same headline number, opposite meaning,
+and only the recall half tells them apart.
+
+`compare.py` refuses to let a model shrink its own denominator. If a control case errored,
+the report prints **UNMEASURED**, not `7/7`, because 7/7 reads as 100% while quietly dropping
+the hardest case.
+
+## 3. The prompt never defined the fields it required
+
+The verdict schema requires `threat_level`, `action` and `confidence`. The prompt defined
+none of them. So the model picked from a four-value enum with no rubric and put `0` in a
+confidence field it had never been told about. Every verdict self-reported as worthless and
+was still logged as a finding.
+
+The fix was a rubric for all four levels and all four actions, confidence **anchors** rather
+than a bare "0-100" range (a bare range gets the same default zero), and a counterweight to
+the host baseline. The baseline tells the model *what software is present*, never *what it
+did*: sshd is expected on the host, but sshd spawning an outbound shell is not.
+
+Then a de-confounded comparison: identical frozen prompts, with the model as the only
+variable.
+
+| model | routine rated ≥ HIGH (of 39) | control recall (of 8) | notes |
+|---|---|---|---|
+| Foundation-Sec-8B | 5.1% | 1/8 | 9 invented ATT&CK IDs rejected by the validator |
+| mistral:7b | 0.0% | **0/8** | discriminates, but rated every attack MEDIUM |
+| Claude Opus 5 (sanitised, eval only) | 0.0% | **8/8** | confidence 45–95 across 13 distinct values; 0 invalid IDs |
+| **mistral:7b + severity floor** (deployed) | **0.0%** | **8/8** | |
+
+Paired on the same 39 flows at the same default sampling, the rubric alone took
+Foundation-Sec's rate of routine verdicts at HIGH or above from 41.0% to 5.1%. But it moved
+mistral's misses into MEDIUM rather than HIGH. The local model could tell a reverse shell
+from routine activity and still never crossed the line that matters.
+
+## 4. A deterministic floor under the model
+
+`severity_floor.py` computes a **minimum** threat level from the sampled evidence rows. The
+model can go above the floor, never below it. It is code rather than prompt text for three
+reasons: the guarantee has to survive a model swap (this role was swapped the same week), it
+has to survive an unrelated prompt edit, and a prompt instruction can't be unit-tested.
+
+Two of the six missed detections weren't missing rules. They were **fields the matcher could
+not see**: socket rows nest their process details in an object the flat scan skipped, and
+Velociraptor renders Windows argv NUL-separated, so a pattern spanning two arguments could
+never match. Fixing that plumbing recovered more than the new patterns did.
+
+Where a rule depends on the *relationship* between fields, it is structural rather than a
+regex:
+
+| rule | floor | why each half matters |
+|---|---|---|
+| executable in a temp path **and** deleted from disk | CRITICAL | either alone is routine — deleted binaries follow every package upgrade |
+| kernel-thread name **with** an executable path | CRITICAL | real kernel threads have no executable at all |
+| established connection **from** a temp-path binary | CRITICAL | scoped to established, not listening |
+| rundll32/regsvr32/mshta/certutil **to a public** address | HIGH | these do talk to LAN services |
+| encoded PowerShell **with** a hidden window | HIGH | installers use `-enc` openly; hiding the window is the tell |
+
+**Measured:** fires on **0 of 117** real routine flows and **8 of 8** controls. 72 tests
+cover the floor, the harness and the sanitiser. The rules were written with the control set
+visible, so 8/8 alone proves little. The benign-shape tests are what carry the weight: a
+deleted binary on a normal path, a real kernel worker, a listening socket from `/tmp`,
+rundll32 to a private address, `-enc` without a hidden window.
+
+`severity_floor_applied` is logged on every verdict, along with the model's own answer, so
+"the model agreed with the floor" and "no rule matched" stay separate facts. **If overrides
+start appearing, the model has regressed.**
+
+## 5. What production caught that the eval set didn't
+
+Since deployment the floor has overridden the model **6 times, all HIGH, and all the same
+line**. Each was the standard one-liner installer for the Node version manager:
+
 ```
-Query: Analyze domain "evil-c2-server[.]com"
-AI Response:
-- First seen: 2024-12-15 (threat intel feeds)
-- Associated with APT29 infrastructure
-- Used in recent phishing campaign targeting finance sector
-- TTPs: Credential harvesting, lateral movement via SMB
-- Defensive actions: Block domain, hunt for similar patterns, review email logs
-```
-
-### 3. Incident Response Playbook Generation
-**Input**: Incident type and initial indicators
-**Process**: LLM generates step-by-step investigation procedure
-**Output**: Customized IR playbook with commands and expected results
-
-**Example**:
-```
-Incident: Suspected ransomware infection
-Generated Playbook:
-1. Isolate affected system (network + VLAN)
-2. Capture memory dump: volatility -f memdump.raw imageinfo
-3. Identify process tree: pslist, pstree
-4. Extract network connections: netscan
-5. Search for file modifications: timeline analysis
-6. Check for lateral movement indicators
-7. Preserve evidence for forensics
-```
-
-### 4. Security Training & Documentation
-**Input**: Security concept or procedure question
-**Process**: LLM explains in appropriate detail level
-**Output**: Clear, accurate explanation with examples
-
-**Example**:
-```
-Query: Explain Kerberoasting attack
-AI Response: [Detailed explanation with attack steps, detection methods, 
-and defensive measures, tailored to analyst's expertise level]
-```
-
-## Performance Metrics
-
-### Analysis Speed
-- **Simple Event Analysis**: 2-5 seconds
-- **Complex Correlation**: 10-15 seconds
-- **Threat Intelligence Research**: 5-8 seconds
-- **Playbook Generation**: 15-20 seconds
-
-### Quality Controls
-- **Two-Tier Verification**: mistral:7b produces the first-pass verdict, mistral-small:22b reviews it before anything is surfaced
-- **Grounded Output**: Every technique mapping is drawn from the retrieved ATT&CK context rather than model recall
-- **Structured Verdicts**: Fixed output schema, so a malformed or low-confidence response fails closed instead of guessing
-- **Human in the Loop**: No containment action is taken on a model verdict alone
-
-### Resource Utilization
-- **GPU Memory**: 24GB VRAM total; 4.4GB resident for mistral:7b, 12GB for mistral-small:22b
-- **Inference Speed**: 25-35 tokens/second
-- **Concurrent Requests**: Up to 3 simultaneous analyses
-- **Model Loading Time**: 8-12 seconds cold start
-
-## RAG System Details
-
-### Knowledge Base Components
-1. **MITRE ATT&CK Framework**
-   - All 14 tactics, 193+ techniques
-   - Sub-techniques and procedures
-   - Detection methods and mitigations
-
-2. **Threat Intelligence**
-   - APT group profiles and TTPs
-   - Malware family behaviors
-   - Campaign analysis and IOCs
-
-3. **Security Procedures**
-   - Incident response playbooks
-   - Forensic analysis procedures
-   - Tool usage documentation
-
-4. **Internal Knowledge**
-   - Custom detection rules
-   - Environment-specific context
-   - Historical incident data
-
-### Semantic Search Implementation
-- **Embedding Dimension**: 384
-- **Search Method**: Cosine similarity
-- **Top-K Results**: 5 most relevant chunks
-- **Context Injection**: Relevant knowledge added to LLM prompt
-
-## Technical Skills Demonstrated
-- Large Language Model deployment and optimization
-- GPU acceleration (AMD ROCm)
-- RAG system architecture
-- Vector database implementation
-- Prompt engineering for security analysis
-- Model quantization and optimization
-- API development for LLM integration
-- Privacy-preserving AI implementation
-
-## Privacy & Security
-
-### Data Protection
-- **100% Local Processing**: No data leaves infrastructure
-- **No Internet Connectivity**: Models run air-gapped from external services
-- **Sensitive Data Handling**: PII/credentials never sent to external APIs
-- **Audit Trail**: All queries and responses logged locally
-
-### Model Security
-- **Open Source Models**: Auditable, no vendor lock-in
-- **Offline Operation**: No dependency on external services
-- **Version Control**: Model versioning and rollback capability
-- **Access Control**: API authentication and authorization
-
-## Automation Integration
-
-### Automated Workflows
-1. **Alert Enrichment**: Security events auto-analyzed on detection
-2. **Daily Summaries**: Automated daily security posture reports
-3. **Threat Briefings**: Morning digest of overnight activity
-4. **Investigation Assistance**: On-demand analysis for SOC analysts
-
-### Python Integration
-```python
-# Example: Automated alert analysis
-def analyze_security_event(event):
-    prompt = f"""
-    Analyze this security event:
-    {event['details']}
-    
-    Provide:
-    1. Severity assessment
-    2. MITRE ATT&CK mapping
-    3. Recommended actions
-    """
-    
-    response = ollama.generate(
-        model="mistral:7b",
-        prompt=prompt,
-        context=rag_search(event['indicators'])
-    )
-    
-    return response['response']
+curl -o- https://…/nvm-sh/nvm/v0.39.0/install.sh | bash
 ```
 
-## Business Impact
-- **Analyst Efficiency**: Routine enrichment and ATT&CK mapping happen before an analyst opens the alert
-- **Knowledge Retention**: Consistent analysis methodology across every alert, independent of who is on shift
-- **Cost**: Runs on already-owned hardware, with no per-token or per-seat billing
-- **Data Residency**: Alert contents never leave the host, which is what makes the tool usable on regulated data
+It sits in an admin host's shell history, which is collected twice a day, so it re-fires
+twice a day. The rule treats `curl … | bash` as having no benign reading in this
+environment. The 117-flow calibration corpus happened to contain no shell history with an
+installer in it, so nothing contradicted that. **Production did.** Download-and-execute is
+exactly how that installer is meant to run, and it is also exactly what the rule is there to
+catch. The two can't be told apart from the command line alone.
 
-## Comparison to Alternatives
-- **vs. ChatGPT/Claude**: 100% private, no API costs, custom knowledge
-- **vs. Security Copilot**: Local data, customizable, one-time cost
-- **vs. Manual Analysis**: Faster, more consistent, scalable
+The regression signal did its job: the overrides were visible, attributable to a single rule
+and a single line, and checked against the collected evidence rather than guessed at. The
+open decision is whether to allowlist known installer URLs (which an attacker could imitate)
+or to suppress on history lines that have already been seen (so a new one still fires). **A
+calibration corpus is a sample, and the zero it produces is only as good as what the sample
+contains.**
 
-## Future Enhancements
-- Multi-agent systems for complex investigations
-- Fine-tuning models on proprietary incident data
-- Real-time analysis of streaming security events
-- Integration with SOAR platforms for automated response
-- Custom security-focused models
+## Sending evidence to a frontier model without leaking the environment
 
----
+The Claude arm ran on sanitised copies of the corpus only. `sanitize.py` **preserves
+structure rather than redacting**: public IPs map to TEST-NET-3, private ranges to a
+consistent `10.99.x`, and hostnames to stable pseudonyms so "same host" relationships
+survive. Loopback is kept, because a listener on 127.0.0.1 is evidence, not identity. Every
+detection signal stays intact: temp paths, port numbers, `curl | bash`, `-enc`, hashes, the
+deleted flag.
 
-**Deployed**: November 2025  
-**Status**: Production, continuous enhancement  
-**Performance**: 25-35 tokens/sec
+A fail-closed guard runs immediately before the first API call and exits non-zero on any
+leftover address. Two traps turned up while building it:
+
+- **An X.509 OID looks like an IPv4 address.** The first sanitiser rewrote
+  `1.3.6.1.4.1.311.60.2.1.3` in an Authenticode subject into a fake IP, silently corrupting
+  exactly the certificate evidence the Windows cases turn on. A four-component OID
+  (`2.5.4.15`) has the same shape as an address, and only its `OID=` context separates them.
+- **The sanitiser and the guard must share one definition of an address.** Once OIDs were
+  preserved correctly, the guard started blocking them as real IPs, which would have refused
+  a correctly sanitised payload forever.
+
+## Guardrails that were already in place
+
+- **No failure can produce a well-formed verdict.** A schema violation, empty completion,
+  timeout or unreachable endpoint raises an error. Nothing is clamped into a default
+  MEDIUM/0.
+- **ATT&CK IDs are validated** against a frozen list of 860 real technique IDs, and the free
+  text is scanned too, because checking only the structured field left invented IDs in the
+  prose.
+- **RAG has a relevance floor.** Retrieved documents past a distance threshold are dropped,
+  not injected as context regardless of fit.
+- **Two log files, on purpose.** The verdict log gets successes only, so it goes stale when
+  analysis fails. A status file is rewritten every cycle to prove the loop is running.
+  Merging the two would let a running-but-useless service look healthy.
+- **No containment is triggered by a model verdict.** The analyzer recommends. It doesn't
+  act.
+
+## Honest limitations
+
+- The control cases are synthetic and deliberately unambiguous. Catching them is necessary,
+  not sufficient. Accuracy on *ambiguous* evidence needs a labelled set of real alerts, and
+  that is still being built.
+- n = 39 routine flows per arm, from three hosts. Enough to expose a 79.5% false-positive
+  rate or a detector that can't fire. Not enough to rank two good models.
+- mistral:7b still under-calls on its own. The floor guarantees the unambiguous cases and
+  nothing more. Treat the output as triage assistance, not a detector.
+- Section 5's false positive is open, not fixed.
+
+## Framework mapping
+
+| finding | maps to |
+|---|---|
+| verdicts that change on identical input; confidence reported as zero | NIST AI RMF **Measure** (validity, reliability) |
+| invented ATT&CK IDs caught by validation | OWASP LLM Top 10 2025 **LLM09 Misinformation** |
+| model rates a reverse shell MEDIUM; deterministic code floor underneath | NIST AI RMF **Manage** (risk treatment for a known model weakness) |
+| analyzer recommends only, never triggers containment | OWASP **LLM06 Excessive Agency** |
+| structure-preserving sanitiser and fail-closed egress guard | OWASP **LLM02 Sensitive Information Disclosure**; NIST AI RMF **Manage** |
+| paired eval with a recall control before any model or prompt change | NIST AI RMF **Measure**; ISO/IEC 42001 AI system performance monitoring |
+
+## Skills demonstrated
+
+- Designing LLM evaluations that can't be gamed by a degenerate classifier
+- Tracing an ML failure to its root cause (sampling configuration) rather than blaming the model
+- Deterministic guardrails layered under a probabilistic component, with regression telemetry
+- Privacy-preserving evaluation against a frontier API
+- Local LLM operations: Ollama, ROCm, RAG with ChromaDB, schema-enforced structured output
+
+**Tech:** Python, Ollama, mistral:7b, Foundation-Sec-8B, Claude Opus 5 (eval only), ChromaDB,
+Velociraptor, AMD ROCm, pytest, MITRE ATT&CK, OWASP LLM Top 10 2025, NIST AI RMF
