@@ -157,11 +157,11 @@ check('no emoji', () => {
   return e ? [...new Set(e)].join(' ') : true;
 });
 
-check('11 project cards present, in order', () => {
+check('12 project cards present, in order', () => {
   const got = [...html.matchAll(/<li class="project">\s*\n\s*<h3>([^<]+)<\/h3>/g)].map(m => m[1].trim());
   const want = ['AI-Enhanced Security Analysis', 'AI Red-Team Bench', 'Automated Report Generation',
     'Threat Intelligence Integration', 'Enterprise SOC Infrastructure', 'SOC Assurance Audit',
-    'Hardening Telemetry', 'DNS Behavioral Monitoring (retired)',
+    'Hardening Telemetry', 'Off-Site Backup and Restore', 'DNS Behavioral Monitoring (retired)',
     'Network Security Architecture', 'Business Infrastructure Platform', 'Local Speech-to-Text'];
   return JSON.stringify(got) === JSON.stringify(want) ? true : `got ${got.length}: ${got.join(' | ')}`;
 });
@@ -304,7 +304,12 @@ renderCheck('no horizontal overflow at any width', d => {
    a grid that gives it no track. The static card-order check cannot see this. */
 renderCheck('every project card has a visible box', d => {
   if (!d.cards) return 'no card metrics collected';
-  if (d.cards.count !== 11) return `browser sees ${d.cards.count} cards, expected 11`;
+  /* Derived from the markup, not pinned to a literal: a hardcoded count here failed
+     the whole harness when a twelfth card was added, which trains you to edit the
+     number rather than read the failure. The static check above is what pins the
+     card list; this one only asks whether the browser drew all of them. */
+  const inFile = [...html.matchAll(/<li class="project">/g)].length;
+  if (d.cards.count !== inFile) return `browser sees ${d.cards.count} cards, file has ${inFile}`;
   return d.cards.zeroSized.length ? `zero-sized: ${d.cards.zeroSized.join(', ')}` : true;
 });
 

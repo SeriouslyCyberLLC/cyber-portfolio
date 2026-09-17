@@ -68,22 +68,27 @@ Two daily security scanners had run for months and nothing had ever read their o
 
 **Key Stats**: hardening index 66 to 71 and 59 to 70 across two hosts, rootkit findings piped into a dead mail path, 1 of 8 rules may page and it has never fired, unreadable reports emit no score rather than a zero
 
-### 8. [DNS Behavioral Monitoring — built, measured, retired](dns-behavioral-monitoring.md)
+### 8. [Off-Site Backup and Restore](off-site-backup.md)
+Encrypted off-site backup of the SOC's configuration, detections and git repositories, with immutable retention and a restore drill that cannot pass vacuously. The tooling sat reviewed and committed for two weeks without ever being run.
+
+**Key Stats**: five runtime-only defects between committed code and one snapshot, backup set 1,830 MB to 179 MB once a live database directory came out, 30-day delete protection with no prune path, first weekly integrity check passed against an empty repository
+
+### 9. [DNS Behavioral Monitoring — built, measured, retired](dns-behavioral-monitoring.md)
 DGA and tunneling detector over Zeek DNS. Ran 17 days, was measured against its own output, and was retired on the evidence. The post-mortem covers both the precision failure and the silent-failure mode that hid it for seven months.
 
 **Key Stats**: 2.6M detections in 17.2 days, 99.9% at the score floor, 96.6% of output was the host's own hostname, 61 false pages/day
 
-### 9. [Firewalla Network Security Architecture](firewalla-network-security.md)
+### 10. [Firewalla Network Security Architecture](firewalla-network-security.md)
 Defense-in-depth network architecture with multi-VLAN segmentation, threat prevention, and comprehensive traffic monitoring.
 
 **Key Stats**: 877K blocked flows per day, 2.1M flow records per day, 6 VLANs segmented by trust level
 
-### 10. [Business Infrastructure Platform](business-infrastructure-platform.md)
+### 11. [Business Infrastructure Platform](business-infrastructure-platform.md)
 Self-hosted business infrastructure reaching the internet through Cloudflare Tunnel, with no inbound ports opened on the origin. Live at seriouslycyber.com.
 
 **Key Stats**: $0/month hosting, outbound-only ingress with the origin IP unpublished, 6 lead generation templates, multi-domain tunnel
 
-### 11. [Local Speech-to-Text Infrastructure](whisper-speech-to-text.md)
+### 12. [Local Speech-to-Text Infrastructure](whisper-speech-to-text.md)
 Privacy-focused transcription system using Whisper AI with GPU acceleration. Browser extension and system-wide hotkey for secure dictation.
 
 **Key Stats**: 3-5 second transcription, local Whisper with ROCm acceleration, no cloud upload

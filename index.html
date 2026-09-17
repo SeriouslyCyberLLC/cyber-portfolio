@@ -571,8 +571,8 @@
             <!-- ================= PROJECTS ================= -->
             <section id="projects" aria-labelledby="projects-title">
                 <div class="section-title">
-                    <h2 id="projects-title">11 Systems Built</h2>
-                    <p>Ten running in production. One retired on measurement — that writeup is the honest one.</p>
+                    <h2 id="projects-title">12 Systems Built</h2>
+                    <p>Eleven running in production. One retired on measurement — that writeup is the honest one.</p>
                 </div>
 
                 <ul class="projects">
@@ -665,6 +665,19 @@
                         </ul>
                         <p><strong>Tech:</strong> Lynis, chkrootkit, Prometheus, Alertmanager, node-exporter, systemd, Python, pytest</p>
                         <a href="https://github.com/SeriouslyCyberLLC/cyber-portfolio/blob/main/projects/hardening-telemetry.md" class="project-link">Read More<span class="visually-hidden"> about Hardening Telemetry</span></a>
+                    </li>
+
+                    <li class="project">
+                        <h3>Off-Site Backup and Restore</h3>
+                        <p>Encrypted off-site backup of the SOC's configuration, detections and git repositories, with immutable retention. The tooling had been reviewed and committed for two weeks without ever being run.</p>
+                        <ul class="stats">
+                            <li>Five defects stood between committed code and one snapshot</li>
+                            <li>90% of the first backup set was a live database directory</li>
+                            <li>Delete protection for 30 days; nothing ever prunes</li>
+                            <li>Restore drill compares bytes and fscks every repository</li>
+                        </ul>
+                        <p><strong>Tech:</strong> restic, Cloudflare R2, systemd timers, Prometheus, Alertmanager, PostgreSQL, Bash, Python, pytest</p>
+                        <a href="https://github.com/SeriouslyCyberLLC/cyber-portfolio/blob/main/projects/off-site-backup.md" class="project-link">Read More<span class="visually-hidden"> about Off-Site Backup and Restore</span></a>
                     </li>
 
                     <li class="project">
