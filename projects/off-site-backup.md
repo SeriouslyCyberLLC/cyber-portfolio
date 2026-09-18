@@ -199,7 +199,7 @@ It passed on 2026-09-13. **The restored tree contains credentials in the clear**
 root-only, outside the paths the file-integrity monitor watches, and deleted afterwards.
 Cadence is quarterly; an untested backup is not a backup.
 
-## Open: the weekly integrity check passed against an empty repository
+## The weekly integrity check passed against an empty repository — FIXED
 
 The weekly check runs `restic check --read-data-subset=5%` — reading a rotating subset of
 packfiles, because a structure-only check proves the blobs exist without ever reading them.
@@ -217,12 +217,40 @@ because the first backup attempt that morning had failed on defect 5 and the fir
 successful one didn't land until 10:17. The check verified an empty repository and passed.
 
 This is the same shape as a file-integrity scan reporting "no differences" after scanning
-zero entries. The rules cover a check that *fails* and a check that *stops running*; neither
-can see a check that **passed vacuously**. The fix is a floor — the check must report at
-least one snapshot verified, or it isn't a verification — and it is not written yet. The
-next scheduled run will be meaningful; the rule to guarantee that still needs to exist.
+zero entries. Neither existing rule can see it: one watches for a check that **fails**, and
+this one passed; the other watches for a check that **stops running**, and this one ran on
+time. Only the snapshot count separates *verified and sound* from *verified nothing*.
 
-Also open: the restore drill ran from a script in a temporary directory, so the script
+**Fixed with a floor, deployed 2026-09-17.** The check counts snapshots after verifying and
+**exits 3** on a pass over zero, saying so in words rather than leaving the reader to notice.
+A new metric carries the count and a critical rule fires on `== 0`.
+
+Three details that are the actual design:
+
+- **An unlistable repository records UNKNOWN by omitting the count, never 0.** A failed API
+  call must not manufacture the alarming case out of an absence — that inversion is how this
+  estate has produced false zeros before.
+- **The check now runs the exporter itself**, because the unit's post-run hook doesn't
+  execute when the main command fails, which is precisely when the metrics matter most.
+- **No second rule for the missing series.** The 10-day staleness rule already covers a check
+  that stops running, and two alerts for one silence teaches you to skim past both.
+
+**The tests are the point, given what is being fixed.** They drive the real script with a
+fake restic on the path, and cover all four directions: empty repository → exit 3 with the
+count recorded and the metrics still exported; populated → exit 0 and silent; unlistable →
+UNKNOWN with no count and no invented failure; the underlying check failing → its exit code
+propagated.
+
+Then the tests were **mutation-tested**: deleting the floor from the script turns 11 passing
+assertions into **9 passed, 2 failed**. A guard against a vacuous pass that cannot itself
+fail would be the joke writing itself.
+
+Verified on deployment against the live system rather than the deploy script's own summary:
+7 snapshots present, one packfile read back, the metric served by the collector, the rule
+loaded and healthy. **It has never fired, and the only vacuous run on record is the one that
+prompted it** — the guarantee now exists; it has not been exercised in anger.
+
+Still open: the restore drill ran from a script in a temporary directory, so the script
 itself wasn't kept. A drill you can't re-run identically is a demonstration, not a
 procedure. It belongs in the repository beside the deployment scripts.
 

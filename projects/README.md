@@ -71,7 +71,7 @@ Two daily security scanners had run for months and nothing had ever read their o
 ### 8. [Off-Site Backup and Restore](off-site-backup.md)
 Encrypted off-site backup of the SOC's configuration, detections and git repositories, with immutable retention and a restore drill that cannot pass vacuously. The tooling sat reviewed and committed for two weeks without ever being run.
 
-**Key Stats**: five runtime-only defects between committed code and one snapshot, backup set 1,830 MB to 179 MB once a live database directory came out, 30-day delete protection with no prune path, first weekly integrity check passed against an empty repository
+**Key Stats**: five runtime-only defects between committed code and one snapshot, backup set 1,830 MB to 179 MB once a live database directory came out, 30-day delete protection with no prune path, first weekly integrity check passed against an empty repository — now floored, and the floor is mutation-tested
 
 ### 9. [DNS Behavioral Monitoring — built, measured, retired](dns-behavioral-monitoring.md)
 DGA and tunneling detector over Zeek DNS. Ran 17 days, was measured against its own output, and was retired on the evidence. The post-mortem covers both the precision failure and the silent-failure mode that hid it for seven months.
