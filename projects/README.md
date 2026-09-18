@@ -64,9 +64,9 @@ Audited a running SOC's own reliability rather than adding sensors. Eleven defec
 **Key Stats**: 5 services healthy while producing nothing, 3 controls reporting success with no effect, intel pipeline dead 35 and 73 days, auto-blocker that could never unblock
 
 ### 7. [Hardening Telemetry](hardening-telemetry.md)
-Two daily security scanners had run for months and nothing had ever read their output. Turned both into tracked metrics, then decided — with measurements — what was allowed to page.
+Five daily security controls nobody was reading, including an antivirus daemon in perfect health that nothing had ever asked to scan. Each became a tracked metric, then measurements decided what was allowed to page.
 
-**Key Stats**: hardening index 66 to 71 and 59 to 70 across two hosts, rootkit findings piped into a dead mail path, 1 of 8 rules may page and it has never fired, unreadable reports emit no score rather than a zero
+**Key Stats**: hardening index 66 to 71 and 59 to 70 across two hosts, a file-integrity scan that had not run at all for 38 days, an antivirus daemon holding 8 MB resident against 955 MB swapped out, 22 rules across five controls calibrated 289:1 against routine churn, unreadable reports emit no score rather than a zero
 
 ### 8. [Off-Site Backup and Restore](off-site-backup.md)
 Encrypted off-site backup of the SOC's configuration, detections and git repositories, with immutable retention and a restore drill that cannot pass vacuously. The tooling sat reviewed and committed for two weeks without ever being run.

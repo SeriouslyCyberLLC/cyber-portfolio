@@ -656,14 +656,14 @@
 
                     <li class="project">
                         <h3>Hardening Telemetry</h3>
-                        <p>Two scanners had run daily for months and nothing had ever read them. Turned both into tracked metrics, then decided — with measurements — what was allowed to page.</p>
+                        <p>Five daily security controls nobody was reading — one of them an antivirus daemon in perfect health that nothing had ever asked to scan. Each became a tracked metric, then measurements decided what was allowed to page.</p>
                         <ul class="stats">
-                            <li>Hardening index 66&nbsp;&rarr;&nbsp;71 and 59&nbsp;&rarr;&nbsp;70 across two hosts</li>
-                            <li>Rootkit findings were piped into a dead mail path</li>
-                            <li>Of 8 rules, exactly 1 may page; it has never fired</li>
-                            <li>Unreadable reports emit no score, never a zero</li>
+                            <li>A file-integrity scan had not run at all for 38 days</li>
+                            <li>Antivirus: 8MB resident, 955MB swapped out — proof it was idle</li>
+                            <li>22 rules across five controls, calibrated 289:1 against churn</li>
+                            <li>A scan over zero entries reports &ldquo;no differences&rdquo;</li>
                         </ul>
-                        <p><strong>Tech:</strong> Lynis, chkrootkit, Prometheus, Alertmanager, node-exporter, systemd, Python, pytest</p>
+                        <p><strong>Tech:</strong> AIDE, ClamAV, Lynis, chkrootkit, debsums, Prometheus, Alertmanager, node-exporter, systemd, Python, pytest</p>
                         <a href="https://github.com/SeriouslyCyberLLC/cyber-portfolio/blob/main/projects/hardening-telemetry.md" class="project-link">Read More<span class="visually-hidden"> about Hardening Telemetry</span></a>
                     </li>
 
