@@ -54,9 +54,9 @@ Multi-source threat intel platform with automated IOC enrichment. Integrated Vir
 **Key Stats**: Six intelligence sources (VirusTotal, AbuseIPDB, OTX, Hybrid Analysis, MISP, CISA KEV), enrichment lookup on every external source and destination IP
 
 ### 5. [Enterprise SOC Infrastructure](soc-infrastructure.md)
-Full-stack security monitoring platform with ELK Stack, Suricata IDS, Zeek NSM, and Velociraptor EDR.
+Six layers on owned hardware, and the map to every other project here: network detection, SIEM, threat intel, local LLM triage, endpoint EDR, and the assurance layer that watches all of it.
 
-**Key Stats**: 307M events across the SOC indices, 118 GB of Suricata and Zeek telemetry, mirrored capture on a dedicated interface, 3 monitored endpoints
+**Key Stats**: 8.73B documents across 2.30 TB with network telemetry only 11.7% of it, 12.6M network and 54.5M endpoint events per day, ingest ceiling 6,300 docs/sec bounded by spinning disks, four advertised capabilities retired on measurement rather than repaired
 
 ### 6. [SOC Assurance Audit](assurance-audit.md)
 Audited a running SOC's own reliability rather than adding sensors. Eleven defects, every one invisible to status commands and exit codes, all found by measuring output.
