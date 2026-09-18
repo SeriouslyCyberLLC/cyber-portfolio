@@ -1,0 +1,22 @@
+<!--
+  Favicon: the SC monogram and the satellite, on a square canvas.
+
+  A FAVICON IS A 16px GLYPH, NOT A SHRUNKEN LOGO. logo-orbital.svg needs three
+  elements to read - orbit, trail, monogram - and at 16px it has ~256 pixels to do
+  that in; rendered at tab size it is an amber smudge. The company seal is worse: its
+  ring text is unreadable below about 64px. Both were rendered at 16px and compared
+  before this file was written.
+
+  What survives the size is the monogram and the amber dot, both lifted unchanged
+  from the mark in the hero and the footer, so this reads as the family's small-size
+  form rather than a second logo. Square viewBox on purpose: a wide one letterboxes
+  and the glyph shrinks again.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64"
+     role="img" aria-label="Seriously Cyber Consulting">
+  <g transform="translate(32,40) scale(0.62)">
+    <g transform="translate(-31.21,16) scale(0.02539,-0.02539)"><path d="M1165 391Q1165 199 1018.5 89.5Q872 -20 611 -20Q376 -20 228.0 79.0Q80 178 38 367L323 404Q346 310 419.0 255.5Q492 201 619 201Q751 201 814.5 243.0Q878 285 878 374Q878 440 822.0 485.5Q766 531 659 557Q444 609 355.5 647.5Q267 686 214.0 734.0Q161 782 132.5 846.5Q104 911 104 991Q104 1166 244.5 1268.0Q385 1370 615 1370Q839 1370 965.0 1281.5Q1091 1193 1128 1007L842 978Q798 1161 609 1161Q503 1161 447.0 1121.5Q391 1082 391 1008Q391 959 418.0 926.5Q445 894 491.5 871.5Q538 849 681 812Q869 766 970.0 709.5Q1071 653 1118.0 573.0Q1165 493 1165 391Z" fill="#df8544"/></g>
+    <g transform="translate(0.00,16) scale(0.02539,-0.02539)"><path d="M380 681Q380 456 450.0 334.0Q520 212 659 212Q821 212 899 456L1172 404Q1039 -20 656 -20Q375 -20 227.5 158.5Q80 337 80 681Q80 1370 648 1370Q834 1370 959.5 1272.0Q1085 1174 1144 981L872 915Q843 1021 785.0 1079.5Q727 1138 652 1138Q380 1138 380 681Z" fill="#df8544"/></g>
+  </g>
+  <circle cx="50" cy="15" r="6.5" fill="#df8544"/>
+</svg>

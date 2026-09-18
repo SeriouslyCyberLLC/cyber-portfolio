@@ -107,6 +107,32 @@ check('badge well retained and light enough for black wordmarks', () => {
   return r >= 4.5 ? true : `well ${full} gives only ${r.toFixed(2)}:1 against black wordmarks`;
 });
 
+/* A favicon is a 16px glyph. The page shipped for months with the 330px hero mark as
+   its icon, which renders as an amber smudge in a tab -- a silent regression no other
+   check here could see. Pins: the icon is declared, the file exists, its viewBox is
+   SQUARE (a wide one letterboxes and the glyph shrinks again), and the Apple touch
+   icon is a real 180x180 PNG. Skipped against --url, where the local files are not
+   the deployed ones; the render check covers loading there. */
+check('favicon is a square glyph and the touch icon is 180x180', () => {
+  const icon = html.match(/<link rel="icon"[^>]*href="([^"]+)"/);
+  if (!icon) return 'no <link rel="icon"> declared';
+  const touch = html.match(/<link rel="apple-touch-icon"[^>]*href="([^"]+)"/);
+  if (!touch) return 'no apple-touch-icon declared';
+  if (TARGET_URL) return true;
+  const read = p => readFileSync(new URL('../' + p, import.meta.url));
+  let svg;
+  try { svg = read(icon[1]).toString('utf8'); } catch { return `${icon[1]} is declared but missing`; }
+  const vb = svg.match(/viewBox="([-\d.]+)\s+([-\d.]+)\s+([\d.]+)\s+([\d.]+)"/);
+  if (!vb) return `${icon[1]} has no viewBox`;
+  const [w, h] = [Number(vb[3]), Number(vb[4])];
+  if (Math.abs(w - h) > 0.01) return `${icon[1]} viewBox is ${w}x${h}; a non-square icon letterboxes in a tab`;
+  let png;
+  try { png = read(touch[1]); } catch { return `${touch[1]} is declared but missing`; }
+  // PNG IHDR: width and height are big-endian uint32 at bytes 16 and 20.
+  const pw = png.readUInt32BE(16), ph = png.readUInt32BE(20);
+  return (pw === 180 && ph === 180) ? true : `touch icon is ${pw}x${ph}, expected 180x180`;
+});
+
 check('accessibility affordances retained', () => {
   const need = [
     ['skip link', /class="skip-link"/.test(html)],
