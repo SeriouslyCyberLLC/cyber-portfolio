@@ -157,11 +157,11 @@ check('no emoji', () => {
   return e ? [...new Set(e)].join(' ') : true;
 });
 
-check('12 project cards present, in order', () => {
+check('13 project cards present, in order', () => {
   const got = [...html.matchAll(/<li class="project">\s*\n\s*<h3>([^<]+)<\/h3>/g)].map(m => m[1].trim());
   const want = ['AI-Enhanced Security Analysis', 'AI Red-Team Bench', 'Automated Report Generation',
     'Threat Intelligence Integration', 'Enterprise SOC Infrastructure', 'SOC Assurance Audit',
-    'Hardening Telemetry', 'Off-Site Backup and Restore', 'DNS Behavioral Monitoring (retired)',
+    'Hardening Telemetry', 'Integrity and Malware Scanning', 'Off-Site Backup and Restore', 'DNS Behavioral Monitoring (retired)',
     'Network Security Architecture', 'Business Infrastructure Platform', 'Local Speech-to-Text'];
   return JSON.stringify(got) === JSON.stringify(want) ? true : `got ${got.length}: ${got.join(' | ')}`;
 });
