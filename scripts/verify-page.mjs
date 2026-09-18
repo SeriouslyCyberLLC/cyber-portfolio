@@ -97,7 +97,7 @@ check('badge well retained and light enough for black wordmarks', () => {
   // Was a literal match on #f4f4f5. That pinned one hex without checking the
   // property it existed to guarantee. ISC2 art is transparent with black
   // wordmarks, so what actually matters is that the well stays light enough for
-  // black-on-well to clear 4.5:1 — measure that instead of the spelling.
+  // black-on-well to clear 4.5:1, measure that instead of the spelling.
   const m = style.match(/\.flagship-badge img\s*\{([^}]*)\}/);
   if (!m) return '.flagship-badge img rule not found';
   const bg = (m[1].match(/background:\s*(#[0-9a-fA-F]{3,6})/) || [])[1];
@@ -133,6 +133,28 @@ check('favicon is a square glyph and the touch icon is 180x180', () => {
   return (pw === 180 && ph === 180) ? true : `touch icon is ${pw}x${ph}, expected 180x180`;
 });
 
+/* Em dashes, en dashes and ellipsis characters were stripped from the whole portfolio on
+   2026-09-18. They read as machine-written, and the telemetry strip REGENERATED them daily
+   from scripts/update-telemetry.mjs, so removing them from the page alone would have
+   lasted until the next 06:45 cron run. This pins the page, and the generator check below
+   pins the thing that writes to it. scripts/dedash.py --check does the same for the
+   markdown writeups. */
+check('no em dashes, en dashes or ellipsis characters', () => {
+  const found = [...html.matchAll(/[\u2014\u2013\u2026]/g)].map(m => m[0]);
+  if (!found.length) return true;
+  const counts = found.reduce((a, c) => (a[c] = (a[c] || 0) + 1, a), {});
+  return Object.entries(counts).map(([c, n]) => `${JSON.stringify(c)} x${n}`).join(', ');
+});
+
+check('the telemetry generator cannot reintroduce them', () => {
+  if (TARGET_URL) return true;
+  const gen = readFileSync(new URL('../scripts/update-telemetry.mjs', import.meta.url), 'utf8');
+  // Only the emitted strings matter, but the whole file is checked: a dash in a comment
+  // is copied into the page the next time someone edits the template around it.
+  const found = [...gen.matchAll(/[\u2014\u2013\u2026]/g)].length;
+  return found ? `update-telemetry.mjs still contains ${found}; the daily run would put them back` : true;
+});
+
 check('accessibility affordances retained', () => {
   const need = [
     ['skip link', /class="skip-link"/.test(html)],
@@ -152,7 +174,7 @@ check('contrast: every text pair meets 4.5:1', () => {
     ['faint on bg', varOf('faint'), bg], ['faint on panel', varOf('faint'), panel],
     ['accent on bg', varOf('accent'), bg], ['accent on panel', varOf('accent'), panel],
   ];
-  // A pair with an unresolved variable must FAIL, not be silently skipped —
+  // A pair with an unresolved variable must FAIL, not be silently skipped,
   // otherwise this check passes vacuously on a page it never measured.
   const missing = pairs.filter(([, f, b]) => !f || !b).map(([n]) => n);
   if (missing.length) return `unresolved custom properties, cannot measure: ${missing.join(', ')}`;
@@ -163,7 +185,7 @@ check('contrast: every text pair meets 4.5:1', () => {
 
 check('every var(--x) reference resolves to a declared property', () => {
   // Renaming --amber to --accent orphans any rule still saying var(--amber).
-  // An orphaned reference renders as nothing — a silent visual failure that
+  // An orphaned reference renders as nothing, a silent visual failure that
   // the hex-pattern checks above cannot see.
   const declared = new Set([...style.matchAll(/--([a-z0-9-]+)\s*:/g)].map(m => m[1]));
   const used = [...style.matchAll(/var\(\s*--([a-z0-9-]+)\s*\)/g)].map(m => m[1]);
@@ -193,7 +215,7 @@ check('14 project cards present, in order', () => {
 });
 
 // The heading counts the cards below it. It had drifted to "9 Systems Built" above
-// ten cards, then eleven — a stale number is the one claim on this page a reader can
+// ten cards, then eleven, a stale number is the one claim on this page a reader can
 // disprove by scrolling. Derive both figures from the markup rather than trusting prose.
 check('projects heading count matches the cards', () => {
   const cards = [...html.matchAll(/<li class="project">/g)].length;
@@ -227,7 +249,7 @@ check('group labels preserved', () =>
 
 check('telemetry strip is intact and machine-generated', () => {
   const block = html.match(/<!-- TELEMETRY:START[\s\S]*?<!-- TELEMETRY:END -->/);
-  if (!block) return 'TELEMETRY markers missing — did someone hand-edit the strip out?';
+  if (!block) return 'TELEMETRY markers missing, did someone hand-edit the strip out?';
   const b = block[0];
   if (!/class="spark-line"[^>]*d="M/.test(b)) return 'sparkline path missing or empty';
   const rows = [...b.matchAll(/<tr><td>/g)].length;
@@ -246,13 +268,13 @@ check('telemetry figures are not stale', () => {
   const when = new Date(m[1].replace(/\s[A-Z]{2,4}$/, ''));
   if (isNaN(when)) return `unparseable timestamp: ${m[1]}`;
   const days = (Date.now() - when) / 86400000;
-  if (days > 120) return `measured ${Math.round(days)} days ago — re-run scripts/update-telemetry.mjs`;
+  if (days > 120) return `measured ${Math.round(days)} days ago, re-run scripts/update-telemetry.mjs`;
   return true;
 });
 
 /* ---- render checks ----------------------------------------------------------
    Everything above reads what the file SAYS. These four read what a browser DOES
-   with it, which is a different question — the stale "9 Systems Built" above eleven
+   with it, which is a different question, the stale "9 Systems Built" above eleven
    cards passed every static check in this file for weeks.
 
    Chrome missing is a FAILURE, not a skip. A harness that quietly drops four checks
@@ -283,7 +305,7 @@ const renderCheck = (name, fn) => {
 
    WHAT THIS COSTS, stated plainly: a beacon that never loads is now invisible here.
    This harness can no longer tell you whether analytics works. The place to confirm
-   that is the Cloudflare Web Analytics dashboard showing a non-zero count — nothing
+   that is the Cloudflare Web Analytics dashboard showing a non-zero count, nothing
    in this repo asserts it. Exempting by exact host, not by substring, so a typo in
    the beacon URL still fails the check rather than being waved through.
 
@@ -326,7 +348,7 @@ renderCheck('no horizontal overflow at any width', d => {
     : true;
 });
 
-/* Catches a card that parses fine but collapses to nothing — a CSS rule that hides it,
+/* Catches a card that parses fine but collapses to nothing. A CSS rule that hides it,
    a grid that gives it no track. The static card-order check cannot see this. */
 renderCheck('every project card has a visible box', d => {
   if (!d.cards) return 'no card metrics collected';

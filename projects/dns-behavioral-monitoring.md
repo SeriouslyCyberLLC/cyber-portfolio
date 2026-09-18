@@ -1,4 +1,4 @@
-# DNS Behavioral Monitoring — built, measured, retired
+# DNS Behavioral Monitoring: built, measured, retired
 
 **Status:** Retired January 2026. Kept here because the measurement is the interesting part.
 
@@ -10,16 +10,16 @@ detections were worth reading. This page records both, and what the numbers actu
 
 A Python service tailed Zeek's `dns.log` and scored every query in real time:
 
-- **DGA detection** — Shannon entropy, vowel ratio, consonant-run length, subdomain length
-- **Tunneling** — query length, base64 character patterns, TXT-record volume
-- **Suspicious TLDs** — `.tk`, `.ml`, `.ga`, `.cf`, `.gq`, `.top`, `.xyz`, `.zip`
-- **Scoring** — additive across checks; ≥50 logged, ≥80 pushed a phone alert
+- **DGA detection**: Shannon entropy, vowel ratio, consonant-run length, subdomain length
+- **Tunneling**: query length, base64 character patterns, TXT-record volume
+- **Suspicious TLDs**: `.tk`, `.ml`, `.ga`, `.cf`, `.gq`, `.top`, `.xyz`, `.zip`
+- **Scoring**: additive across checks; ≥50 logged, ≥80 pushed a phone alert
 
 Detections were written as structured JSON and alerts delivered via Pushover.
 
 ## What it actually produced
 
-It ran from 28 December 2025 to 15 January 2026 — 17.2 days — before stalling. The log it
+It ran from 28 December 2025 to 15 January 2026 (17.2 days) before stalling. The log it
 left behind is the entire basis for this writeup:
 
 | Measure | Value |
@@ -27,8 +27,8 @@ left behind is the entire basis for this writeup:
 | Detections logged | 2,602,248 |
 | Rate | 151,340/day, 32 MB/day |
 | Scored exactly 50 (the floor) | **99.9%** |
-| Phone alerts fired (≥80) | 1,057 — **61 per day** |
-| Most-detected "threat" | **`soc`** — the monitoring host's own hostname |
+| Phone alerts fired (≥80) | 1,057: **61 per day** |
+| Most-detected "threat" | **`soc`**: the monitoring host's own hostname |
 | Share of output that was that one string | **96.6%** |
 
 The rest of the top detections were `mail.proton.me`, `mail.yahoo.com`,
@@ -41,13 +41,13 @@ roughly one useful signal per never.
 ## Why it failed
 
 The scoring was not wrong so much as unanchored. Entropy over a short bare hostname is
-meaningless — `soc` is five characters with one vowel, which the consonant-run and
+meaningless, `soc` is five characters with one vowel, which the consonant-run and
 vowel-ratio checks read as textbook DGA. Nothing in the design distinguished a local mDNS
 lookup from a resolved public domain, so the host's own name became 96.6% of the corpus.
 
-The deeper mistake was **not measuring precision before wiring up alerting**. A 0–100+
+The deeper mistake was **not measuring precision before wiring up alerting**. A 0-100+
 additive score feels principled, and the thresholds (50 / 80 / 120) look considered. They
-were guesses. No labelled set, no baseline, no held-out evaluation — so "detections per
+were guesses. No labelled set, no baseline, no held-out evaluation, so "detections per
 day" got mistaken for "working," and 61 pages a day got mistaken for coverage.
 
 ## Why it stayed broken for seven months
@@ -72,7 +72,7 @@ process = subprocess.Popen(
 `tail` reported `cannot open ... for reading` into that pipe, then parked in inotify retry.
 The one message explaining the whole failure went into a buffer with no reader on the other
 end. Meanwhile the Python process sat blocked on an empty stdout pipe, and `systemctl
-status` reported **active (running)** the entire time — with a live process tree and no
+status` reported **active (running)** the entire time, with a live process tree and no
 errors in the journal.
 
 Diagnosis came from the file-descriptor table, not the logs. A healthy `tail -F` holds an
@@ -82,7 +82,7 @@ fd on its target; this one held only stdin, stdout, stderr and an inotify handle
 0 -> /dev/null   1 -> pipe:[30127]   2 -> pipe:[30128]   4 -> anon_inode:inotify
 ```
 
-No fd on `dns.log` — while the file was present, readable, and taking 30 writes a second.
+No fd on `dns.log`, while the file was present, readable, and taking 30 writes a second.
 
 **Three lessons, all cheap in hindsight:**
 
@@ -95,14 +95,14 @@ No fd on `dns.log` — while the file was present, readable, and taking 30 write
 
 ## Why it was not simply fixed
 
-Restarting it costs nothing technically — but it would resume at 61 false pages per day
+Restarting it costs nothing technically, but it would resume at 61 false pages per day
 and 32 MB of the host's own hostname daily. Repairing the plumbing without fixing the
 precision problem would produce a *reliably* useless detector, which is worse than a
 broken one, because it looks like coverage.
 
 The capability was not lost. Zeek DNS already lands in Elasticsearch at ~625K records/day,
 so DGA and tunneling detection belongs in versioned Sigma rules evaluated against that
-index, and in RITA for statistical beaconing — both measurable against a labelled set
+index, and in RITA for statistical beaconing, both measurable against a labelled set
 before anything is allowed to send an alert. That is the replacement, and it is the right
 shape.
 
@@ -110,9 +110,9 @@ shape.
 
 - DNS protocol analysis, entropy and n-gram scoring
 - Real-time stream processing in Python
-- **Detection evaluation** — measuring a detector against its own output and reading the
+- **Detection evaluation**: measuring a detector against its own output and reading the
   result honestly
-- **Silent-failure diagnosis** — fd-table and wait-channel inspection when logs are empty
+- **Silent-failure diagnosis**: fd-table and wait-channel inspection when logs are empty
 - Knowing when to retire a detection rather than keep it running for the metrics
 
 **Built:** December 2025 · **Retired:** January 2026 · **Post-mortem:** August 2026

@@ -1,6 +1,6 @@
-# A Triage Model You Can Measure — the SOC's LLM hunt analyzer
+# A Triage Model You Can Measure: the SOC's LLM hunt analyzer
 
-**Status:** Production, local-only. Rebuilt and measured August–September 2026 on a running
+**Status:** Production, local-only. Rebuilt and measured August-September 2026 on a running
 SOC. Every number below comes from a verdict log or a frozen eval set, not an estimate.
 
 A local LLM reads the output of scheduled endpoint collections (Velociraptor process lists,
@@ -101,7 +101,7 @@ variable.
 |---|---|---|---|
 | Foundation-Sec-8B | 5.1% | 1/8 | 9 invented ATT&CK IDs rejected by the validator |
 | mistral:7b | 0.0% | **0/8** | discriminates, but rated every attack MEDIUM |
-| Claude Opus 5 (sanitised, eval only) | 0.0% | **8/8** | confidence 45–95 across 13 distinct values; 0 invalid IDs |
+| Claude Opus 5 (sanitised, eval only) | 0.0% | **8/8** | confidence 45-95 across 13 distinct values; 0 invalid IDs |
 | **mistral:7b + severity floor** (deployed) | **0.0%** | **8/8** | |
 
 Paired on the same 39 flows at the same default sampling, the rubric alone took
@@ -126,7 +126,7 @@ regex:
 
 | rule | floor | why each half matters |
 |---|---|---|
-| executable in a temp path **and** deleted from disk | CRITICAL | either alone is routine — deleted binaries follow every package upgrade |
+| executable in a temp path **and** deleted from disk | CRITICAL | either alone is routine: deleted binaries follow every package upgrade |
 | kernel-thread name **with** an executable path | CRITICAL | real kernel threads have no executable at all |
 | established connection **from** a temp-path binary | CRITICAL | scoped to established, not listening |
 | rundll32/regsvr32/mshta/certutil **to a public** address | HIGH | these do talk to LAN services |
@@ -148,11 +148,11 @@ Since deployment the floor has overridden the model **6 times, all HIGH, and all
 line**. Each was the standard one-liner installer for the Node version manager:
 
 ```
-curl -o- https://…/nvm-sh/nvm/v0.39.0/install.sh | bash
+curl -o- https://.../nvm-sh/nvm/v0.39.0/install.sh | bash
 ```
 
 It sits in an admin host's shell history, which is collected twice a day, so it re-fires
-twice a day. The rule treats `curl … | bash` as having no benign reading in this
+twice a day. The rule treats `curl ... | bash` as having no benign reading in this
 environment. The 117-flow calibration corpus happened to contain no shell history with an
 installer in it, so nothing contradicted that. **Production did.** Download-and-execute is
 exactly how that installer is meant to run, and it is also exactly what the rule is there to

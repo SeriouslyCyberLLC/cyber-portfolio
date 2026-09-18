@@ -1,6 +1,6 @@
 # The SOC, and the Work of Proving It Is Telling the Truth
 
-**Status:** Production, continuous operation. Built September 2025 – January 2026, run and
+**Status:** Production, continuous operation. Built September 2025 to January 2026, run and
 measured daily since. **Every figure below was read from the running cluster and the
 running services on 2026-09-18**, not carried forward from an earlier revision of this
 page.
@@ -28,8 +28,8 @@ broken, or retired on the evidence.
 | 5 | Endpoint | Velociraptor 0.75.1 for on-demand forensics; Elastic Defend streaming continuously | this page |
 | 6 | Assurance | Prometheus, Alertmanager, 69 alert rules across 15 files, freshness and integrity probes | [Assurance audit](assurance-audit.md) · [hardening](hardening-telemetry.md) · [integrity & malware](integrity-and-malware-scanning.md) · [off-site backup](off-site-backup.md) |
 
-All nine core services — search, dashboards, ingest, IDS, EDR server, endpoint agent, the
-LLM runtime, metrics and dashboards — were `active` when this was written. That sentence is
+All nine core services (search, dashboards, ingest, IDS, EDR server, endpoint agent, the
+LLM runtime, metrics and dashboards) were `active` when this was written. That sentence is
 worth exactly as much as the rest of this page makes it worth.
 
 ## Scale, measured today
@@ -54,8 +54,8 @@ Per endpoint over the same window: SOC server 47.9M, second Linux host 4.4M, Win
 
 ### Quote the 12%, not the 8.7 billion
 
-The cluster total is the least useful number on this page. **Network telemetry — every
-Suricata alert and every Zeek connection, flow and DNS record, the SOC data proper — is
+The cluster total is the least useful number on this page. **Network telemetry (every
+Suricata alert and every Zeek connection, flow and DNS record, the SOC data proper) is
 11.7% of storage.** The rest is endpoint event volume, dominated by file events.
 
 Saying "8.7 billion documents" in an interview would be true and would misrepresent the
@@ -66,13 +66,13 @@ decision, not a disk-space one.
 ### The constraint, and why it is not CPU
 
 Index data lives on a RAID1 pair of **spinning disks**. Measured on bulk work: **~6,300
-documents per second, unimproved by parallelism** — the array, not the 24-core CPU or the
+documents per second, unimproved by parallelism**, the array, not the 24-core CPU or the
 128 GB of RAM. It is also why a reboot costs one to two hours of shard recovery.
 
 The NVMe has room only if endpoint retention is cut first, which turns the migration into
 the retention question above rather than a hardware purchase.
 
-**The cluster is yellow, deliberately.** 622 active shards, 191 unassigned — replicas that
+**The cluster is yellow, deliberately.** 622 active shards, 191 unassigned, replicas that
 a single node can never place. A yellow single-node cluster is expected; treating it as a
 fault would be misreading the health colour.
 
@@ -102,17 +102,17 @@ that is part of the job:
 
 | Capability once listed here | Actual state |
 |---|---|
-| DNS behavioural analysis with scoring and push notifications | **Retired on measurement** — 2.6M detections in 17 days, 99.9% at the score floor, 61 pages/day. [The post-mortem](dns-behavioral-monitoring.md) |
+| DNS behavioural analysis with scoring and push notifications | **Retired on measurement**: 2.6M detections in 17 days, 99.9% at the score floor, 61 pages/day. [The post-mortem](dns-behavioral-monitoring.md) |
 | Automated response / auto-blocking | **Masked.** Three layers, **zero blocks executed in its entire life**, running because a reboot started it |
-| A webhook that could isolate a host and block an address | **Retired** — unauthenticated, and both fields came straight from the request body |
-| Threat-intel enrichment service | **Retired** — queried a dead index and had no write path at all; its permission error was the only thing stopping it spending API quota on output nobody consumed |
+| A webhook that could isolate a host and block an address | **Retired**: unauthenticated, and both fields came straight from the request body |
+| Threat-intel enrichment service | **Retired**: queried a dead index and had no write path at all; its permission error was the only thing stopping it spending API quota on output nobody consumed |
 
 Three of those four were *removed* rather than repaired, and the environment is better for
 it. A capability that cannot be shown to work is a liability in a portfolio and a liability
 on a host.
 
 Two figures on this page were also simply **wrong** until today: Suricata was listed at
-7.0.3 with 44,983 signatures. It is **8.0.6 with 63,617 enabled rules** — and the rule
+7.0.3 with 44,983 signatures. It is **8.0.6 with 63,617 enabled rules**, and the rule
 count has to be taken as `grep -c '^alert'`, because the file also carries roughly 16,000
 commented-out rules that a line count would happily include.
 
@@ -127,7 +127,7 @@ commented-out rules that a line count would happily include.
 - **The LLM layer is triage assistance, not a detector.** It under-calls without its
   deterministic floor, and that is stated in its own writeup rather than glossed.
 - **Coverage is the mirrored uplink**, so traffic that never crosses a VLAN boundary is not
-  captured. That is a deliberate trade — mirroring every port duplicated east-west traffic
+  captured. That is a deliberate trade, mirroring every port duplicated east-west traffic
   and added no visibility.
 
 ## Framework mapping
@@ -137,14 +137,14 @@ commented-out rules that a line count would happily include.
 | Network detection, host telemetry, log aggregation, retention | CIS Controls v8 **8**, **13**; NIST CSF 2.0 **DE.CM** |
 | Endpoint EDR with prevention on every host | CIS **10**; NIST CSF 2.0 **DE.CM-1**, **PR.PS** |
 | Detection content mapped to adversary behaviour | **MITRE ATT&CK** |
-| Monitoring of the monitoring — freshness, integrity, backup verification | NIST CSF 2.0 **ID.IM**, **RC.RP**; SOC 2 **CC7.2** |
+| Monitoring of the monitoring: freshness, integrity, backup verification | NIST CSF 2.0 **ID.IM**, **RC.RP**; SOC 2 **CC7.2** |
 | Local-only LLM analysis, no third-party data egress | NIST **AI RMF** (Govern, Measure); OWASP **LLM Top 10 2025** |
 
 ## Screenshot
 
 ![Discover over the security indices: 3.05M documents in 24 hours across 290 fields](../assets/screenshots/soc-discover-24h.png)
 
-*Kibana Discover across the security indices — 3,050,369 documents in a rolling
+*Kibana Discover across the security indices, 3,050,369 documents in a rolling
 24 hours, 290 mapped fields. The gap after 14:00 is an ingest pause, not a
 rendering artefact.*
 
@@ -155,7 +155,7 @@ artefact a text sanitisation pass cannot reach.**
 The dated figures in the telemetry strip on the
 [site homepage](https://seriouslycyberllc.github.io/cyber-portfolio/) are regenerated
 directly from the cluster by `scripts/update-telemetry.mjs`, and are better evidence than
-any screenshot — reproducible, timestamped, and not hand-composed.
+any screenshot, reproducible, timestamped, and not hand-composed.
 
 ## Skills demonstrated
 

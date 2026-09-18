@@ -1,4 +1,4 @@
-# An Audit Nobody Reads — putting a number on hardening
+# An Audit Nobody Reads: putting a number on hardening
 
 **Status:** Live on two Linux hosts. Built August 2026, extended through September. Every
 figure below was read from the running monitoring stack at the time of writing, not from my
@@ -13,7 +13,7 @@ That is the whole finding, and it is not a story about installing tools:
 > from one that does not run at all.**
 
 The fix was not to repair a scanner. Both scanners were fine. The fix was to turn their
-output into a tracked signal, and — the harder half — to decide what was allowed to wake
+output into a tracked signal, and (the harder half) to decide what was allowed to wake
 anyone up.
 
 ## The four cases
@@ -38,8 +38,8 @@ asked to scan. See [Running Is Not Working](integrity-and-malware-scanning.md).
 The hardening auditor ran on a daily timer, wrote a report and a 1.5 MB log, and exited
 cleanly. There was no defect to fix. There was simply no consumer.
 
-I exported six series to the metrics collector — hardening index, tests performed,
-warnings, suggestions, report age, and report readability — and hung the exporter off the
+I exported six series to the metrics collector (hardening index, tests performed,
+warnings, suggestions, report age, and report readability) and hung the exporter off the
 audit unit itself with `ExecStartPost` rather than giving it its own timer.
 
 **That choice is load-bearing.** A separate schedule drifts away from the audit it
@@ -49,7 +49,7 @@ in the audit unit's own status.
 
 ### Failure is not zero
 
-The exporter's parser returns nothing on a malformed report — never a zeroed structure.
+The exporter's parser returns nothing on a malformed report, never a zeroed structure.
 An unreadable report therefore emits `report_readable=0` **and no score series at all.**
 
 Rendering a missing file as `0` would report it as the worst possible hardening posture
@@ -78,14 +78,14 @@ is a suggestion, not an instruction.
 ### The trend is the point, not the number
 
 An index of 66 is not inherently bad. An index of 66 after a run of 72s means something
-specific regressed — and that is exactly what nobody notices by hand.
+specific regressed, and that is exactly what nobody notices by hand.
 
 So the headline rule is a **regression** rule: fire when the index falls more than three
 points below its own 14-day maximum. The three-point tolerance is not arbitrary; scores
 shift slightly with test-count changes between scanner versions.
 
 A second rule is an absolute floor, and it taught me something. I set it at 60 before I
-had measured any real host — calibrated against the only machine I had looked at. The
+had measured any real host, calibrated against the only machine I had looked at. The
 second host then came in at **59** on a stock install and went straight to pending,
 missing an arbitrary line by one point.
 
@@ -108,17 +108,17 @@ The journal shows the two lines back to back: the alert being sent, then the tra
 dying on a missing config file.
 
 **The failure is not the undelivered mail. It is that a genuine rootkit detection and a
-missing config file produce the identical symptom** — a red unit in a list nobody reads.
+missing config file produce the identical symptom**, a red unit in a list nobody reads.
 
 Same treatment: export the findings as metrics, hook the exporter to the scan unit, and
 disable the mail path outright. Notably this required **no notification credential on
-that host at all** — the metrics ride the collector-to-alerting path the hardening
+that host at all**, the metrics ride the collector-to-alerting path the hardening
 exporter had already established.
 
 ### Calibration is the entire point
 
 The scanner reports 142 checks. It also reports, every single day, **29 suspicious
-files** — every one of them a false positive. They are package-shipped dotfiles: test
+files**, every one of them a false positive. They are package-shipped dotfiles: test
 fixtures from a security tool, a `.gitignore` inside a Python library, build-id
 directories under the kernel modules tree.
 
@@ -130,14 +130,14 @@ So, four rules with sharply different privileges:
 
 | rule | fires on | pages? |
 |---|---|---|
-| infection detected | `infected > 0` | **yes — the only one.** Has never fired |
+| infection detected | `infected > 0` | **yes: the only one.** Has never fired |
 | suspicious count jumped | above the 14-day max, tolerance **5** | no |
 | report unreadable | `report_readable == 0` | no |
 | report stale | older than 3 days | no |
 
 The tolerance of 5 is measured, not guessed: **a kernel upgrade alone adds about two
 entries** as new build-id directories appear. That is exactly what raised the one alert
-this rule has produced — a kernel reboot, correctly detected, and entirely noise. The
+this rule has produced, a kernel reboot, correctly detected, and entirely noise. The
 tolerance exists because I went and looked at what normal change costs.
 
 Current state, read live: 0 infected, 29 suspicious, 142 checks, report readable.
@@ -145,7 +145,7 @@ Current state, read live: 0 infected, 29 suspicious, 142 checks, report readable
 ### Two scanners, and the order in which to remove one
 
 That host had a **second** rootkit checker installed as well, and it was worse than useless.
-It ran, but its weekly database update was gated off, so its baseline was 41 days stale —
+It ran, but its weekly database update was gated off, so its baseline was 41 days stale,
 and the consequence is legible in its own log: every one of its twelve file-property
 warnings was `curl`, `perl` or `wget`. Ordinary patching, reported as tampering, into a
 channel nobody read.
@@ -154,7 +154,7 @@ channel nobody read.
 manufactures findings from routine work. It was purged, not fixed.
 
 **The order mattered and is the transferable part.** On that host the purge was safe
-because the other scanner was already exported with alert rules — the coverage existed
+because the other scanner was already exported with alert rules. The coverage existed
 first. When the same pair turned up on the SOC server, *neither* was exported, so removing
 either would have left the other equally unread. So the remaining scanner was wired up
 first, and **the purge script refuses to run** unless it measures at least five live metric
@@ -177,7 +177,7 @@ antivirus scan in section 6.
 ## 3. "0 updates" was not a patched host
 
 The second host runs Ubuntu 24.04. Its login banner reported `0 updates can be applied
-immediately` — while separately noting that 35 additional security updates were available
+immediately`, while separately noting that 35 additional security updates were available
 through **ESM Apps**.
 
 Those 35 were CVEs in **universe**, the community-maintained package set.
@@ -188,25 +188,25 @@ security pocket is not one of them.
 > **A host reading "0 updates" is not a patched host. It is a host that cannot see the
 > rest.**
 
-After attaching Ubuntu Pro — free for personal use on up to five machines — the count
+After attaching Ubuntu Pro (free for personal use on up to five machines) the count
 went from 0 to **30 upgradable packages, every one of them a security update**: the
 `ffmpeg` and `libav*` stack, ImageMagick, `libcjson1`, `libmbedcrypto7t64`, `python3-pip`,
 Syncthing, and the Prometheus node exporter.
 
 Nothing in the set touched the kernel, `libc`, OpenSSL, systemd, SSH, nginx, or Docker, so
 it applied without a reboot and without risking the host's Cloudflare tunnel. Livepatch,
-enabled at the same time, covers kernel CVEs between reboots — though it deliberately does
+enabled at the same time, covers kernel CVEs between reboots, though it deliberately does
 not change the on-disk kernel, so `uname -r` remains the truth for actual kernel upgrades.
 
 **`pro attach` exiting 0 is not proof the services enabled.** Each one is re-read from
-`pro status` afterwards and the script fails loudly on any that is not `enabled` — the
+`pro status` afterwards and the script fails loudly on any that is not `enabled`, the
 same lesson as the mask in section 4. The subscription token is passed via a `0600`
 attach-config file, never as a command-line argument: `ps` is world-readable, so
 `pro attach <token>` leaks the token to every user on the box for the duration of the call.
 
 ### The trap inside the fix
 
-Note what was in that upgrade list: **`prometheus-node-exporter` — the exporter this
+Note what was in that upgrade list: **`prometheus-node-exporter`. The exporter this
 whole system reports through.** Its `--collector.textfile.directory` flag lives in
 `/etc/default/prometheus-node-exporter`, a dpkg **conffile**, and a package upgrade can
 replace a conffile and take the flag with it. Silently, with no error. So the upgrade
@@ -223,9 +223,9 @@ that the running process received it.
 
 ## 4. The control I switched off
 
-The auto-blocker documented in the [SOC assurance audit](assurance-audit.md) — three
+The auto-blocker documented in the [SOC assurance audit](assurance-audit.md), three
 layers of automated response, zero blocks executed across its entire lifetime, running
-because a reboot had started it rather than because anyone had chosen to — was masked.
+because a reboot had started it rather than because anyone had chosen to, was masked.
 
 Four independent signals confirmed it stopped, not one: no main process, a heartbeat file
 gone stale (a live loop rewrites it every ten seconds), zero connections to the datastore,
@@ -237,7 +237,7 @@ would never page.
 
 The first attempt to mask it failed in the most instructive way available.
 
-Masking works by placing a symlink where the unit file would be — and it **refuses to
+Masking works by placing a symlink where the unit file would be, and it **refuses to
 overwrite a real file.** This unit was a real file in that exact path, so the mask
 errored. The script printed the error, carried on, and then ran its own *prove the mask
 holds* check: start the service and confirm it refuses.
@@ -259,7 +259,7 @@ separately:
 |---|---|---|
 | hardening auditor | 4 | 11 |
 | rootkit scanner (both hosts) | 4 | 17 |
-| package-verification scan (second host) | 3 | — |
+| package-verification scan (second host) | 3 | - |
 | **total** | **11** | **28** |
 
 Those 11 sit inside an environment total of **69 alert rules across 15 rule files**, read
@@ -280,5 +280,5 @@ The engineering is small. The judgment is the deliverable:
 - **Calibrate against a normal host, not against the first host you looked at.**
 
 The value here was never in the hardening points. It was in ending up with a small number
-of alerts that mean something — and in being able to say, with evidence, which signals
+of alerts that mean something, and in being able to say, with evidence, which signals
 were deliberately left quiet and why.

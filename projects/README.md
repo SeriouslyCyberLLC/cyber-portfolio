@@ -69,7 +69,7 @@ Audited a running SOC's own reliability rather than adding sensors. Eleven defec
 **Key Stats**: 5 services healthy while producing nothing, 3 controls reporting success with no effect, intel pipeline dead 35 and 73 days, auto-blocker that could never unblock
 
 ### 8. [Hardening Telemetry](hardening-telemetry.md)
-Daily security scanners had run for months and nothing had ever read their output. Turned each into tracked metrics, then decided — with measurements — what was allowed to page.
+Daily security scanners had run for months and nothing had ever read their output. Turned each into tracked metrics, then decided, with measurements, what was allowed to page.
 
 **Key Stats**: hardening index 66 to 71 and 59 to 70 across two hosts, rootkit findings piped into a dead mail path, 1 of 11 rules may page and it has never fired, a stale-baseline scanner purged rather than fixed, unreadable reports emit no score rather than a zero
 
@@ -81,15 +81,15 @@ Two controls on one host, both reporting healthy and both proving nothing, faili
 ### 10. [Off-Site Backup and Restore](off-site-backup.md)
 Encrypted off-site backup of the SOC's configuration, detections and git repositories, with immutable retention and a restore drill that cannot pass vacuously. The tooling sat reviewed and committed for two weeks without ever being run.
 
-**Key Stats**: five runtime-only defects between committed code and one snapshot, backup set 1,830 MB to 179 MB once a live database directory came out, 30-day delete protection with no prune path, first weekly integrity check passed against an empty repository — now floored, and the floor is mutation-tested
+**Key Stats**: five runtime-only defects between committed code and one snapshot, backup set 1,830 MB to 179 MB once a live database directory came out, 30-day delete protection with no prune path, first weekly integrity check passed against an empty repository, now floored, and the floor is mutation-tested
 
-### 11. [DNS Behavioral Monitoring — built, measured, retired](dns-behavioral-monitoring.md)
+### 11. [DNS Behavioral Monitoring: built, measured, retired](dns-behavioral-monitoring.md)
 DGA and tunneling detector over Zeek DNS. Ran 17 days, was measured against its own output, and was retired on the evidence. The post-mortem covers both the precision failure and the silent-failure mode that hid it for seven months.
 
 **Key Stats**: 2.6M detections in 17.2 days, 99.9% at the score floor, 96.6% of output was the host's own hostname, 61 false pages/day
 
 ### 12. [Firewalla Network Security Architecture](firewalla-network-security.md)
-Defense-in-depth network architecture with multi-VLAN segmentation, threat prevention, and comprehensive traffic monitoring.
+Defense-in-depth network architecture with multi-VLAN segmentation, threat prevention, and traffic monitoring across every segment.
 
 **Key Stats**: 877K blocked flows per day, 2.1M flow records per day, 6 VLANs segmented by trust level
 
@@ -106,7 +106,7 @@ Privacy-focused transcription system using Whisper AI with GPU acceleration. Bro
 ## Security Assessment Work
 
 ### Automated Vulnerability Discovery in Production SOC Infrastructure
-Leveraged Trail of Bits Claude Code security analysis skills to perform automated code review of production Security Operations Center infrastructure. Discovered and remediated 4 CRITICAL and 3 HIGH severity vulnerabilities in 157 minutes, demonstrating the effectiveness of AI-enhanced security assessment methodologies.
+Used Trail of Bits Claude Code security analysis skills to perform automated code review of production Security Operations Center infrastructure. Discovered and remediated 4 CRITICAL and 3 HIGH severity vulnerabilities in 157 minutes, demonstrating the effectiveness of AI-enhanced security assessment methodologies.
 - Analysis Duration: 2 minutes 37 seconds (automated)
 - Remediation Duration: 155 minutes (guided implementation)
 - Tools Used: Claude Code with Trail of Bits security skills, insecure-defaults skill, static-analysis skill

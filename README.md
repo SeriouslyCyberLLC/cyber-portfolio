@@ -1,10 +1,10 @@
-# Cybersecurity Portfolio — Larry W. Harvey
+# Cybersecurity Portfolio: Larry W. Harvey
 
 **Live site: https://seriouslycyberllc.github.io/cyber-portfolio/**
 
 AI security and governance work, plus the home security operations centre it is
 measured against. Nine systems, eight in production and one retired on
-measurement — that writeup is the honest one.
+measurement, that writeup is the honest one.
 
 ## What is here
 
@@ -13,14 +13,14 @@ measurement — that writeup is the honest one.
 | `index.html` | The portfolio itself. Single file, inline CSS, no build step. |
 | `projects/` | Per-project writeups in Markdown. |
 | `docs/` | Longer case studies, plus the design spec and plan behind the current visual language. |
-| `scripts/` | `update-telemetry.mjs` regenerates the measured figures on the page; `verify-page.mjs` is a 25-check harness that must pass before anything is published — 21 static checks plus 4 that render the page in headless Chrome (console errors, failed resources, horizontal overflow at 390/1440px, every card having a visible box). Missing Chrome fails the render checks rather than skipping them; use `--no-render` to opt out deliberately. `--url <addr>` runs the same 25 checks against a deployed page instead of the working tree, covering what `file://` cannot: CSP headers, real MIME types and HTTPS delivery. Default before a push, `--url` after one. |
+| `scripts/` | `update-telemetry.mjs` regenerates the measured figures on the page; `verify-page.mjs` is a 25-check harness that must pass before anything is published: 21 static checks plus 4 that render the page in headless Chrome (console errors, failed resources, horizontal overflow at 390/1440px, every card having a visible box). Missing Chrome fails the render checks rather than skipping them; use `--no-render` to opt out deliberately. `--url <addr>` runs the same 25 checks against a deployed page instead of the working tree, covering what `file://` cannot: CSP headers, real MIME types and HTTPS delivery. Default before a push, `--url` after one. |
 | `assets/` | Certification badges and sanitised screenshots. |
 
 ## The numbers on the page are measured, not asserted
 
 The telemetry strip is generated directly from the live Elasticsearch cluster by
 `scripts/update-telemetry.mjs` and stamped with the time it ran. It is refreshed
-daily. Nothing on that strip is hand-written, which is the entire point of it —
+daily. Nothing on that strip is hand-written, which is the entire point of it,
 a figure that cannot be regenerated is a claim, not evidence.
 
 ## Contributing images

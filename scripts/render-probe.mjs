@@ -4,7 +4,7 @@
 // card actually has a box on the page.
 //
 // Why this exists: on 2026-08-29 the page shipped reading "9 Systems Built" above
-// eleven cards. Every static check passed — the number was in the HTML the whole time
+// eleven cards. Every static check passed, the number was in the HTML the whole time
 // and nothing was looking at it. Static checks read what the file SAYS; this reads what
 // a browser DOES with it. Both are needed.
 //
@@ -12,7 +12,7 @@
 // DevTools Protocol using the WebSocket built into Node 22+. No puppeteer, no install.
 //
 // Not a screenshot differ. It answers "did this render without breaking", not "does it
-// look right" — that judgement stays with a human.
+// look right", that judgement stays with a human.
 
 import { spawn } from 'node:child_process';
 import { mkdtempSync, rmSync, readFileSync, existsSync } from 'node:fs';
@@ -132,7 +132,7 @@ export async function probe(fileUrl, { chrome, widths = [1440, 390], quietMs = 7
 
     /* Network.loadingFailed carries only a requestId, so the URL has to be
        remembered from the matching requestWillBeSent. Without it a failure reads
-       "Script: net::ERR_FAILED" and names nothing — true of every failure this
+       "Script: net::ERR_FAILED" and names nothing, true of every failure this
        harness has ever reported, and useless for deciding whether the broken
        resource is ours or a third party's. */
     const urlByRequestId = new Map();
@@ -170,7 +170,7 @@ export async function probe(fileUrl, { chrome, widths = [1440, 390], quietMs = 7
     for (const width of widths) {
       /* mobile:false deliberately. With mobile emulation Chrome applies the
          viewport-meta machinery and will WIDEN the layout viewport to fit overflowing
-         content — window.innerWidth came back as 1200 at a 390px viewport — so any
+         content (window.innerWidth came back as 1200 at a 390px viewport) so any
          scrollWidth-vs-innerWidth comparison silently compares a number to itself and
          can never detect overflow. mobile:false pins the layout viewport to exactly the
          width asked for; media queries still key off that width, which is what a
@@ -206,7 +206,7 @@ export async function probe(fileUrl, { chrome, widths = [1440, 390], quietMs = 7
         })()`,
       });
       const v = result.value;
-      /* Measured against the width WE set, never against window.innerWidth — see the
+      /* Measured against the width WE set, never against window.innerWidth, see the
          note on setDeviceMetricsOverride above. 1px of slack because sub-pixel layout
          rounding is not a horizontal scrollbar. */
       viewports.push({

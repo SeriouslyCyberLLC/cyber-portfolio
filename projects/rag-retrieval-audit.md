@@ -1,4 +1,4 @@
-# Retrieval Nobody Had Measured — auditing a SOC's RAG pipeline
+# Retrieval Nobody Had Measured: auditing a SOC's RAG pipeline
 
 **Status:** Live. Audited, rebuilt and redeployed September 2026. Every figure below was
 measured on the running system, or on a copy of its vector store, at the time of the work.
@@ -13,7 +13,7 @@ learning" between the two local models. Before touching any of it, I asked the r
 questions I already knew the answers to.
 
 > **A retriever that returns three documents for every query looks exactly like one that
-> returns the right three — until you ask it questions whose answers you already know.**
+> returns the right three, until you ask it questions whose answers you already know.**
 
 On 30 known-answer queries it returned the correct technique **6 times**.
 
@@ -24,9 +24,9 @@ On 30 known-answer queries it returned the correct technique **6 times**.
 | 1 | Retrieval running on every analysis | Right technique in context **6/30**; 14 of 30 queries got no context at all |
 | 2 | A 2.5 GB knowledge base | **95%** of it was 147 orphaned index directories. The live index was 111 MB |
 | 3 | 14 curated collections | The analyzer read **one**, frozen for over two weeks |
-| 4 | Nightly CVE ingest | Failed on **every** night of its retained logs — 31 of 31 |
-| 5 | Threat-intel ingest: "Added 5 new entries … completed successfully" | The same 5 IPs re-written daily. The total had not moved in two months |
-| 6 | A nightly rebuild keeps the index current | A long-running reader would never have seen the rebuild — see §5 |
+| 4 | Nightly CVE ingest | Failed on **every** night of its retained logs: 31 of 31 |
+| 5 | Threat-intel ingest: "Added 5 new entries ... completed successfully" | The same 5 IPs re-written daily. The total had not moved in two months |
+| 6 | A nightly rebuild keeps the index current | A long-running reader would never have seen the rebuild: see §5 |
 
 ## 1. Measure before you optimise
 
@@ -39,7 +39,7 @@ anything, and these models are frozen. The real consistency lever is to feed bot
 models from one retrieval path and grade them against one evaluation set.
 
 So step one became building that evaluation set. I wrote 30 queries shaped like real
-evidence — command lines and artifact rows, not textbook questions — each with a known
+evidence (command lines and artifact rows, not textbook questions) each with a known
 correct ATT&CK or ATLAS ID. A hit means that ID appears in the top three documents
 retrieved. That is a proxy for relevance, and I say so below.
 
@@ -75,7 +75,7 @@ Both changes were mutation-tested: remove either one and a named test fails.
 
 On retrieval quality it was a tie. The constraint decided it. This host caps Ollama at one
 loaded model, so each embedding request would evict the triage model and reload it:
-**4–11 seconds per swap, measured, on every analysis**. `bge-base` runs on the CPU inside
+**4-11 seconds per swap, measured, on every analysis**. `bge-base` runs on the CPU inside
 the analyzer process, at 15 ms per query, and never touches the GPU the triage model
 needs.
 
@@ -86,7 +86,7 @@ The winner on a benchmark and the right choice for a system are different questi
 The analyzer drops retrieved documents past a relevance cutoff, so a query can never be
 padded with three irrelevant results. The old cutoff was **1.0**, a squared-L2 distance
 calibrated on MiniLM. The new index uses cosine distance, and `bge-base` compresses every
-result into a band of roughly 0.23–0.43. Carried over, 1.0 would have kept everything.
+result into a band of roughly 0.23-0.43. Carried over, 1.0 would have kept everything.
 
 I recalibrated on the known-answer set:
 
@@ -147,7 +147,7 @@ I found this **before** shipping, because I tested the assumption instead of the
   fresh read of the catalog. They will re-accumulate until those scripts update in place,
   and I list that as open rather than calling it fixed.
 
-## 7. End to end — did the verdicts change?
+## 7. End to end: did the verdicts change?
 
 Better retrieval only matters if the verdicts improve without new false alarms. The SOC
 already had a frozen evaluation harness: 117 real routine collections and 8 synthetic
