@@ -583,8 +583,8 @@
             <!-- ================= PROJECTS ================= -->
             <section id="projects" aria-labelledby="projects-title">
                 <div class="section-title">
-                    <h2 id="projects-title">13 Systems Built</h2>
-                    <p>Twelve running in production. One retired on measurement — that writeup is the honest one.</p>
+                    <h2 id="projects-title">14 Systems Built</h2>
+                    <p>Thirteen running in production. One retired on measurement — that writeup is the honest one.</p>
                 </div>
 
                 <ul class="projects">
@@ -612,6 +612,19 @@
                         </ul>
                         <p><strong>Tech:</strong> Python, Ollama, mistral:7b, SQLite evidence ledger, pytest, OWASP LLM Top 10, MITRE ATLAS</p>
                         <a href="https://github.com/SeriouslyCyberLLC/cyber-portfolio/blob/main/projects/ai-redteam-bench.md" class="project-link">Read More<span class="visually-hidden"> about the AI Red-Team Bench</span></a>
+                    </li>
+
+                    <li class="project">
+                        <h3>RAG Retrieval Audit</h3>
+                        <p>The SOC's LLM triage retrieved context on every analysis, and nobody had measured whether it was the right context. Tested it on questions with known answers, then rebuilt the query, model and index.</p>
+                        <ul class="stats">
+                            <li>Right technique retrieved 6/30 &rarr; 22/30</li>
+                            <li>95% of the 2.5&nbsp;GB vector store was dead index files</li>
+                            <li>A nightly rebuild the running analyzer could never have seen</li>
+                            <li>0 new false alarms; malicious cases with context 5/8 &rarr; 8/8</li>
+                        </ul>
+                        <p><strong>Tech:</strong> ChromaDB, sentence-transformers, bge-base-en-v1.5, Ollama, mistral:7b, Prometheus, Python, pytest, OWASP LLM Top 10</p>
+                        <a href="https://github.com/SeriouslyCyberLLC/cyber-portfolio/blob/main/projects/rag-retrieval-audit.md" class="project-link">Read More<span class="visually-hidden"> about the RAG Retrieval Audit</span></a>
                     </li>
 
                     <li class="project">
