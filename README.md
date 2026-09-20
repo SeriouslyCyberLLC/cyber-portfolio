@@ -3,8 +3,8 @@
 **Live site: https://seriouslycyberllc.github.io/cyber-portfolio/**
 
 AI security and governance work, plus the home security operations centre it is
-measured against. Nine systems, eight in production and one retired on
-measurement, that writeup is the honest one.
+measured against. Fourteen systems: thirteen running in production and one retired
+on measurement, and that writeup is the honest one.
 
 ## What is here
 

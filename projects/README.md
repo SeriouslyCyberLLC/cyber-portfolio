@@ -46,17 +46,17 @@ Paired-experiment harness that red-teams the SOC's own LLM triage tier and prove
 ### 3. [RAG Retrieval Audit](rag-retrieval-audit.md)
 The SOC's LLM triage retrieved context on every analysis and nobody had measured whether it was the right context. Asked it 30 questions with known answers, found the query builder was the defect, and rebuilt the query, embedding model and index around measurements.
 
-**Key Stats**: right technique retrieved 6/30 to 22/30, 95% of a 2.5 GB vector store was orphaned index files, a per-process index cache that would have hidden every nightly rebuild from the running analyzer, 0 new false alarms with malicious cases given context 5/8 to 8/8
+**Key Stats**: right technique retrieved 6/30 to 22/30, 1.9 GB of a 2.5 GB vector store was orphaned index files, a per-process index cache that would have hidden every nightly rebuild from the running analyzer, 0 new false alarms with malicious cases given context 5/8 to 8/8
 
 ### 4. [Automated Report Generation](automated-report-generation.md)
-AI-powered system reducing client deliverable creation time by 95%. Generates professional TTX reports and IR assessments using local LLMs.
+Local-LLM drafting of TTX reports and IR assessments against real Word templates: 3 minutes and 20 minutes per document against roughly 4 and 8 hours by hand. Built late 2025, unused since January 2026.
 
 **Key Stats**: 4-8 hours to 3-20 minutes per document, TTX and IR assessment templates, automated rubric scoring
 
 ### 5. [Threat Intelligence Integration](threat-intelligence-integration.md)
 Multi-source threat intel platform with automated IOC enrichment. Integrated VirusTotal, AbuseIPDB, AlienVault OTX, and Hybrid Analysis.
 
-**Key Stats**: Six intelligence sources (VirusTotal, AbuseIPDB, OTX, Hybrid Analysis, MISP, CISA KEV), enrichment lookup on every external source and destination IP
+**Key Stats**: 161,392 indicators from 7 feeds, 37.9M documents enriched with 0 failures, 1,751 indicator matches of which 1,401 allowlisted and 286 actionable; the predecessor service called 3 paid APIs every 300s and discarded every result
 
 ### 6. [Enterprise SOC Infrastructure](soc-infrastructure.md)
 Six layers on owned hardware, and the map to every other project here: network detection, SIEM, threat intel, local LLM triage, endpoint EDR, and the assurance layer that watches all of it.
@@ -91,17 +91,17 @@ DGA and tunneling detector over Zeek DNS. Ran 17 days, was measured against its 
 ### 12. [Firewalla Network Security Architecture](firewalla-network-security.md)
 Defense-in-depth network architecture with multi-VLAN segmentation, threat prevention, and traffic monitoring across every segment.
 
-**Key Stats**: 877K blocked flows per day, 2.1M flow records per day, 6 VLANs segmented by trust level
+**Key Stats**: 7 segments and 36 devices, 100 rules (81 active blocks), mirror scoped to the router uplink at 1,599 docs/min against 6,940 all-ports, 13.7M DNS and 5.9M IDS events a day; the vendor blocked-flow counter has no window and is not quoted
 
 ### 13. [Business Infrastructure Platform](business-infrastructure-platform.md)
 Self-hosted business infrastructure reaching the internet through Cloudflare Tunnel, with no inbound ports opened on the origin. Live at seriouslycyber.com.
 
-**Key Stats**: $0/month hosting, outbound-only ingress with the origin IP unpublished, 6 lead generation templates, multi-domain tunnel
+**Key Stats**: $0/month hosting, outbound-only ingress with the origin IP unpublished, one intake form with eight service routes, multi-domain tunnel
 
 ### 14. [Local Speech-to-Text Infrastructure](whisper-speech-to-text.md)
 Privacy-focused transcription system using Whisper AI with GPU acceleration. Browser extension and system-wide hotkey for secure dictation.
 
-**Key Stats**: 3-5 second transcription, local Whisper with ROCm acceleration, no cloud upload
+**Key Stats**: fabricates text on silence (5 of 6 silent clips, all success:true), faster-whisper medium at int8 on CPU rather than the GPU this page used to claim, no cloud upload
 
 ## Security Assessment Work
 
@@ -137,7 +137,7 @@ Assessment Methodology:
 - Linux system administration (Ubuntu, Pop!_OS)
 - Docker containerization
 - Python automation & scripting
-- GPU acceleration (AMD ROCm)
+- Local model inference and quantisation trade-offs
 - Service orchestration (systemd)
 - API development (REST, WebSocket)
 

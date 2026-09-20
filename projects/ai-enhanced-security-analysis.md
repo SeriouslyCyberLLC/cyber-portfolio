@@ -9,7 +9,7 @@ verdict: threat level, action, confidence, MITRE ATT&CK techniques, and a reason
 grounded with RAG over ATT&CK, D3FEND, Sigma, CISA KEV and LOLBAS/GTFOBins in ChromaDB, and
 runs on a single 24 GB AMD GPU through Ollama.
 
-Getting it running was the easy part. The work worth writing up was finding out whether its
+Running it was never the problem. The work worth writing up was finding out whether its
 verdicts meant anything:
 
 > **For ten days the analyzer called 37.8% of routine collections CRITICAL, and 52% of its
@@ -100,7 +100,7 @@ variable.
 | model | routine rated ≥ HIGH (of 39) | control recall (of 8) | notes |
 |---|---|---|---|
 | Foundation-Sec-8B | 5.1% | 1/8 | 9 invented ATT&CK IDs rejected by the validator |
-| mistral:7b | 0.0% | **0/8** | discriminates, but rated every attack MEDIUM |
+| mistral:7b | 0.0% | **0/8** | discriminates, but rated 7 of 8 MEDIUM and one LOW |
 | Claude Opus 5 (sanitised, eval only) | 0.0% | **8/8** | confidence 45-95 across 13 distinct values; 0 invalid IDs |
 | **mistral:7b + severity floor** (deployed) | **0.0%** | **8/8** | |
 
@@ -132,7 +132,7 @@ regex:
 | rundll32/regsvr32/mshta/certutil **to a public** address | HIGH | these do talk to LAN services |
 | encoded PowerShell **with** a hidden window | HIGH | installers use `-enc` openly; hiding the window is the tell |
 
-**Measured:** fires on **0 of 117** real routine flows and **8 of 8** controls. 72 tests
+**Measured:** fires on **0 of 117** real routine flows and **8 of 8** controls. 80 tests
 cover the floor, the harness and the sanitiser. The rules were written with the control set
 visible, so 8/8 alone proves little. The benign-shape tests are what carry the weight: a
 deleted binary on a normal path, a real kernel worker, a listening socket from `/tmp`,
@@ -144,26 +144,46 @@ start appearing, the model has regressed.**
 
 ## 5. What production caught that the eval set didn't
 
-Since deployment the floor has overridden the model **6 times, all HIGH, and all the same
-line**. Each was the standard one-liner installer for the Node version manager:
+Between 2026-09-13 and 09-17 the floor overrode the model **9 times, all HIGH, all from the
+same rule, and all the same line**. Each was the standard one-liner installer for the Node
+version manager:
 
 ```
 curl -o- https://.../nvm-sh/nvm/v0.39.0/install.sh | bash
 ```
 
-It sits in an admin host's shell history, which is collected twice a day, so it re-fires
-twice a day. The rule treats `curl ... | bash` as having no benign reading in this
-environment. The 117-flow calibration corpus happened to contain no shell history with an
-installer in it, so nothing contradicted that. **Production did.** Download-and-execute is
-exactly how that installer is meant to run, and it is also exactly what the rule is there to
-catch. The two can't be told apart from the command line alone.
+It sits in an admin host's shell history, which is re-collected on a schedule, so the same
+line re-fired on every collection. The rule treats `curl ... | bash` as having no benign
+reading in this environment. The 117-flow calibration corpus happened to contain no shell
+history with an installer in it, so nothing contradicted that. **Production did.**
+Download-and-execute is exactly how that installer is meant to run, and it is also exactly
+what the rule is there to catch. The two cannot be told apart from the command line alone.
 
-The regression signal did its job: the overrides were visible, attributable to a single rule
-and a single line, and checked against the collected evidence rather than guessed at. The
-open decision is whether to allowlist known installer URLs (which an attacker could imitate)
-or to suppress on history lines that have already been seen (so a new one still fires). **A
-calibration corpus is a sample, and the zero it produces is only as good as what the sample
-contains.**
+### The fix was neither of the two options I first saw
+
+I framed the decision as allowlist the known installer URLs (which an attacker could
+imitate) or suppress history lines already seen (so a new one still fires). Both are about
+the *string*. The third option, which is the one that shipped, is about **where the evidence
+came from**:
+
+> **A `.bash_history` line is a record of the past, not evidence of execution.**
+
+Rows carry an `_artifact` field, so a rule can know its evidence's provenance. A
+download-and-execute pattern found in a *process* row still floors to HIGH. The same pattern
+found in a shell-history row does not, because `.bash_history` is undated, unordered, and
+says only that someone once typed it. The hit is still recorded, tagged as history-only, so
+the finding is visible without being escalated.
+
+**The scope is deliberately narrow.** It applies to that one rule. Wiping shell history and
+harvesting credentials have no benign reading wherever they are found, and those still floor
+from a history row, which is pinned by tests. There is also a structural fallback for
+captures taken before `_artifact` existed.
+
+Measured since it deployed on 2026-09-18: **326 verdicts, 0 floor overrides, 0 CRITICAL, 0
+verdicts at confidence 0.** The regression signal did its job first, though, and that is the
+transferable part: the overrides were visible, attributable to one rule and one line, and
+checked against the collected evidence rather than argued about. **A calibration corpus is a
+sample, and the zero it produces is only as good as what the sample contains.**
 
 ## Sending evidence to a frontier model without leaking the environment
 
@@ -210,7 +230,10 @@ leftover address. Two traps turned up while building it:
   rate or a detector that can't fire. Not enough to rank two good models.
 - mistral:7b still under-calls on its own. The floor guarantees the unambiguous cases and
   nothing more. Treat the output as triage assistance, not a detector.
-- Section 5's false positive is open, not fixed.
+- Section 5's false positive is closed, on the third option rather than either of the two I
+  first framed. What remains open is the general case: the floor only guarantees the
+  unambiguous patterns, and quantifying accuracy on ambiguous evidence still needs a larger
+  labelled set.
 
 ## Framework mapping
 

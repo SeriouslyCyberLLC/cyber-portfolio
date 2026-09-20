@@ -1,15 +1,18 @@
 # The Backup That Had Never Run: restic to object storage, and five defects in reviewed code
 
-**Status:** Deployed and running daily, September 2026. Every figure below comes from the
-service's own logs, its exported metrics, or the git history of the deployment scripts.
+**Status:** Deployed and running daily, September 2026. Figures come from the service's own
+logs, its exported metrics, or the git history of the deployment scripts, measured on
+2026-09-20 except where a row is labelled with its own date. Repository size and snapshot
+count grow daily.
 
 The risk register had one line on it I could not close: the SOC was a single point of
-failure. Detections, configuration and five git repositories with no off-box remote all
-lived on one machine, protected by a local backup on the same physical disk as the thing it
-was backing up.
+failure. Detections, configuration and five git repositories whose only remote was a bare
+repository on the same box all lived on one machine, protected by a local backup written to
+the same physical disk as the thing it was backing up.
 
 The tooling to fix that (a restic backup to Cloudflare R2, systemd units, a metrics
-exporter, five alert rules) was written, reviewed and committed on 2026-08-29. It was not
+exporter, five alert rules) was committed on 2026-08-29 as a Backblaze B2 design, rewritten
+for Cloudflare R2 on 2026-08-31, with the last pre-deploy commits landing 2026-09-09. It was not
 deployed until 2026-09-13.
 
 > **Everything in it had been read. None of it had been run.**
@@ -26,7 +29,7 @@ An **include list, not a whole-filesystem sweep with excludes.** The direction m
 | include list | fails **closed**: a path you forget is absent, and visible in the snapshot listing |
 
 In: the detection configs, the SOC scripts and their configuration, the credential files,
-the crontab, the systemd timer list, and every local git repository. Out: 1.51 TB of
+the crontab, the systemd timer list, and every local git repository. Out: ~2.4 TB of
 Elasticsearch telemetry, which is regenerable, retention-governed, and does nothing for
 recovery.
 
@@ -146,7 +149,8 @@ can *add* snapshots and cannot delete a byte for a month.
 removes a lock on every run. Lock that prefix and every backup breaks, permanently.
 
 There is no maintenance key and no pruning path. That was a deliberate trade: at roughly
-180 MB plus a few MB a day, the repository stays under 1 GB after a year against a 10 GB
+340 MB plus about 10 MB a day measured across nine increments, the repository stays well
+under a 10 GB
 free tier, so retention management would cost more than it saves, and pruning is the only
 operation that could destroy recoverable data.
 
@@ -160,11 +164,11 @@ storage credentials and never needs to be read by anything that talks to the net
 | | |
 |---|---|
 | first successful backup | 2026-09-13: 6,688 files, 120 MB uploaded |
-| most recent run | 2026-09-17 04:31, exit 0, **2.3 s** |
+| a representative run (2026-09-17) | 04:31, exit 0, **2.3 s** |
 | that run | 7,289 files / 268 MB processed, 205 new, 49 changed, **2.1 MB added** |
 | daily increments since | 78 KB to 63 MB |
-| alert rules deployed | **5**, byte-identical to the repo copy |
-| exporter tests | **20**, passing |
+| alert rules deployed | **6**, byte-identical to the repo copy |
+| exporter tests | **26**, passing |
 
 **Failure is not zero, and here it is the whole design.** A failed backup emits
 `export_ok=0` and **leaves the last-success timestamp at its previous value**. It does not
@@ -256,8 +260,10 @@ procedure. It belongs in the repository beside the deployment scripts.
 
 ## What this closed, and what it didn't
 
-**Closed:** the only off-site copy of `/etc`, the credentials, the crontab and five git
-repositories that had no remote outside this machine. Hardware failure is no longer a
+**Closed:** the only off-site copy of `/etc`, the credentials and the crontab. The five
+repositories gained private GitHub remotes on 2026-09-13, the same day this deployed, so
+restic is no longer their sole off-site copy, but it remains the only copy of everything
+that is not a git repository. Hardware failure is no longer a
 total loss.
 
 **Not closed:** this is configuration and code, not telemetry. A restore rebuilds the SOC's

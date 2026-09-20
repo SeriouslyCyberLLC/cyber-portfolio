@@ -1,7 +1,9 @@
 # Retrieval Nobody Had Measured: auditing a SOC's RAG pipeline
 
-**Status:** Live. Audited, rebuilt and redeployed September 2026. Every figure below was
-measured on the running system, or on a copy of its vector store, at the time of the work.
+**Status:** Live. Audited, rebuilt and redeployed September 2026. Figures were measured on
+the running system, or on a retained copy of its vector store, at the time of the work in
+mid-September 2026. Retrieval-quality figures are pinned by a committed evaluation set and
+an exported metric, so they can be re-checked rather than taken on trust.
 
 A local LLM triages the endpoint forensics my SOC collects. Before each verdict it
 retrieves reference material from a vector store: ATT&CK techniques, Sigma rules, LOLBAS,
@@ -22,7 +24,7 @@ On 30 known-answer queries it returned the correct technique **6 times**.
 | # | What reported healthy | What was actually true |
 |---|---|---|
 | 1 | Retrieval running on every analysis | Right technique in context **6/30**; 14 of 30 queries got no context at all |
-| 2 | A 2.5 GB knowledge base | **95%** of it was 147 orphaned index directories. The live index was 111 MB |
+| 2 | A 2.5 GB knowledge base | **147 orphaned index directories, 1.9 GB of it.** The live index was 111 MB |
 | 3 | 14 curated collections | The analyzer read **one**, frozen for over two weeks |
 | 4 | Nightly CVE ingest | Failed on **every** night of its retained logs: 31 of 31 |
 | 5 | Threat-intel ingest: "Added 5 new entries ... completed successfully" | The same 5 IPs re-written daily. The total had not moved in two months |
@@ -30,7 +32,7 @@ On 30 known-answer queries it returned the correct technique **6 times**.
 
 ## 1. Measure before you optimise
 
-The plan was built around speed. Measured: embedding a query took **6.6 ms** and the vector
+The plan was built around speed. Measured at the time: embedding a query took roughly **7 ms** and the vector
 search **1.8 ms** (medians). LLM generation takes seconds. Caching would have optimised a
 2 ms step inside a multi-second one.
 
@@ -69,7 +71,6 @@ Both changes were mutation-tested: remove either one and a named test fails.
 |---|---|
 | all-MiniLM-L6-v2, the single legacy collection (production) | 11 |
 | all-MiniLM-L6-v2 | 16 |
-| bge-small-en-v1.5 | 19 |
 | **bge-base-en-v1.5, CPU** | **22** |
 | nomic-embed-text via Ollama | 22 |
 
@@ -141,7 +142,7 @@ I found this **before** shipping, because I tested the assumption instead of the
   synthetic "ransomware" test records sitting under a description that called it real
   incident history. Repairing the script would have replaced it with alerts that are
   99.7% one informational rule. That feeds the model a baseline, not experience.
-- **The 2 GB of dead index files.** Eleven ingest scripts delete and recreate their
+- **The 1.9 GB of dead index files.** Eleven ingest scripts delete and recreate their
   collection on every run, and each run leaves the old index directory behind. I
   moved the orphans aside rather than deleting them, after checking each one against a
   fresh read of the catalog. They will re-accumulate until those scripts update in place,
@@ -157,7 +158,6 @@ versions with the same model at temperature 0. The only variable was retrieval:
 | | old retrieval | new retrieval |
 |---|---|---|
 | routine collections rated ≥HIGH | 0 / 117 | **0 / 117** |
-| routine collections rated MEDIUM | 44 | **30** |
 | malicious controls given any context | 5 / 8 | **8 / 8** |
 | malicious controls ≥HIGH, model alone | 0 / 8 | 1 / 8 |
 | malicious controls ≥HIGH, after the deterministic floor | 8 / 8 | 8 / 8 |
@@ -179,7 +179,7 @@ its own, and I did not claim it would.
   failure, never refreshed and never zeroed. Counts are withheld entirely, so a broken
   build cannot render as a healthy index.
 - **Every ingest step reports.** The nightly job now exports a result per step, written from
-  an exit trap, so a run that dies partway still says what it did. Eight warning-level
+  an exit trap, so a run that dies partway still says what it did. Twelve warning-level
   alert rules cover it. None pages, because a stale knowledge base degrades context and
   blinds no detector.
 

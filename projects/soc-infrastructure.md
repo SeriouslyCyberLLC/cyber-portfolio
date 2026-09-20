@@ -1,18 +1,20 @@
 # The SOC, and the Work of Proving It Is Telling the Truth
 
 **Status:** Production, continuous operation. Built September 2025 to January 2026, run and
-measured daily since. **Every figure below was read from the running cluster and the
-running services on 2026-09-18**, not carried forward from an earlier revision of this
-page.
+measured daily since. The tables below were read from the running cluster and services on
+**2026-09-20**. Scale and throughput move daily, so they are readings with a date on them,
+not properties; the screenshot further down carries its own, earlier date for the same
+reason.
 
 A six-layer, self-hosted security operations centre on owned hardware: network detection,
 a SIEM, endpoint EDR on every host, threat intelligence, local LLM triage, and the
 monitoring that watches all of it.
 
-Standing it up was the easy part, and it is not what most of the work has been:
+Standing it up took a few months. Most of the work since has been establishing which parts
+of it were actually doing anything:
 
-> **Every control here reported healthy at some point while producing nothing. The
-> engineering that matters is the part that can tell the difference.**
+> **Four services and three controls on this estate reported healthy while producing
+> nothing. The engineering that matters is the part that can tell the difference.**
 
 This page is the map. Each layer links to the writeup where that layer was measured,
 broken, or retired on the evidence.
@@ -26,7 +28,7 @@ broken, or retired on the evidence.
 | 3 | Threat intelligence | VirusTotal, AbuseIPDB, OTX, abuse.ch feeds, MISP, a custom aggregator | [Threat intel integration](threat-intelligence-integration.md) |
 | 4 | LLM triage | Local models over collected endpoint evidence, with a deterministic severity floor | [AI-enhanced analysis](ai-enhanced-security-analysis.md) · [red-team bench](ai-redteam-bench.md) |
 | 5 | Endpoint | Velociraptor 0.75.1 for on-demand forensics; Elastic Defend streaming continuously | this page |
-| 6 | Assurance | Prometheus, Alertmanager, 69 alert rules across 15 files, freshness and integrity probes | [Assurance audit](assurance-audit.md) · [hardening](hardening-telemetry.md) · [integrity & malware](integrity-and-malware-scanning.md) · [off-site backup](off-site-backup.md) |
+| 6 | Assurance | Prometheus, Alertmanager, 85 alert rules across 17 files, freshness and integrity probes | [Assurance audit](assurance-audit.md) · [hardening](hardening-telemetry.md) · [integrity & malware](integrity-and-malware-scanning.md) · [off-site backup](off-site-backup.md) |
 
 All nine core services (search, dashboards, ingest, IDS, EDR server, endpoint agent, the
 LLM runtime, metrics and dashboards) were `active` when this was written. That sentence is
@@ -36,10 +38,10 @@ worth exactly as much as the rest of this page makes it worth.
 
 | | documents | storage | indices | share |
 |---|---|---|---|---|
-| Endpoint telemetry (Elastic Defend) | **6.82B** | 1.80 TB | 82 | **78.1%** |
-| Network telemetry (Suricata + Zeek) | 0.71B | 0.27 TB | 125 | 11.7% |
-| Everything else | 1.20B | 0.23 TB | 328 | 10.2% |
-| **Cluster total** | **8.73B** | **2.30 TB** | 548 | |
+| Endpoint telemetry (Elastic Defend) | **6.93B** | 1.83 TB | 82 | **74.8%** |
+| Network telemetry (Suricata + Zeek) | 0.73B | 0.26 TB | 97 | 7.9% |
+| Everything else | 1.60B | 0.32 TB | 448 | 17.3% |
+| **Cluster total** | **9.26B** | **2.41 TB** | 627 | |
 
 Daily throughput, seven-day average:
 
@@ -48,9 +50,15 @@ Daily throughput, seven-day average:
 | Elastic Defend across three endpoints | **54,486,560** |
 | Suricata + Zeek | **12,646,447** |
 
-Last 24 hours by source: Zeek 12,279,042, Suricata 646,240, Velociraptor collections 439.
+Last 24 hours by source: Zeek 13,981,373, Suricata 5,889,890, Velociraptor collections 439.
 Per endpoint over the same window: SOC server 47.9M, second Linux host 4.4M, Windows laptop
 274K.
+
+**Read the IDS figure against the seven-day average, not on its own.** It swings between
+roughly 0.6M and 13.6M a day depending on how much QUIC decoder traffic one talkative host
+is generating, which is exactly why the volume floor for that source was recalibrated onto
+session records only. A single day's count from either source is close to meaningless here;
+the [assurance audit](assurance-audit.md) has the calibration.
 
 ### Quote the 12%, not the 8.7 billion
 
@@ -72,7 +80,7 @@ documents per second, unimproved by parallelism**, the array, not the 24-core CP
 The NVMe has room only if endpoint retention is cut first, which turns the migration into
 the retention question above rather than a hardware purchase.
 
-**The cluster is yellow, deliberately.** 622 active shards, 191 unassigned, replicas that
+**The cluster is yellow, deliberately.** 627 active shards, 192 unassigned, replicas that
 a single node can never place. A yellow single-node cluster is expected; treating it as a
 fault would be misreading the health colour.
 
@@ -83,9 +91,9 @@ periods measured in months. Three security controls reported success while havin
 effect. That is why layer 6 exists, and why it is the layer I would defend hardest in an
 interview:
 
-- **Output freshness, not process liveness.** 16 producers are watched by age *and* volume;
-  a source that keeps writing at 0.2% of normal volume is invisible to any check that only
-  asks whether output exists. See the [assurance audit](assurance-audit.md).
+- **Output freshness, not process liveness.** 17 producers are watched by output age, and
+  **6 of those additionally against a 24-hour volume floor**; a source that keeps writing at
+  0.2% of normal volume is invisible to any check that only asks whether output exists. See the [assurance audit](assurance-audit.md).
 - **Failure never renders as a healthy zero.** Every exporter here withholds its series
   rather than emitting `0` when it cannot measure, because a plausible number gets
   believed. See [hardening telemetry](hardening-telemetry.md).
@@ -107,9 +115,10 @@ that is part of the job:
 | A webhook that could isolate a host and block an address | **Retired**: unauthenticated, and both fields came straight from the request body |
 | Threat-intel enrichment service | **Retired**: queried a dead index and had no write path at all; its permission error was the only thing stopping it spending API quota on output nobody consumed |
 
-Three of those four were *removed* rather than repaired, and the environment is better for
-it. A capability that cannot be shown to work is a liability in a portfolio and a liability
-on a host.
+Three of those four were *removed* rather than repaired. Each had been kept on the
+assumption that a capability present is better than one absent, and in each case measuring
+it showed the opposite: they consumed attention, and two of them would have consumed money
+or authority the moment anyone "fixed" them.
 
 Two figures on this page were also simply **wrong** until today: Suricata was listed at
 7.0.3 with 44,983 signatures. It is **8.0.6 with 63,617 enabled rules**, and the rule
@@ -144,9 +153,11 @@ commented-out rules that a line count would happily include.
 
 ![Discover over the security indices: 3.05M documents in 24 hours across 290 fields](../assets/screenshots/soc-discover-24h.png)
 
-*Kibana Discover across the security indices, 3,050,369 documents in a rolling
-24 hours, 290 mapped fields. The gap after 14:00 is an ingest pause, not a
-rendering artefact.*
+*Kibana Discover across the security indices, **captured 2026-08-17**: 3,050,369 documents
+in a rolling 24 hours, 290 mapped fields. Note the date, because the volume is roughly a
+quarter of the current figures in the table above, and the collapse mid-frame is not a
+rendering artefact or an ingest pause: it is the onset of the 41-hour mirror-session loss
+described below. The capture is kept for exactly that reason.*
 
 Host names are rewritten in the page before capture and the document table is cropped out:
 raw records carry internal addressing and device names, and **a screenshot is the one

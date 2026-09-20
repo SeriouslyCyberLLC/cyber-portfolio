@@ -23,8 +23,8 @@ Self-hosted business infrastructure for Seriously Cyber Consulting LLC, running 
 - **DNS**: Managed at Cloudflare, with records pointed at the tunnel rather than at a host
 
 ### Lead Generation
-- Six templated intake paths covering the common enquiry types
-- Submissions normalized into a consistent structure regardless of entry point
+- One intake form with eight service routes, plus an explicit "not sure yet" option
+- Submissions normalised into a consistent structure regardless of which route is chosen
 
 ## Why Cloudflare Tunnel
 The alternative designs each cost something this one does not:

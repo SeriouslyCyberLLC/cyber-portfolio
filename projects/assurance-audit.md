@@ -8,13 +8,17 @@ the problem was not coverage. Every sensor I might have added was a sensor I cou
 have trusted, because the ones already installed had been failing silently for months and
 nothing had noticed.
 
-The unifying finding, across eleven separate defects:
+Eleven defects, and eight of them share one shape:
 
 > **Five services reported `active (running)` while producing nothing.
 > Three security controls reported success while having no effect.**
 
-Not one of them was detectable from a status command, a log file, or an exit code. Every
-one was detectable from output.
+None of those eight was detectable from a status command, a log file, or an exit code. Every
+one was detectable from **output**: what the thing had actually produced, or failed to.
+
+The other three (findings 1, 2 and 3 below) are a different category, and worth separating
+rather than folding in. They were readable straight from configuration by anyone who went
+looking. Nobody had gone looking, which is its own finding.
 
 ## The findings
 
@@ -32,7 +36,8 @@ one was detectable from output.
 | 10 | Endpoint isolation **could not launch its own artifact**, and reported success | since build |
 | 11 | Four distinct rejection reasons collapsed into one counter | since build |
 
-Three are worth reading in full.
+Three of them are worth the detail, because each one is a different way for a check to
+report a result it never actually measured.
 
 ## 1. The auto-blocker that could never unblock
 
@@ -145,7 +150,7 @@ days of per-day counts, not guessed:
 
 | source | healthy/day | floor | catches the outage by |
 |---|---|---|---|
-| IDS | 2.8M to 8.0M | 500,000 | **80×** |
+| IDS, session records only | 322,826 to 363,658 | 200,000 | **33×** |
 | network monitor | 357K to 4.4M | 250,000 | - |
 
 That second row is written into the config with an explicit caveat: **that floor would
@@ -153,6 +158,16 @@ not have caught the outage.** The network monitor's lowest day in fourteen *is* 
 outage day, because it was faithfully logging multicast chatter the whole time. Only the
 IDS floor is load-bearing there. A monitoring threshold that cannot catch the incident it
 was built for should say so in the file, not in someone's memory.
+
+**The IDS floor was recalibrated on 2026-09-15, and the reason is the more useful half of
+this section.** The original floor counted every document the IDS wrote, healthy days
+running 2.8M to 8.0M, floor 500,000. But 60 to 95% of that volume was decoder events from a
+**single conversation between two addresses**. When that one host went quiet, total volume
+collapsed to 1.13× the floor while capture was perfectly healthy: one ordinary quiet Monday
+from paging, for a reason that had nothing to do with the thing being monitored. The floor
+now counts **session records only**, which track sessions crossing the mirror and nothing
+else, and the healthy band tightens from a 2.9× spread to a 1.13× one. A volume floor is
+only as good as the homogeneity of what it counts, and mine was measuring one noisy talker.
 
 One design decision carried the most weight. A **collection failure** and a **producer
 that has never produced** are different states and must never render identically. The
@@ -187,7 +202,7 @@ its claims were wrong, and each survived because nothing measured it:
 Included because a writeup that reports only successes is the same genre of artifact as a
 service that only logs successes.
 
-Seven errors, and they cluster: I was reliable when *reading* the system and unreliable
+Five errors, and they cluster: I was reliable when *reading* the system and unreliable
 when *writing* automation against tool interfaces I had not checked.
 
 - Assumed a `--stdin` flag on a secrets-store CLI that has none. It took bare key names,
@@ -201,12 +216,12 @@ when *writing* automation against tool interfaces I had not checked.
   a policy rather than merging it, so it wiped the role it was meant to extend and left
   the identity unable to run any query at all
 
-`--help` first would have prevented four of them.
+`--help` first would have prevented the first three outright.
 
 What kept these off the floor was ordering, not care: every script did the reversible work
 first, verified, and only then touched the irreversible step. Ingestion never stopped, and
-the one stray firewall rule I created was inert and later removed. That is a property
-worth designing for deliberately, because it is the only thing that held when I did not.
+the one stray firewall rule I created was inert and later removed. Ordering is worth
+designing for deliberately, precisely because it does not depend on getting the rest right.
 
 ## What I would take to a production SOC
 

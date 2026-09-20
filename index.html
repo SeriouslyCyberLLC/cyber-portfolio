@@ -658,27 +658,27 @@
 
                     <li class="project">
                         <h3>Automated Report Generation</h3>
-                        <p>AI-powered system reducing client deliverable creation time by 95% using local LLMs.</p>
+                        <p>Local-LLM drafting of tabletop and incident-response documents against real Word templates. Built late 2025, unused since January 2026, and this page now says so.</p>
                         <ul class="stats">
-                            <li>4-8 hours to 3-20 minutes per document</li>
+                            <li>3 min and 20 min per document, from ~4 h and ~8 h</li>
                             <li>TTX and IR assessment templates</li>
                             <li>Formatting preserved from Word templates</li>
                             <li>Automated rubric scoring</li>
                         </ul>
-                        <p><strong>Tech:</strong> Ollama, mistral:7b, mistral-small:22b, Python, python-docx, RAG, Template Engineering</p>
+                        <p><strong>Tech:</strong> Ollama, Python, python-docx, RAG, Template Engineering</p>
                         <a href="https://github.com/SeriouslyCyberLLC/cyber-portfolio/blob/main/projects/automated-report-generation.md" class="project-link">Read More<span class="visually-hidden"> about Automated Report Generation</span></a>
                     </li>
 
                     <li class="project">
                         <h3>Threat Intelligence Integration</h3>
-                        <p>Multi-source threat intel platform with automated IOC enrichment integrated into SOC infrastructure.</p>
+                        <p>Seven-feed indicator aggregator enriching telemetry in the ingest pipeline, after the predecessor service was found to be discarding every score it computed.</p>
                         <ul class="stats">
-                            <li>Six intelligence sources: VirusTotal, AbuseIPDB, OTX, Hybrid Analysis, MISP, CISA KEV</li>
-                            <li>Enrichment lookup on every external source and destination IP</li>
-                            <li>Four intel sources on a 5-minute enrichment cycle</li>
-                            <li>threat_score 0-100 written to each alert</li>
+                            <li>161,392 indicators from 7 feeds; 37.9M documents enriched, 0 failures</li>
+                            <li>1,751 indicator matches: 1,401 allowlisted, 286 actionable</li>
+                            <li>Retired service called 3 paid APIs every 300s and wrote nothing</li>
+                            <li>Enrich snapshot refreshed hourly, so ingest makes no network call</li>
                         </ul>
-                        <p><strong>Tech:</strong> VirusTotal, AbuseIPDB, AlienVault OTX, Hybrid Analysis, Elasticsearch, Logstash, Python</p>
+                        <p><strong>Tech:</strong> Elasticsearch enrich policies, ingest pipelines, PostgreSQL, VirusTotal, AbuseIPDB, AlienVault OTX, abuse.ch feeds, Prometheus, Python</p>
                         <a href="https://github.com/SeriouslyCyberLLC/cyber-portfolio/blob/main/projects/threat-intelligence-integration.md" class="project-link">Read More<span class="visually-hidden"> about Threat Intelligence Integration</span></a>
                     </li>
 
@@ -712,9 +712,9 @@
                         <h3>Hardening Telemetry</h3>
                         <p>Daily scanners had run for months and nothing had ever read them. Turned each into tracked metrics, then decided (with measurements) what was allowed to page.</p>
                         <ul class="stats">
-                            <li>Hardening index 66&nbsp;&rarr;&nbsp;71 and 59&nbsp;&rarr;&nbsp;70 across two hosts</li>
+                            <li>Hardening index 66&nbsp;&rarr;&nbsp;71 and 59&nbsp;&rarr;&nbsp;69 across two hosts</li>
                             <li>Rootkit findings were piped into a dead mail path</li>
-                            <li>Of 11 rules, exactly 1 may page; it has never fired</li>
+                            <li>Of 11 rules, 2 are critical; neither has ever fired</li>
                             <li>Unreadable reports emit no score, never a zero</li>
                         </ul>
                         <p><strong>Tech:</strong> Lynis, chkrootkit, debsums, Prometheus, Alertmanager, node-exporter, systemd, Python, pytest</p>
@@ -726,7 +726,7 @@
                         <p>Two controls on one host, both reporting healthy and both proving nothing, and they failed in opposite directions. One had not run for 38 days; the other was in perfect health with no caller at all.</p>
                         <ul class="stats">
                             <li>Antivirus: 8MB resident against 955MB swapped out</li>
-                            <li>Integrity scope 2M entries &rarr; 70,770; 717s &rarr; 170s</li>
+                            <li>Integrity scope 2M entries &rarr; 71,468; 717s &rarr; 169s</li>
                             <li>Change alerts calibrated 289:1 against routine churn</li>
                             <li>A permanent positive control, or &ldquo;0 infected&rdquo; means nothing</li>
                         </ul>
@@ -754,7 +754,7 @@
                             <li>2.6M detections logged in 17 days</li>
                             <li>96.6% were one local hostname</li>
                             <li>61 false pages per day</li>
-                            <li>Retired Jan 2026; writeup kept</li>
+                            <li>Silent from Jan 2026, retired Aug 2026</li>
                         </ul>
                         <p><strong>Tech:</strong> Python, Zeek, entropy and n-gram scoring, Pushover</p>
                         <a href="https://github.com/SeriouslyCyberLLC/cyber-portfolio/blob/main/projects/dns-behavioral-monitoring.md" class="project-link">Read More<span class="visually-hidden"> about DNS Behavioral Monitoring, retired</span></a>
@@ -762,24 +762,24 @@
 
                     <li class="project">
                         <h3>Network Security Architecture</h3>
-                        <p>Defense-in-depth network with Firewalla Gold Pro: multi-VLAN segmentation, threat prevention, and flow telemetry into the SIEM.</p>
+                        <p>Segmented network on a Firewalla Gold Pro, with the switch mirroring the router uplink into Zeek and Suricata. The mirror scope and the unquotable vendor counters are the interesting parts.</p>
                         <ul class="stats">
-                            <li>877K blocked flows per day</li>
-                            <li>2.1M flow records per day</li>
-                            <li>6 VLANs segmented by trust level</li>
-                            <li>Inter-VLAN policy enforced at the gateway</li>
+                            <li>7 segments, 36 devices, 100 rules (81 active blocks)</li>
+                            <li>Mirror scoped to the uplink: 1,599 docs/min vs 6,940 all-ports</li>
+                            <li>13.7M DNS and 5.9M IDS events a day off that mirror</li>
+                            <li>Vendor blocked-flow counter has no window, so it is not quoted</li>
                         </ul>
-                        <p><strong>Tech:</strong> Firewalla Gold Pro, VLANs, IDS/IPS, Threat Intelligence, NetFlow, Python</p>
+                        <p><strong>Tech:</strong> Firewalla Gold Pro, VLANs, port mirroring, Suricata, Zeek, REST API, Python</p>
                         <a href="https://github.com/SeriouslyCyberLLC/cyber-portfolio/blob/main/projects/firewalla-network-security.md" class="project-link">Read More<span class="visually-hidden"> about Network Security Architecture</span></a>
                     </li>
 
                     <li class="project">
                         <h3>Business Infrastructure Platform</h3>
-                        <p>Self-hosted business infrastructure with zero-trust architecture, automated lead generation, and enterprise-grade security on SMB budget. Demonstrates cloud security, automation, and cost optimization.</p>
+                        <p>Self-hosted company site reached only through an outbound tunnel, so the host has no inbound listening socket exposed to the internet.</p>
                         <ul class="stats">
                             <li>$0/month hosting</li>
                             <li>Zero-trust architecture</li>
-                            <li>6 lead gen templates</li>
+                            <li>One intake form, eight service routes</li>
                             <li>Multi-domain Cloudflare Tunnel</li>
                         </ul>
                         <p><strong>Tech:</strong> Cloudflare Tunnel, Nginx, Python, Ubuntu 24, DNS Management</p>
@@ -791,14 +791,14 @@
 
                     <li class="project">
                         <h3>Local Speech-to-Text</h3>
-                        <p>Privacy-focused transcription system using Whisper AI with GPU acceleration for secure dictation.</p>
+                        <p>Local dictation with no cloud egress, and an audit of my own claims about it: it runs on CPU, not the GPU this page used to advertise, and it invents words when handed silence.</p>
                         <ul class="stats">
-                            <li>3-5 second transcription</li>
-                            <li>Local Whisper, no cloud upload</li>
-                            <li>ROCm GPU acceleration</li>
-                            <li>Browser extension and system hotkey</li>
+                            <li>Fabricates text on silence: 5 of 6 silent clips, all success:true</li>
+                            <li>faster-whisper medium at int8 on CPU, English only</li>
+                            <li>The startup banner printed &ldquo;on GPU&rdquo; around device=&ldquo;cpu&rdquo;</li>
+                            <li>HTTPS, shared-secret auth, no network egress</li>
                         </ul>
-                        <p><strong>Tech:</strong> OpenAI Whisper, AMD ROCm, Python, WebSocket, JavaScript, Browser Extensions</p>
+                        <p><strong>Tech:</strong> faster-whisper, Python, HTTPS, systemd, JavaScript, Browser Extensions</p>
                         <a href="https://github.com/SeriouslyCyberLLC/cyber-portfolio/blob/main/projects/whisper-speech-to-text.md" class="project-link">Read More<span class="visually-hidden"> about Local Speech-to-Text</span></a>
                     </li>
                 </ul>

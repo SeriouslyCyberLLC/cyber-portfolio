@@ -287,8 +287,8 @@ the original design would have caught the next one. That is now automated.
 
 ## Reproducibility: the number that would have been wrong
 
-Eight of ten payloads returned an identical rate across three independent 10-trial
-runs. One did not:
+Seven of ten payloads returned an identical rate across three independent 10-trial
+runs. Three did not, and one of those three is the saturated control described above:
 
 | Payload | run 1 | run 2 | run 3 | n=50 |
 |---|---|---|---|---|

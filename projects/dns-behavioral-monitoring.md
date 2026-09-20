@@ -1,6 +1,7 @@
 # DNS Behavioral Monitoring: built, measured, retired
 
-**Status:** Retired January 2026. Kept here because the measurement is the interesting part.
+**Status:** Stopped producing 15 January 2026, formally retired and disabled 11 August 2026.
+The seven months between those two dates are the finding, so the page dates both.
 
 A DGA and DNS-tunneling detector running over Zeek DNS logs. It worked, in the sense that
 it ran and produced detections. It did not work, in the sense that almost none of those
@@ -115,4 +116,4 @@ shape.
 - **Silent-failure diagnosis**: fd-table and wait-channel inspection when logs are empty
 - Knowing when to retire a detection rather than keep it running for the metrics
 
-**Built:** December 2025 · **Retired:** January 2026 · **Post-mortem:** August 2026
+**Built:** December 2025 · **Stopped producing:** January 2026 · **Retired and disabled:** August 2026

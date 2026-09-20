@@ -1,167 +1,173 @@
-# Enterprise Network Security Architecture with Firewalla
+# Network Segmentation and Mirrored-Traffic Monitoring
 
-## Overview
-Designed and implemented defense-in-depth network architecture using Firewalla Gold Pro for multi-VLAN segmentation, traffic monitoring, and threat prevention. Provides network visibility and security enforcement for distributed security operations center.
+**Status:** Live since September 2025. Figures read from the appliance's management API and
+from the SIEM on 2026-09-20. Where a number is a vendor rating or a UI setting rather than
+something I measured, it says so.
 
-## Business Challenge
-- Need for network segmentation to isolate security workloads
-- Real-time threat prevention at network perimeter
-- Traffic visibility for security monitoring and forensics
-- Protection against external threats while maintaining performance
+A Firewalla Gold Pro as the router for a segmented home network, with a managed switch
+mirroring the router uplink into a monitoring host running Zeek and Suricata. The interesting
+parts are the two deliberate limits: what the mirror is scoped to, and which of the
+appliance's own numbers turn out to be quotable.
 
-## Network Architecture
+## Segments, as the appliance reports them
 
-### VLAN Segmentation Strategy
-```
-VLAN 20: Secondary Linux node (node-01)
-VLAN 40: Guest network (isolated, restricted egress)
-VLAN 60: Primary workstation
-VLAN 70: Windows endpoint (EDR agent)
-VLAN 80: Servers and self-hosted infrastructure
-VLAN 81: Security operations (ELK, Suricata, Zeek, Velociraptor)
-```
-Each segment is a routed `/24` in `192.168.<vlan>.0/24` form, with the Firewalla as
-the gateway at `.1`. Inter-VLAN traffic is denied by default and allowed only where a
-rule exists, so the monitored endpoints on 20, 60 and 70 cannot reach the security
-operations segment on 81 except on the ports the EDR and log shippers need.
+Seven networks, 36 devices, 26 online at the time of reading, 17 with reserved addresses.
 
-### Traffic Flow Design
-- **Port Mirroring**: Managed switch mirrors all traffic to security monitoring VLAN
-- **Ingress/Egress Filtering**: Rules enforce zero-trust between VLANs
-- **Deep Packet Inspection**: All traffic analyzed at network boundary
-- **Threat Intelligence**: Real-time blocking of malicious IPs/domains
+| segment | role | devices |
+|---|---|---|
+| Main | the household: TVs, consoles, phones, smart-home kit | 28 |
+| LAN 1 | wired general purpose | 3 |
+| VLAN 20 | secondary Linux node | 1 |
+| VLAN 60 | secondary workstation segment | 1 |
+| VLAN 70 | Windows endpoint running EDR | 1 |
+| VLAN 80 | forensics workstation | 1 |
+| VLAN 66 | IP cameras, deliberately closed | 1 |
 
-## Technical Implementation
+Plus VLAN 81, the security operations segment, which the SOC server sits on.
 
-### Firewalla Gold Pro Configuration
-- **Hardware**: Quad-core 64-bit Intel 12th Gen CPU, 8GB RAM
-- **Interfaces**: 2x 10GbE + 2x 2.5GbE NBASE-T, plus a console port
-- **Performance**: Rated above 10 Gb software packet processing; deployed behind a 5 Gb fiber uplink
-- **Management**: Web UI + mobile app for remote administration
+**The household network is the majority of the estate and is worth stating plainly**, because
+a diagram showing only the lab VLANs would misrepresent what this appliance is actually
+protecting. Twenty-eight consumer devices on one flat segment is the realistic condition;
+the segmentation exists so that the lab work and the cameras are not on it.
 
-### Security Rules Implemented
-1. **Geo-blocking**: Block traffic from high-risk countries
-2. **Category Filtering**: Block malware, phishing, botnet C2 domains
-3. **Port Control**: Restrict outbound connections by application
-4. **Device Isolation**: Prevent lateral movement between VLANs
-5. **VPN**: Encrypted remote access for security operations
+Each segment is a routed `/24` with the appliance as gateway. Inter-segment traffic is denied
+unless a rule exists. **100 rules are configured:** 81 active blocks, 17 active allows, 2
+paused.
 
-### Integration with Security Stack
-- **Traffic Mirroring**: Full packet capture to Zeek/Suricata
-- **Flow Logs**: NetFlow data exported to ELK Stack
-- **Threat Feeds**: Integrated with threat intelligence platform
-- **Alerting**: Critical blocks trigger Pushover notifications
+## The mirror is scoped to the uplink, on purpose
 
-## Performance Metrics
+Earlier versions of this page said the switch "mirrors all traffic". It does not, and the
+reason is the useful part.
 
-### Threat Prevention
-- **Daily Blocked Flows**: 877,321 (from Gatekeeper alone)
-- **Blocked Domains**: 12,000+ malicious/suspicious domains
-- **Geo-blocked IPs**: 45,000+ high-risk source addresses
-- **Intrusion Attempts**: 1,200+ daily connection attempts blocked
+The mirror session is a single destination port fed by **the router uplink only, ingress and
+egress.** Mirroring all seven switch ports was tried and measured:
 
-### Network Performance
-- **Throughput**: 5 Gb fiber uplink inspected inline, hardware rated above 10 Gb
-- **Latency**: <2ms added latency for inspection
+| mirror scope | documents per minute into the SIEM |
+|---|---|
+| all ports | 6,940 |
+| router uplink only | 1,599 |
 
-### Visibility
-- **Flow Records**: 2.1M daily network flows logged
-- **DNS Queries**: 145K daily queries monitored
-- **Bandwidth Usage**: Per-device tracking and alerting
-- **Application Identification**: 850+ applications detected
+The extra 4.3× was duplicate east-west traffic, producing duplicate alerts and no additional
+visibility, on a storage array already 73% full. Because the appliance is
+router-on-a-stick, **everything crossing a segment boundary or going to the internet
+traverses that uplink.** What is missed is intra-segment switch-local traffic, and that is
+the trade I took deliberately.
 
-## Security Features Deployed
+The camera VLAN is not on the switch at all and produces zero documents. That is by design:
+eight 1080p cameras would be roughly 4 MB/s against the ~124 KB/s the mirror normally
+carries. If it is ever wired in, the correct move is to add it to the trunk so that
+*escape attempts* are captured while intra-VLAN video stays off the mirror.
 
-### Advanced Threat Protection
-- **IDS/IPS**: Inline intrusion prevention with Suricata signatures
-- **DNS Security**: DNS-over-HTTPS, malicious domain blocking
-- **Ad Blocking**: Network-wide ad/tracker blocking (optional)
-- **VPN Server**: WireGuard for secure remote access
-- **VPN Client**: Route specific traffic through commercial VPN
+## There is no full packet capture here
 
-### Network Monitoring
-- **Real-time Dashboard**: Live traffic visualization
-- **Historical Analysis**: 90-day flow retention
-- **Anomaly Detection**: Baseline behavior with alerting
-- **Device Discovery**: Automatic network mapping
-- **Bandwidth Monitoring**: Per-device usage tracking
+Another claim removed rather than corrected. Packet logging is **disabled** in the IDS
+configuration, in both places it appears, and no full-capture platform is deployed.
 
-### Access Control
-- **Device Grouping**: Logical groups with shared policies
-- **Time-based Rules**: Scheduled access restrictions
-- **Port Forwarding**: Secure external service exposure
-- **MAC Filtering**: Device authentication at L2
-- **Guest Network**: Isolated network with captive portal
+Zeek and Suricata retain **protocol logs, not packets.** That is a materially different
+capability: I can tell you that a host resolved a domain and opened a connection, with
+timing and byte counts, but I cannot go back and read the payload. Full retrospective PCAP
+is on the roadmap, not in the estate, and a portfolio that implies otherwise fails at the
+first question an interviewer asks.
 
-## Integration Architecture
+Nor is there NetFlow export into the SIEM. Earlier versions claimed flow logs and syslog
+both reaching the ELK stack; there is no flow index in the cluster. Flow records live on the
+appliance and are read through its API. What reaches the SIEM is mirrored-traffic analysis,
+which is a different data source with different strengths.
 
-### Data Flow
-```
-Network Traffic → Firewalla (inspection/blocking) → Mirror → Security VLAN
-                         ↓
-                  Flow Logs → ELK Stack → Kibana Dashboards
-                         ↓
-                  Threat Intel → IOC Correlation → Automated Response
-```
+## What the mirror actually produces
 
-### Automation Integration
-- **API Access**: RESTful API for programmatic control
-- **Python Scripts**: Automated rule management
-- **Webhook Integration**: Events trigger security workflows
-- **Syslog Export**: Centralized logging to SIEM
+Measured from the SIEM, last 24 hours:
 
-## Use Cases
+| | documents |
+|---|---|
+| DNS | **13,673,292** |
+| IDS events | **5,889,890** |
+| connection records | 306,808 |
 
-### 1. Malware C2 Prevention
-- Device attempts connection to known botnet C2 server
-- Firewalla blocks connection based on threat intelligence
-- Alert sent to security team via Pushover
-- Flow logged to ELK for investigation
+Earlier versions of this page quoted "145K daily DNS queries monitored" and attributed it to
+the appliance. That is two orders of magnitude low, and it cannot have been right: the
+appliance is the resolver for every segment, so its own count cannot be smaller than what
+Zeek sees on a mirror of its uplink.
 
-### 2. Lateral Movement Prevention
-- Compromised device on the guest network attempts to scan internally
-- VLAN isolation prevents access to the security operations segment
-- Connection attempts logged and analyzed
-- Device automatically quarantined to restricted VLAN
+## The appliance's own blocked-flow counter is not quotable, and that is a finding
 
-### 3. Data Exfiltration Detection
-- Workstation initiates unusual high-bandwidth upload
-- Bandwidth monitoring triggers alert
-- Deep packet inspection reveals suspicious data transfer
-- Connection blocked, incident response initiated
+Every earlier version of this page led with **877,321 daily blocked flows**, plus 12,000+
+blocked domains, 45,000+ geo-blocked addresses, 1,200+ daily intrusion attempts, 2.1M daily
+flows and 850+ identified applications. None of those had a retrievable source. I went to
+the API to regenerate them properly, and could not.
 
-## Technical Skills Demonstrated
-- Network architecture and design
-- VLAN segmentation and routing
-- Firewall rule development
-- Traffic analysis and monitoring
-- Threat intelligence integration
-- Network performance optimization
-- Zero-trust security principles
-- API integration and automation
+| what I asked for | what came back |
+|---|---|
+| blocked flows over 1h / 24h / 7d / 30d | **the identical number, 180,583, for all four** |
+| flows with an explicit `begin`/`end` day range | the most recent page only: 500 records spanning **6 minutes** |
+| a `count` field on a bounded query | the size of the page, not a total |
 
-## Business Impact
-- **Attack Surface Reduction**: Segmentation confines a compromised device to its own VLAN
-- **Threat Prevention**: 877K daily malicious connections blocked
-- **Incident Response**: Network forensics data for investigations
-- **Compliance**: Network segmentation for regulatory requirements
-- **Cost**: No per-seat or per-throughput licensing
+**The interval parameter is accepted and ignored.** So 180,583 is a cumulative counter over
+an undefined period, and "877,321 daily" was that same kind of number with a unit attached
+to it that the API never supplied. A six-digit figure with no window is the worst shape a
+statistic can take: it reads as measured and it is not.
 
-## Limitations
-Honest scope notes, since this is prosumer hardware doing a job enterprises solve differently:
-- Single appliance, so it is a single point of failure with no HA pair
-- Deep packet inspection cannot see inside TLS without interception, which is not deployed here
-- Threat feeds are the vendor's, not tunable the way a commercial NGFW ruleset is
-- Throughput ceiling is well below a datacenter firewall; adequate for this link, not for a campus
+What I can state, because it has a defined basis:
 
-## Future Enhancements
-- Implement SD-WAN for multi-site connectivity
-- Add honeypot network for threat research
-- Expand VPN capacity for remote workforce
-- Integrate with SOAR platform for automated response
+| | measured |
+|---|---|
+| rules configured | **100** (81 active block, 17 active allow, 2 paused) |
+| open alarms | **22**, none raised in the last 24 hours |
+| blocked share of a 500-flow live sample | **1.0%** (5 of 500, over 6 minutes) |
+| appliances online | 1 of 1, firmware 1.983, router mode |
+
+The 1% is a sample and is labelled as one. It is not a daily rate and should not be
+multiplied into one.
+
+## Vendor ratings and UI settings, labelled as such
+
+- **Hardware:** quad-core Intel 12th-gen, 8 GB RAM, 2× 10GbE plus 2× 2.5GbE. Vendor spec.
+- **Throughput:** rated above 10 Gb software packet processing, deployed behind a 5 Gb fibre
+  uplink. Vendor rating; I have not load-tested it.
+- **Inspection latency:** previously published as "<2 ms". That was a datasheet figure
+  presented as a measurement, and it is removed. I have not measured added latency.
+- **Flow retention:** a retention setting in the console, not a verified property of the
+  stored data.
+
+## Capabilities configured
+
+Geographic blocking, category blocking for malware, phishing and command-and-control
+domains, outbound port control, inter-segment isolation, a WireGuard VPN server for remote
+access, and a VPN client for selectively routed egress. Threat feeds are the vendor's.
+
+**There is no automatic quarantine.** An earlier use case on this page ended with a device
+being "automatically quarantined to a restricted VLAN". No such automation exists. The one
+component on this network that could have acted on a detection was an auto-blocker that
+executed **zero blocks in its entire operational life** and has since been masked, which is
+written up in [the assurance audit](assurance-audit.md). Blocking here is a rule I wrote or
+a button I pressed.
+
+## Honest limitations
+
+- **Single appliance, so a single point of failure.** No HA pair.
+- **Inspection cannot see inside TLS** without interception, which is not deployed and which
+  I would not deploy on a network carrying family devices.
+- **Threat feeds are the vendor's** and are not tunable the way a commercial NGFW ruleset is.
+- **Intra-segment traffic is not mirrored**, so lateral movement *within* a segment is
+  visible only to the endpoint agent, not to the network sensors.
+- **The management API's aggregates are not windowed**, as above, which limits what can be
+  trended without building the trending myself.
+- **Twenty-eight devices on one flat household segment** is the largest unsegmented surface
+  here, and segmenting it further is a family-usability problem rather than a technical one.
+
+## Framework mapping
+
+Segmentation and boundary control map to CIS Controls v8 4.4, 12.2 and 13.4, NIST CSF 2.0
+PR.AA and PR.IR, and ATT&CK lateral-movement and command-and-control technique families. The
+camera VLAN's isolation is a deliberate CIS 12.2 application rather than an oversight.
+
+## Skills demonstrated
+
+Network architecture and VLAN design, routed-segment addressing and inter-segment policy,
+port-mirror design with a measured scope trade-off, IDS and NSM sensor deployment against a
+mirror, REST API integration with a management plane, and distinguishing a measured number
+from a vendor rating in published material.
 
 ---
 
-**Deployed**: September 2025  
-**Status**: Production, 24/7 operation  
-**Performance**: 5 Gb fiber uplink, DPI enabled
+**Deployed:** September 2025. **Audited and corrected:** September 2026.

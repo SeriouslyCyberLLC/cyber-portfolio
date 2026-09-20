@@ -1,52 +1,75 @@
-# Automated Security Report Generation System
+# Automated Security Report Generation
 
-## Business Problem
-Manual creation of Tabletop Exercise (TTX) reports and Incident Response (IR) assessments was taking 4-8 hours per document, creating bottlenecks in client deliverables and training exercises.
+**Status:** Built October to December 2025. **Not in active use since January 2026**, and it
+would not run today without a change. Audited 2026-09-20; what follows is what is on disk.
 
-## Solution
-Developed automated report generation system using AI and template-based document creation, reducing generation time by 95%.
+Tabletop exercise reports and incident-response assessments were taking most of a working day
+each, largely in document assembly rather than thinking. This generates the draft from
+scenario parameters against real Word templates, preserving the formatting, and scores
+exercise responses against a rubric.
 
-## Technical Architecture
+## What it does
 
-### Components
-- **AI Engine**: Ollama with the mistral:7b model (4.4GB)
-- **Document Processing**: python-docx for template manipulation
-- **Template System**: Professional Word templates with exact formatting
-- **Content Generation**: RAG system with security knowledge base
-- **Scoring**: Automated rubric evaluation for TTX exercises
+| | |
+|---|---|
+| Generation | Ollama, local inference |
+| Document layer | `python-docx` against real client-format Word templates |
+| Content | retrieval over a security knowledge base |
+| Scoring | rubric evaluation for exercise responses |
+| Host | the SOC server: Pop!_OS 22.04, i9-13900K, 24 cores / 32 threads, 24 GB AMD GPU |
 
-### Workflow
-1. Input: Scenario parameters or incident data
-2. AI generates contextually accurate content
-3. Template engine preserves formatting while replacing content
-4. Automated scoring based on response rubrics
-5. Output: Client-ready professional document
+## Measured durations
 
-## Performance Metrics
-- **TTX Reports**: 3 minutes (vs. 4 hours manual)
-- **IR Assessments**: 20 minutes (vs. 8 hours manual)
-- **Time Savings**: 95% reduction
-- **Quality**: Maintains professional formatting, client-ready output
+| document | generated | previous manual effort |
+|---|---|---|
+| tabletop exercise report | **3 minutes** | ~4 hours |
+| incident response assessment | **20 minutes** | ~8 hours |
 
-## Business Impact
-- Turnaround measured in minutes rather than a working day
-- Faster response to training requests
-- Consistent structure and quality across all deliverables
-- Analyst time redirected from document assembly to the exercise itself
+Earlier versions of this page reduced that to a single headline "95% reduction". The two
+ratios are **98.75%** and **95.8%**, so one round number cannot describe both, and the manual
+baselines are my own recollection of how long these took rather than a timing record. The
+durations above are the real output; the reader can do the division.
 
-## Technical Implementation
-- Server: soc-01 (Debian, Intel i9-13900K, 24 cores / 32 threads, RX 7900 XTX 24GB)
-- Model: mistral-small:22b (12GB) for document generation
-- Resource isolation from security monitoring
-- Template versioning and management
+What the tool demonstrably removes is document assembly. It does not remove the exercise
+design, the judgement about what the findings mean, or the review pass before anything goes
+to a client.
 
-## Skills Demonstrated
-- AI/LLM integration
-- Document automation
-- Python programming
-- Business process optimization
-- Template engineering
-- Quality assurance
+## The audit findings, on my own work
 
-**Status**: Production, client deliverables  
-**Built**: October-December 2025
+**It calls a model that is not installed.** Every generator on disk names `llama3.1:8b`, and
+two earlier variants name `mixtral:latest`. Neither is present on the host. As it stands the
+toolchain cannot complete a run. Earlier versions of this page claimed `mistral:7b` in one
+section and `mistral-small:22b` in another, and neither matched the source.
+
+**The host was described as Debian.** It is Pop!_OS 22.04. That error was in this project's
+own internal documentation for months before anyone checked `/etc/os-release`.
+
+**There is no client deliverable on disk.** The three output directories are placeholders
+with test names. The generators were last modified 2025-12-24 and the newest output is
+2026-01-14. Earlier versions of this page carried `Status: Production, client deliverables`,
+which was a stronger claim than the evidence supports, and "client-ready output" was a
+quality assessment with no reviewer behind it.
+
+I am leaving it in the portfolio as what it is rather than deleting it, because the
+template-preservation problem was the genuinely hard part and that code still works. But an
+unmaintained tool described as in production is the same failure this portfolio spends most of
+its pages on, and it was mine.
+
+## What it would take to revive it
+
+1. **Pin the model in one place** and name a model that exists. The five generator variants
+   each hardcode their own, which is how two of them drifted onto a different model family.
+2. **Consolidate the variants.** `ir_assessor`, `_fixed`, `_old` and `_excel` are four
+   generations of the same file with no indication which is current.
+3. **Add a smoke test that actually generates a document**, so "the model is missing" fails
+   in a test rather than in front of a deliverable.
+
+## Skills demonstrated
+
+Local LLM integration, retrieval-augmented generation against a curated knowledge base,
+document automation preserving exact client formatting, rubric-based scoring, Python, and
+auditing a published claim against the code it describes.
+
+---
+
+**Built:** October to December 2025. **Last run:** January 2026. **Audited:** September 2026.

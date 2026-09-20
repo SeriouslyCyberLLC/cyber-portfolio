@@ -1,8 +1,9 @@
 # An Audit Nobody Reads: putting a number on hardening
 
-**Status:** Live on two Linux hosts. Built August 2026, extended through September. Every
-figure below was read from the running monitoring stack at the time of writing, not from my
-notes.
+**Status:** Live on two Linux hosts. Built August 2026, extended through September. Figures
+marked *read live* were taken from the running monitoring stack on 2026-09-20. Historical
+figures carry their own dates. Numbers here move as the hosts get patched, so treat a
+hardening index as a reading, not a property.
 
 Security scanners had been running daily on these machines for months. They worked. They
 wrote their findings to disk on schedule. None had ever been read.
@@ -20,7 +21,7 @@ anyone up.
 
 | # | What reported healthy | What was actually true |
 |---|---|---|
-| 1 | Hardening auditor running daily, 1.5 MB of output | Nobody had read a single line of it |
+| 1 | Hardening auditor running daily, over 1 MB of output | Nobody had read a single line of it |
 | 2 | Rootkit scanner running daily | Findings piped into a mail path that did not exist |
 | 3 | `0 updates can be applied immediately` | 30 unpatched CVEs the host could not see |
 | 4 | Auto-blocker `active (running)` | 0 blocks executed in the service's entire life |
@@ -35,12 +36,13 @@ asked to scan. See [Running Is Not Working](integrity-and-malware-scanning.md).
 
 ## 1. The score nobody tracked
 
-The hardening auditor ran on a daily timer, wrote a report and a 1.5 MB log, and exited
-cleanly. There was no defect to fix. There was simply no consumer.
+The hardening auditor ran on a daily timer, wrote a report and a log that sits around 1.2 MB
+between rotations, and exited cleanly. There was no defect to fix. There was simply no consumer.
 
-I exported six series to the metrics collector (hardening index, tests performed,
-warnings, suggestions, report age, and report readability) and hung the exporter off the
-audit unit itself with `ExecStartPost` rather than giving it its own timer.
+I exported seven series to the metrics collector (hardening index, tests performed,
+warnings, suggestions, report age, report readability, and the export timestamp) and hung
+the exporter off the audit unit itself with `ExecStartPost` rather than giving it its own
+timer.
 
 **That choice is load-bearing.** A separate schedule drifts away from the audit it
 reports on, and would happily export a stale score with nothing to indicate staleness.
@@ -69,7 +71,7 @@ Measured from the monitoring stack, 14-day window against today:
 | host | hardening index | suggestions | warnings | tests run |
 |---|---|---|---|---|
 | SOC server | **66 → 71** | 52 → 34 | 2 | 273 |
-| second Linux host | **59 → 70** | 51 → 31 | 0 | 277 |
+| second Linux host | **59 → 69** | 51 → 32 | 0 | 277 |
 
 One package was deliberately **not** installed: an interactive bug-notifier that prompts
 during package operations and would have hung unattended upgrades. A hardening suggestion
@@ -126,32 +128,51 @@ A rule on that warning state would fire every day forever. That is precisely how
 earlier monitor on this network produced 61 pages a day and taught everyone to swipe
 notifications away.
 
-So, four rules with sharply different privileges:
+So, four rules with sharply different weight:
 
-| rule | fires on | pages? |
+| rule | fires on | priority |
 |---|---|---|
-| infection detected | `infected > 0` | **yes: the only one.** Has never fired |
-| suspicious count jumped | above the 14-day max, tolerance **5** | no |
-| report unreadable | `report_readable == 0` | no |
-| report stale | older than 3 days | no |
+| infection detected | `infected > 0` | **critical: the only one here.** Has never fired |
+| suspicious count jumped | above the 14-day max, tolerance **5** | warning |
+| report unreadable | `report_readable == 0` | warning |
+| report stale | older than 3 days | warning |
+
+**Be precise about what "priority" buys, because it is less than it sounds.** There is one
+operator and one notification channel, so the router has a single route and no severity
+matcher: every rule that fires does reach the phone. What `severity: critical` changes is
+the notification priority, which on this channel is the difference between a quiet
+notification and one that overrides do-not-disturb. A severity-routing tree for an
+audience of one would be pretend enterprise. The real calibration is upstream, in which
+conditions are allowed to fire at all.
 
 The tolerance of 5 is measured, not guessed: **a kernel upgrade alone adds about two
 entries** as new build-id directories appear. That is exactly what raised the one alert
 this rule has produced, a kernel reboot, correctly detected, and entirely noise. The
 tolerance exists because I went and looked at what normal change costs.
 
-Current state, read live: 0 infected, 29 suspicious, 142 checks, report readable.
+Second host, read live 2026-09-20: 0 infected, 29 suspicious, 142 checks, report readable.
+The SOC server reads 27 suspicious over 118 checks, a different baseline, which is why the
+jump rule compares each host against its own history rather than against a shared number.
 
 ### Two scanners, and the order in which to remove one
 
-That host had a **second** rootkit checker installed as well, and it was worse than useless.
-It ran, but its weekly database update was gated off, so its baseline was 41 days stale,
-and the consequence is legible in its own log: every one of its twelve file-property
-warnings was `curl`, `perl` or `wget`. Ordinary patching, reported as tampering, into a
-channel nobody read.
+Both hosts had a **second** rootkit checker installed as well, and the two hosts were
+running the same package into two opposite failure modes.
+
+On the second Linux host it was gated off at the config level, so the daily and weekly cron
+entries both existed, both were executable, and both exited immediately. Its log was **0
+bytes, dated 2026-03-01**. That is the mild version: it fails closed, it does not pretend,
+and the empty log says so honestly to anyone who looks. Nobody looked for six months.
+
+On the SOC server the same package was gated **on** and ran daily, but its weekly database
+update was gated off, so its baseline sat 41 days stale. The consequence is legible in its
+own log: every one of its twelve file-property warnings was `curl`, `perl` or `wget`.
+Ordinary patching, reported as tampering, into a channel nobody read.
 
 **A rootkit checker comparing against a stale baseline is worse than none.** It
-manufactures findings from routine work. It was purged, not fixed.
+manufactures findings from routine work, and the noisy host is the more dangerous of the
+two: an empty log invites a question, while a log full of explained-away warnings trains
+you to stop asking. Both were purged, not fixed.
 
 **The order mattered and is the transferable part.** On that host the purge was safe
 because the other scanner was already exported with alert rules. The coverage existed
@@ -259,14 +280,15 @@ separately:
 |---|---|---|
 | hardening auditor | 4 | 11 |
 | rootkit scanner (both hosts) | 4 | 17 |
-| package-verification scan (second host) | 3 | - |
-| **total** | **11** | **28** |
+| package-verification scan (second host) | 3 | 10 |
+| **total** | **11** | **38** |
 
-Those 11 sit inside an environment total of **69 alert rules across 15 rule files**, read
-off the deployed files today rather than added up from this page. Zero of the 11 were firing
-at the time of writing.
+Those 11 sit inside an environment total of **85 alert rules across 17 rule files**, counted
+off the deployed files on 2026-09-20 rather than added up from this page. Zero of the 11
+were firing when I checked.
 
-The engineering is small. The judgment is the deliverable:
+The engineering is a few hundred lines of exporter and rule YAML. The decisions that took
+the time:
 
 - **Read the output before repairing the tool.** In four of these cases the tool was
   never broken.
@@ -275,8 +297,10 @@ The engineering is small. The judgment is the deliverable:
 - **Failure must never render as a healthy zero.** Withhold the series instead.
 - **Hook the exporter to the job, not to a schedule of its own**, or you will export
   stale numbers with nothing marking them stale.
-- **Decide what is allowed to page, and defend that decision with measurements.** Of
-  eight rules, exactly one is permitted to wake someone up, and it has never fired.
+- **Decide what is allowed to fire, and defend that decision with measurements.** Of
+  these 11 rules, 2 carry critical priority and neither has ever fired. The daily-forever
+  conditions were left out of the rule set entirely rather than routed around after the
+  fact.
 - **Calibrate against a normal host, not against the first host you looked at.**
 
 The value here was never in the hardening points. It was in ending up with a small number

@@ -1,118 +1,151 @@
-# Threat Intelligence Integration Platform
+# Threat Intelligence Enrichment: the service that threw its answers away
 
-## Overview
-Integrated multiple threat intelligence feeds into SOC infrastructure for automated IOC enrichment, threat correlation, and proactive defense. Reduces analyst workload and improves detection accuracy through contextualized alerts.
+**Status:** The aggregator and the enrichment pipeline are live. The service this page
+originally described is **retired and masked.** Figures read from the running cluster and
+the indicator database on 2026-09-20.
 
-## Business Problem
-- Security alerts lacked context for rapid decision-making
-- Manual IOC lookup was time-consuming and inconsistent
-- No centralized threat intelligence management
-- Analysts spending the bulk of their time on investigation rather than response
+For most of a year this SOC had a threat-intelligence enrichment service that reported
+`active (running)`, called three commercial reputation APIs every 300 seconds, computed a
+threat score for every external address it saw, and then **discarded the result.** No alert
+was ever enriched. Nothing downstream consumed anything.
 
-## Technical Solution
+Every earlier version of this page described that service in the present tense, complete
+with an enrichment latency and a 0-100 scoring scale. It is a better portfolio piece as
+what it actually was.
 
-### Integrated Threat Intelligence Sources
-1. **VirusTotal** - File/URL/domain reputation
-2. **AbuseIPDB** - IP address abuse reporting and scoring
-3. **AlienVault OTX** - Community-driven threat intelligence
-4. **Hybrid Analysis** - Automated malware analysis sandbox
+## What was wrong with it, in the order it matters
 
-### Architecture Components
-- **Enrichment Pipeline**: Logstash filters for automatic IOC lookup
-- **Threat Intel Database**: Elasticsearch indices for cached results
-- **API Integration**: Python automation for feed management
-- **Alert Enhancement**: Contextualized notifications with threat scores
+The service threw an Elasticsearch **403 Forbidden** on every cycle, 3,319 of them over
+five weeks, because a least-privilege change had correctly made its account write-only and
+the code called `search()`. That looked like the bug. It was not.
 
-### Integration Points
-```
-Suricata/Zeek Events → ELK Stack → TI Enrichment → Enhanced Alerts → Analyst Dashboard
-                           ↓
-                    Threat Intel Feeds (APIs)
-```
+| # | defect | measured |
+|---|---|---|
+| 1 | **No write path existed at all** | 0 `index`/`update`/`bulk` calls in 270 lines, against a positive control of 1 `search` |
+| 2 | Searched an index that had been dead for a year | 4 matching indices, all a year stale; live data was elsewhere, across 95 indices |
+| 3 | Ran as root | for work that needed no privilege |
+| 4 | Treated all of `172.*` as private | rather than 172.16-31, so it would skip public 172.32+ addresses even once repaired |
 
-## Technical Implementation
+Defect 1 decided it. The enrichment loop ends like this:
 
-### Automated Enrichment Workflow
-1. Event detected (suspicious IP, domain, file hash)
-2. Logstash extracts IOCs from event
-3. Query threat intel APIs in parallel
-4. Enrich event with threat scores, categories, historical data
-5. Update alert priority based on TI context
-6. Present consolidated view to analyst
-
-### API Integration
-- **Rate Limiting**: Intelligent caching to stay within API limits
-- **Fail-Safe**: Degraded operation if feeds unavailable
-- **Multi-Source Correlation**: Cross-reference findings across feeds
-- **Historical Tracking**: Store IOC reputation over time
-
-### Threat Scoring System
-```
-Critical (90-100): Known malware C2, active campaigns
-High (70-89): Recently reported malicious activity
-Medium (40-69): Suspicious patterns, limited reports
-Low (1-39): Clean or insufficient data
+```python
+for ip in ips_to_enrich:
+    enrichment = self.enrich_ip(ip)
+    # Update alerts in Elasticsearch with enrichment data
+    # (Optional - could bulk update here)
 ```
 
-## Performance Metrics
+It called the APIs, computed the score, printed it, and moved on. Every 300 seconds.
 
-### Enrichment Latency
-- **Manual IOC Lookup**: 5-10 minutes per alert, across four separate web interfaces
-- **Automated Enrichment**: <2 seconds per alert, all four sources queried in parallel
+> **The permission error was not the bug. It was the only thing preventing the bug from
+> costing money.**
 
-### Detection Improvements
-- **Context at Triage**: Reputation, category, and first-seen date are attached before the analyst sees the alert
-- **Priority Reordering**: Threat score drives alert severity, so high-confidence indicators surface first
-- **Cross-Source Corroboration**: An indicator flagged by multiple feeds scores higher than one flagged by a single feed
-- **Historical Tracking**: Reputation changes over time are retained, so a newly-malicious host is visible as a change
+Fixing the credential and the index would have converted a service that spent nothing into
+one that spent real API quota 288 times a day for output nobody consumed. It was masked,
+with the unit preserved for restore, and the retirement verified on five independent
+signals rather than on the script's own success line.
 
-### Data Volume
-- **Lookup Scope**: Every event with a public source or destination IP
-- **Response Caching**: Lookup results cached in Elasticsearch to avoid repeat API calls against rate-limited feeds
-- **Threat Intel Index**: soc-tia-indicators (1,735 indicators as of 10 August 2026)
+## What replaced it
 
-## Use Cases
+A purpose-built aggregator with its own Postgres store, and enrichment performed **in the
+ingest pipeline** rather than by a polling service.
 
-### 1. Automated Alert Triage
-- Incoming alert: Suspicious connection to 203.0.113.45
-- Automatic enrichment shows: Known malware C2, reported 3 days ago
-- Alert escalated to Critical, analyst notified immediately
+| | live today |
+|---|---|
+| feeds enabled | **7**: VirusTotal, AbuseIPDB, AlienVault OTX, ThreatFox, MalwareBazaar, URLhaus, Feodo Tracker |
+| indicators held | **161,392** |
+| sightings | 3.38 M |
+| indicator index | 152,930 documents |
+| enrich snapshots | **14,574** addresses, **22,519** domains |
+| documents through the pipeline | **37,957,952**, **0 failures** |
+| refresh | hourly timer, last success confirmed by an exported timestamp |
 
-### 2. Proactive Threat Hunting
-- Query threat intel feeds for emerging campaigns
-- Cross-reference with internal network logs
-- Identify compromised systems before they beacon
+Enrichment is three `enrich` processors on the ingest pipeline, matching source address,
+destination address and DNS query against the snapshotted indicator set, plus a script
+processor that computes three separate booleans. The design choices that matter:
 
-### 3. Incident Response
-- IOC extracted from forensic analysis
-- Historical threat intel data shows attack timeline
-- Identify related infrastructure and lateral movement
+- **The aggregator's writer account cannot read its own index.** It only writes. Verified
+  it cannot escalate: reading the telemetry indices, listing indices, creating a superuser
+  and deleting its own index all return 403.
+- **The snapshot is refreshed on a timer, not queried per document.** An enrich policy is a
+  frozen copy; ingest never makes a network call, so a feed outage cannot stall ingestion.
+- **TLS verification needed a code change, not a config flip.** The client passed
+  `verify_certs` but no CA path, so enabling the flag alone would have verified against the
+  system trust store, failed against this cluster's private CA, and invited someone to turn
+  it back off. Proven on by a negative test: pointed at the system bundle, the sync fails
+  with `certificate verify failed`. A verification flag that is silently ignored looks
+  identical to one that works.
 
-## Technical Skills Demonstrated
-- API integration and management
-- Data enrichment pipelines
-- Threat intelligence analysis
-- Logstash filter development
-- Python automation
-- Rate limiting and caching strategies
-- Multi-source data correlation
-- Performance optimization
+## The number that makes it useful is the one that filters
 
-## Security Benefits
-- **Contextual Awareness**: Analysts see full threat picture instantly
-- **Faster Response**: Automated triage reduces decision time
-- **Proactive Defense**: Early warning of emerging threats
-- **Reduced Burnout**: Less manual research, more strategic work
-- **Compliance**: Documented threat intelligence sources for audits
+A match is not a finding. Measured across every document that has matched an indicator:
 
-## Future Enhancements
-- MISP (Malware Information Sharing Platform) integration
-- Custom IOC feed generation from internal findings
-- Machine learning for threat score prediction
-- Automated blocking based on high-confidence indicators
+| | count |
+|---|---|
+| documents matching any indicator | **1,751** |
+| above the per-type confidence floor | 1,687 |
+| **allowlisted** | **1,401** |
+| **actionable** (above floor, not allowlisted) | **286** |
+
+**80% of matches are allowlisted, and that is the design working, not a gap.** The feeds
+list shared platforms because malware abuses them: a content-delivery host, a code-hosting
+service, a pastebin. A DNS query for a code-hosting domain cannot distinguish a `git push`
+from a payload fetch, and alerting on it teaches you to ignore the alert. That distinction
+belongs to the endpoint agent, which sees what executed.
+
+Matches are **reclassified, never dropped.** `allowlisted` and `above_floor` are recorded
+separately from `actionable`, because "we chose not to act on this" and "this did not meet
+the bar" are different facts, and a future question about either one needs both retained.
+
+## The scoring scale this page used to claim
+
+Earlier versions described a 0-100 threat score with four bands, Critical at 90-100 down to
+Low at 1-39. That was wrong, and checkably so. The field named `threat_score` in the
+telemetry is synthesised by the log pipeline from IDS severity and takes **exactly three
+values**:
+
+| value | documents |
+|---|---|
+| 5 | 36,385,797 |
+| 7 | 84,399 |
+| 10 | 6 |
+
+Maximum attainable is 10. Three of the four published bands described scores that have
+never existed, and one downstream component had a blocking threshold of **75**, which is
+7.5× the maximum, so that condition was unsatisfiable by arithmetic. The bands are gone
+from this page and the threshold is documented in [the assurance
+audit](assurance-audit.md).
+
+## Honest limitations
+
+- **OTX is enabled but its key is rejected.** The feed is configured and contributes
+  nothing. That is stated rather than quietly listed as a source.
+- **MISP runs on this network but is not a feed here.** Earlier versions of this page and
+  its card claimed six sources including MISP, Hybrid Analysis and a CISA catalogue. None
+  of the three is a configured source; MISP was listed under future work in the same
+  document that claimed it as live.
+- **No enrichment latency is quoted**, because none was ever measured. The old "<2 seconds
+  per alert, four sources in parallel" described the retired service, which never wrote a
+  result to time.
+- **Nothing here triggers containment.** `actionable` is a label for a human and for
+  queries. The one component on this network that could act on an indicator was masked
+  after it was found to have executed zero blocks in its entire life.
+
+## Framework mapping
+
+Detection and enrichment map to CIS Controls v8 13.1 and 13.6, NIST CSF 2.0 ID.RA and
+DE.AE, and ATT&CK reconnaissance and command-and-control technique families. The
+least-privilege split on the writer account is ISO 27002 8.2 and 8.3.
+
+## Skills demonstrated
+
+Elasticsearch enrich policies and ingest pipelines, index templates and dynamic pipeline
+attachment, Postgres schema design for indicator storage, API integration against
+rate-limited feeds, least-privilege service accounts, TLS verification proven by negative
+test, Prometheus instrumentation with a freshness signal, and retiring a service on
+measured evidence rather than repairing it because it exists.
 
 ---
 
-**Built**: October-December 2025  
-**Status**: Production, continuous operation  
-**Integration**: ELK Stack, Suricata, Zeek, Python
+**Built:** October to December 2025. **Predecessor retired:** September 2026.
+**Aggregator and enrichment pipeline:** live.
