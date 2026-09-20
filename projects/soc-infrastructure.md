@@ -111,8 +111,8 @@ that is part of the job:
 | Capability once listed here | Actual state |
 |---|---|
 | DNS behavioural analysis with scoring and push notifications | **Retired on measurement**: 2.6M detections in 17 days, 99.9% at the score floor, 61 pages/day. [The post-mortem](dns-behavioral-monitoring.md) |
-| Automated response / auto-blocking | **Masked.** Three layers, **zero blocks executed in its entire life**, running because a reboot started it |
-| A webhook that could isolate a host and block an address | **Retired**: unauthenticated, and both fields came straight from the request body |
+| Automated response / auto-blocking | **Retired on measurement.** Three layers, **zero blocks executed in its entire life**, running because a reboot had started it rather than because anyone chose to |
+| A webhook that could isolate a host and block an address | **Retired**: it took the host to isolate and the address to block from the caller, with nothing establishing who the caller was |
 | Threat-intel enrichment service | **Retired**: queried a dead index and had no write path at all; its permission error was the only thing stopping it spending API quota on output nobody consumed |
 
 Three of those four were *removed* rather than repaired. Each had been kept on the
@@ -180,3 +180,7 @@ any screenshot, reproducible, timestamped, and not hand-composed.
 
 **Tech:** Elasticsearch, Logstash, Kibana, Suricata, Zeek, Velociraptor, Elastic Agent and
 Defend, Prometheus, Alertmanager, Grafana, Ollama, ChromaDB, Docker, systemd, Python, Bash
+
+**Scope and limits:** personal lab on owned equipment; no employer or client data or
+systems are involved; figures are readings on the dates stated, not guarantees. See
+[Scope, sourcing and limits](../DISCLAIMER.md).

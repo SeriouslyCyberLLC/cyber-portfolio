@@ -142,8 +142,11 @@ the account ID equals the access key (also 32 hex, and the very next prompt).
 The backup runs `backup` only. **It never runs `forget` and never runs `prune`.**
 
 Object-storage bucket locks are set on the `data/`, `index/`, `snapshots/` and `keys/`
-prefixes for 30 days. An intruder who fully owns the host, holding the storage credential,
-can *add* snapshots and cannot delete a byte for a month.
+prefixes for 30 days. The intended property is that the credential held on the host can
+*add* snapshots but cannot remove existing objects inside the lock window, so a host
+compromise does not take the backups with it. That is the design and the lock
+configuration was checked against it; it has not been adversarially tested, and no single
+control should be read as making a backup ransomware-proof.
 
 **The one prefix deliberately left unlocked is `locks/`**, because restic creates and
 removes a lock on every run. Lock that prefix and every backup breaks, permanently.
@@ -292,3 +295,7 @@ design.
 
 **Tech:** restic, Cloudflare R2 (S3 API), systemd timers, Prometheus, Alertmanager,
 node-exporter, PostgreSQL `pg_dump`, Bash, Python, pytest
+
+**Scope and limits:** personal lab on owned equipment; no employer or client data or
+systems are involved; figures are readings on the dates stated, not guarantees. See
+[Scope, sourcing and limits](../DISCLAIMER.md).

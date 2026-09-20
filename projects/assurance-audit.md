@@ -246,3 +246,7 @@ completely non-functional isolation layer in one call.
 incident it was built for, the barrier that is circumstantial rather than structural, the
 producer whose silence is expected, all of it belongs in the config file next to the
 setting, not in a runbook someone will read a year from now.
+
+**Scope and limits:** personal lab on owned equipment; no employer or client data or
+systems are involved; figures are readings on the dates stated, not guarantees. See
+[Scope, sourcing and limits](../DISCLAIMER.md).

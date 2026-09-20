@@ -59,3 +59,7 @@ Hosting runs at $0/month. The infrastructure is already deployed for the securit
 
 **Status**: Production, live at [seriouslycyber.com](https://seriouslycyber.com)
 **Stack**: Cloudflare Tunnel, Nginx, Python, Ubuntu 24.04
+
+**Scope and limits:** personal lab on owned equipment; no employer or client data or
+systems are involved; figures are readings on the dates stated, not guarantees. See
+[Scope, sourcing and limits](../DISCLAIMER.md).

@@ -1,8 +1,8 @@
 # Threat Intelligence Enrichment: the service that threw its answers away
 
 **Status:** The aggregator and the enrichment pipeline are live. The service this page
-originally described is **retired and masked.** Figures read from the running cluster and
-the indicator database on 2026-09-20.
+originally described has been **retired.** Figures read from the running cluster and the
+indicator database on 2026-09-20.
 
 For most of a year this SOC had a threat-intelligence enrichment service that reported
 `active (running)`, called three commercial reputation APIs every 300 seconds, computed a
@@ -41,9 +41,9 @@ It called the APIs, computed the score, printed it, and moved on. Every 300 seco
 > costing money.**
 
 Fixing the credential and the index would have converted a service that spent nothing into
-one that spent real API quota 288 times a day for output nobody consumed. It was masked,
-with the unit preserved for restore, and the retirement verified on five independent
-signals rather than on the script's own success line.
+one that spent real API quota 288 times a day for output nobody consumed. It was retired,
+with the unit preserved so the decision is reversible, and the retirement verified on five
+independent signals rather than on the script's own success line.
 
 ## What replaced it
 
@@ -127,9 +127,10 @@ audit](assurance-audit.md).
 - **No enrichment latency is quoted**, because none was ever measured. The old "<2 seconds
   per alert, four sources in parallel" described the retired service, which never wrote a
   result to time.
-- **Nothing here triggers containment.** `actionable` is a label for a human and for
-  queries. The one component on this network that could act on an indicator was masked
-  after it was found to have executed zero blocks in its entire life.
+- **Nothing here triggers containment, by choice.** `actionable` is a label for a human and
+  for queries. Acting automatically on a reputation match is a decision I want to make
+  deliberately rather than wire up because the data is now available, and the earlier attempt
+  at it was retired on measurement — see [the assurance audit](assurance-audit.md).
 
 ## Framework mapping
 
@@ -149,3 +150,7 @@ measured evidence rather than repairing it because it exists.
 
 **Built:** October to December 2025. **Predecessor retired:** September 2026.
 **Aggregator and enrichment pipeline:** live.
+
+**Scope and limits:** personal lab on owned equipment; no employer or client data or
+systems are involved; figures are readings on the dates stated, not guarantees. See
+[Scope, sourcing and limits](../DISCLAIMER.md).

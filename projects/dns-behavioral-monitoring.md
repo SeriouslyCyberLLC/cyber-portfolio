@@ -117,3 +117,7 @@ shape.
 - Knowing when to retire a detection rather than keep it running for the metrics
 
 **Built:** December 2025 · **Stopped producing:** January 2026 · **Retired and disabled:** August 2026
+
+**Scope and limits:** personal lab on owned equipment; no employer or client data or
+systems are involved; figures are readings on the dates stated, not guarantees. See
+[Scope, sourcing and limits](../DISCLAIMER.md).

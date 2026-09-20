@@ -5,15 +5,15 @@ would not run today without a change. Audited 2026-09-20; what follows is what i
 
 Tabletop exercise reports and incident-response assessments were taking most of a working day
 each, largely in document assembly rather than thinking. This generates the draft from
-scenario parameters against real Word templates, preserving the formatting, and scores
-exercise responses against a rubric.
+scenario parameters against Word templates, preserving their formatting, and scores exercise
+responses against a rubric. Built and exercised on my own scenarios and my own templates.
 
 ## What it does
 
 | | |
 |---|---|
 | Generation | Ollama, local inference |
-| Document layer | `python-docx` against real client-format Word templates |
+| Document layer | `python-docx` against my own Word templates, matching the layout a deliverable needs |
 | Content | retrieval over a security knowledge base |
 | Scoring | rubric evaluation for exercise responses |
 | Host | the SOC server: Pop!_OS 22.04, i9-13900K, 24 cores / 32 threads, 24 GB AMD GPU |
@@ -44,7 +44,7 @@ section and `mistral-small:22b` in another, and neither matched the source.
 **The host was described as Debian.** It is Pop!_OS 22.04. That error was in this project's
 own internal documentation for months before anyone checked `/etc/os-release`.
 
-**There is no client deliverable on disk.** The three output directories are placeholders
+**No real engagement material is involved.** The three output directories are placeholders
 with test names. The generators were last modified 2025-12-24 and the newest output is
 2026-01-14. Earlier versions of this page carried `Status: Production, client deliverables`,
 which was a stronger claim than the evidence supports, and "client-ready output" was a
@@ -73,3 +73,7 @@ auditing a published claim against the code it describes.
 ---
 
 **Built:** October to December 2025. **Last run:** January 2026. **Audited:** September 2026.
+
+**Scope and limits:** personal lab on owned equipment; no employer or client data or
+systems are involved; figures are readings on the dates stated, not guarantees. See
+[Scope, sourcing and limits](../DISCLAIMER.md).

@@ -325,3 +325,7 @@ OWASP LLM Top 10 2025, MITRE ATLAS
   with and without it under an identical attack corpus
 - Identifying a detector/surface mismatch before its output became a reported finding
 - Bounding adversarial generation so a single result cannot destroy the measurement run
+
+**Scope and limits:** personal lab on owned equipment; no employer or client data or
+systems are involved; figures are readings on the dates stated, not guarantees. See
+[Scope, sourcing and limits](../DISCLAIMER.md).

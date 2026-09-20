@@ -256,3 +256,7 @@ leftover address. Two traps turned up while building it:
 
 **Tech:** Python, Ollama, mistral:7b, Foundation-Sec-8B, Claude Opus 5 (eval only), ChromaDB,
 Velociraptor, AMD ROCm, pytest, MITRE ATT&CK, OWASP LLM Top 10 2025, NIST AI RMF
+
+**Scope and limits:** personal lab on owned equipment; no employer or client data or
+systems are involved; figures are readings on the dates stated, not guarantees. See
+[Scope, sourcing and limits](../DISCLAIMER.md).

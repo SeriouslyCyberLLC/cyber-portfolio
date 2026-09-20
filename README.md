@@ -36,3 +36,14 @@ deliberately by path.
 - Portfolio: https://seriouslycyberllc.github.io/cyber-portfolio/
 - Website: https://seriouslycyber.com
 - GitHub: https://github.com/SeriouslyCyberLLC
+
+## Scope and limits
+
+Personal security lab on equipment I own. **No employer or client data, systems or
+deliverables appear anywhere in this repository**, and nothing here is security advice
+or a warranty that a technique or threshold described will work in another environment.
+Figures are readings taken on the dates stated, not permanent properties. Identifiers
+(hostnames, addressing, segments, ports, internal paths) are omitted or generalised
+throughout, and descriptions of security configuration are deliberately incomplete.
+
+Full statement: [DISCLAIMER.md](DISCLAIMER.md).

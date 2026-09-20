@@ -246,7 +246,7 @@ that the running process received it.
 
 The auto-blocker documented in the [SOC assurance audit](assurance-audit.md), three
 layers of automated response, zero blocks executed across its entire lifetime, running
-because a reboot had started it rather than because anyone had chosen to, was masked.
+because a reboot had started it rather than because anyone had chosen to, was retired.
 
 Four independent signals confirmed it stopped, not one: no main process, a heartbeat file
 gone stale (a live loop rewrites it every ten seconds), zero connections to the datastore,
@@ -306,3 +306,7 @@ the time:
 The value here was never in the hardening points. It was in ending up with a small number
 of alerts that mean something, and in being able to say, with evidence, which signals
 were deliberately left quiet and why.
+
+**Scope and limits:** personal lab on owned equipment; no employer or client data or
+systems are involved; figures are readings on the dates stated, not guarantees. See
+[Scope, sourcing and limits](../DISCLAIMER.md).

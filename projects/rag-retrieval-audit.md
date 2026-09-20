@@ -206,3 +206,7 @@ its own, and I did not claim it would.
 **Tech:** ChromaDB, sentence-transformers (bge-base-en-v1.5, all-MiniLM-L6-v2), Ollama
 (mistral:7b, nomic-embed-text), Velociraptor, NVD API, Prometheus, Alertmanager,
 node-exporter, Python, pytest, Bash, cron
+
+**Scope and limits:** personal lab on owned equipment; no employer or client data or
+systems are involved; figures are readings on the dates stated, not guarantees. See
+[Scope, sourcing and limits](../DISCLAIMER.md).

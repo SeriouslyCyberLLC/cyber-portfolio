@@ -15,8 +15,8 @@ it invents words when handed silence.
 | Model | faster-whisper **medium**, `int8` quantisation, 1.5 GB on disk |
 | Device | **CPU.** Not the GPU |
 | Language | **English, hardcoded** in the transcribe call |
-| Transport | HTTPS on 9001, self-signed certificate, file upload |
-| Auth | shared secret from a root-owned token file, currently in log-only mode |
+| Transport | HTTPS with a private CA, file upload over a single endpoint |
+| Auth | shared secret, read from a root-owned file |
 | Clients | a Chrome/Brave extension (Manifest V3) and a system-wide hotkey |
 | Egress | none. The model and the audio stay on the box |
 
@@ -67,9 +67,9 @@ than one adjective.
 
 ## Two claims removed rather than corrected
 
-- **A WebSocket streaming API on port 9000.** There is no WebSocket server. The library is
-  present in the virtualenv and two *test clients* import it, which is how a grep makes a
-  server look like it exists. Only 9001 listens, and it takes a file.
+- **A WebSocket streaming API on a second port.** There is no WebSocket server. The library
+  is present in the virtualenv and two *test clients* import it, which is how a grep makes a
+  server look like it exists. One port listens, and it takes a file upload.
 - **Multilingual support.** `language="en"` is passed on every call, so there is no
   multilingual path to support.
 
@@ -85,9 +85,16 @@ the WebSocket server that was never built.
 
 ## What I would change before anyone relied on it
 
-1. **Enforce the shared secret.** It is deliberately in log-only mode so an unconfigured
-   client fails loudly in a log rather than silently in use, but it binds all interfaces and
-   the enforcement flag is one environment variable away.
+Stated as design intent rather than current configuration, deliberately: a live
+authentication posture is not something to publish about a running service.
+
+1. **Authentication rollout order matters more than the mechanism.** Turning a shared
+   secret on for an endpoint with existing clients is a change on the server *and* on every
+   client, and if the server goes first the clients fail in ways that look like a network
+   fault. So the sequence is: accept the credential, observe which clients present it,
+   confirm coverage from the server's own logs, and only then require it. That ordering is
+   the whole engineering content here, and it is the same lesson as every other rollout on
+   this estate: make the reversible change first.
 2. **Suppress the silence fabrication** with a voice-activity gate ahead of the decoder,
    and return empty rather than a guess. The decoder cannot be talked out of this; it has to
    be prevented from seeing silence.
@@ -105,3 +112,7 @@ running system.
 ---
 
 **Built:** January 2026. **Audited and corrected:** September 2026.
+
+**Scope and limits:** personal lab on owned equipment; no employer or client data or
+systems are involved; figures are readings on the dates stated, not guarantees. See
+[Scope, sourcing and limits](../DISCLAIMER.md).

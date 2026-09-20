@@ -166,3 +166,9 @@ Assessment Methodology:
 
 **Last Updated**: August 2026  
 **Portfolio Status**: Active Development
+
+---
+
+**Scope and limits:** personal lab on owned equipment; no employer or client
+data or systems are involved; figures are readings on the dates stated, not guarantees.
+See [Scope, sourcing and limits](../DISCLAIMER.md).
