@@ -24,6 +24,11 @@ const html = TARGET_URL
   : readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
 const style = (html.match(/<style>([\s\S]*?)<\/style>/) || [, ''])[1];
+/* Comment-free view of the stylesheet. The banned-pattern checks below match TEXT, so a
+   comment explaining why something was removed used to trip the very check that removed
+   it: a comment reading "not the red body::after glow" failed the body::after ban on
+   2026-09-20. A rule about what the CSS DOES must look at code, not prose. */
+const styleCode = style.replace(/\/\*[\s\S]*?\*\//g, '');
 
 // ---- contrast helpers (WCAG 2.1 relative luminance) ----
 const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255);
@@ -48,13 +53,13 @@ check('palette variables declared with the specified values', () => {
 
 check('no red values anywhere in the stylesheet', () => {
   const banned = /#ff2a2a|#cc0000|#ff5b5b|#ff4d4d|#ff6b6b|#990000|#240707|rgba\(\s*255\s*,\s*0\s*,\s*0|rgba\(\s*255\s*,\s*42\s*,\s*42|rgba\(\s*122\s*,\s*0\s*,\s*0/gi;
-  const hits = style.match(banned);
+  const hits = styleCode.match(banned);
   return hits ? `${hits.length} occurrence(s): ${[...new Set(hits)].join(', ')}` : true;
 });
 
 check('no glow: zero text-shadow and zero box-shadow declarations', () => {
-  const t = style.match(/text-shadow\s*:/g) || [];
-  const b = style.match(/box-shadow\s*:/g) || [];
+  const t = styleCode.match(/text-shadow\s*:/g) || [];
+  const b = styleCode.match(/box-shadow\s*:/g) || [];
   return t.length || b.length ? `${t.length} text-shadow, ${b.length} box-shadow` : true;
 });
 
@@ -65,13 +70,13 @@ check('no background-clip:text and no .gradient-text class', () => {
 });
 
 check('no carbon weave and no red ambient wash', () => {
-  const weave = /background-image:[^;]*linear-gradient\(207deg/.test(style);
-  const wash = /body::after/.test(style);
+  const weave = /background-image:[^;]*linear-gradient\(207deg/.test(styleCode);
+  const wash = /body::after/.test(styleCode);
   return weave || wash ? `weave=${weave}, body::after=${wash}` : true;
 });
 
 check('no pixel hover lifts (skip-link percentage transform is allowed)', () => {
-  const hits = style.match(/translateY\(-\d+px\)/g);
+  const hits = styleCode.match(/translateY\(-\d+px\)/g);
   return hits ? `${hits.length}: ${[...new Set(hits)].join(', ')}` : true;
 });
 
@@ -140,7 +145,15 @@ check('favicon is a square glyph and the touch icon is 180x180', () => {
    pins the thing that writes to it. scripts/dedash.py --check does the same for the
    markdown writeups. */
 check('no em dashes, en dashes or ellipsis characters', () => {
-  const found = [...html.matchAll(/[\u2014\u2013\u2026]/g)].map(m => m[0]);
+  /* LITERAL CHARACTERS AND HTML ENTITIES BOTH. The first version of this check matched
+     only the literal characters, and the telemetry generator emitted `&mdash;` -- so the
+     check passed, the de-dash pass found nothing, and the rendered page showed an em dash
+     anyway for two days. A rule about what a READER sees has to cover every spelling that
+     renders the same. */
+  const literal = [...html.matchAll(/[\u2014\u2013\u2026]/g)].map(m => m[0]);
+  const entity = [...html.matchAll(/&(mdash|ndash|hellip|#8212|#8211|#x2014|#x2013|#x2026);/gi)]
+                   .map(m => m[0]);
+  const found = [...literal, ...entity];
   if (!found.length) return true;
   const counts = found.reduce((a, c) => (a[c] = (a[c] || 0) + 1, a), {});
   return Object.entries(counts).map(([c, n]) => `${JSON.stringify(c)} x${n}`).join(', ');
@@ -151,7 +164,9 @@ check('the telemetry generator cannot reintroduce them', () => {
   const gen = readFileSync(new URL('../scripts/update-telemetry.mjs', import.meta.url), 'utf8');
   // Only the emitted strings matter, but the whole file is checked: a dash in a comment
   // is copied into the page the next time someone edits the template around it.
-  const found = [...gen.matchAll(/[\u2014\u2013\u2026]/g)].length;
+  // Entities count: this file emitted `&mdash;` while every literal-character check passed.
+  const found = [...gen.matchAll(/[\u2014\u2013\u2026]/g)].length
+              + [...gen.matchAll(/&(mdash|ndash|hellip|#8212|#8211|#x2014|#x2013|#x2026);/gi)].length;
   return found ? `update-telemetry.mjs still contains ${found}; the daily run would put them back` : true;
 });
 

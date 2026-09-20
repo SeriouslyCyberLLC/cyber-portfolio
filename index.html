@@ -112,8 +112,34 @@
             font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
             color: var(--ink);
-            background: var(--bg);
+            background-color: var(--bg);
             min-height: 100vh;
+
+            /* Depth without decoration. The page was flat #0f1115 edge to edge, which
+               reads as unfinished rather than deliberate. Three layers, none of which
+               competes with content:
+                 1. a wide, very slightly lighter wash behind the hero, so the top of the
+                    page has a light source and the panels sit ON something
+                 2. a 48px engineering grid at ~2% white, which at normal viewing distance
+                    is texture rather than pattern
+                 3. the base colour underneath, unchanged, so every contrast ratio the
+                    harness measures against --bg still holds
+               NOT the ambient wash that was removed in the August repositioning: that was
+               a red body::after glow behind the whole page. This is achromatic, it is
+               under 3% alpha, and it uses no shadow. Checked at 390px and 1440px. */
+            background-image:
+                radial-gradient(1100px 520px at 50% -8%,
+                                rgba(223, 133, 68, 0.045) 0%,
+                                rgba(223, 133, 68, 0) 62%),
+                radial-gradient(900px 700px at 50% 0%,
+                                rgba(150, 170, 200, 0.05) 0%,
+                                rgba(150, 170, 200, 0) 70%),
+                linear-gradient(rgba(255, 255, 255, 0.021) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.021) 1px, transparent 1px);
+            background-size: 100% 900px, 100% 900px, 48px 48px, 48px 48px;
+            background-position: top center, top center, top left, top left;
+            background-repeat: no-repeat, no-repeat, repeat, repeat;
+            background-attachment: scroll, scroll, fixed, fixed;
         }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
@@ -516,7 +542,7 @@
                     </svg>
                 </div>
             </div>
-            <p class="telemetry__caption">Events per hour across Suricata and Zeek &mdash; peak 973,332, floor 751,742. Regenerated from the cluster by <code>scripts/update-telemetry.mjs</code>.</p>
+            <p class="telemetry__caption">Events per hour across Suricata and Zeek. Peak 973,332, floor 751,742. Regenerated from the cluster by <code>scripts/update-telemetry.mjs</code>.</p>
             <table class="visually-hidden">
                 <caption>Events per hour, last 23 hours</caption>
                 <thead><tr><th scope="col">Hour</th><th scope="col">Events</th></tr></thead>
