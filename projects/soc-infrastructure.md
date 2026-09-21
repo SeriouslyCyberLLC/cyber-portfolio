@@ -2,7 +2,7 @@
 
 **Status:** Production, continuous operation. Built September 2025 to January 2026, run and
 measured daily since. The tables below were read from the running cluster and services on
-**2026-09-20**. Scale and throughput move daily, so they are readings with a date on them,
+**<!--f:asof-->2026-09-21<!--/f-->**. Scale and throughput move daily, so they are readings with a date on them,
 not properties; the screenshot further down carries its own, earlier date for the same
 reason.
 
@@ -28,7 +28,7 @@ broken, or retired on the evidence.
 | 3 | Threat intelligence | VirusTotal, AbuseIPDB, OTX, abuse.ch feeds, MISP, a custom aggregator | [Threat intel integration](threat-intelligence-integration.md) |
 | 4 | LLM triage | Local models over collected endpoint evidence, with a deterministic severity floor | [AI-enhanced analysis](ai-enhanced-security-analysis.md) · [red-team bench](ai-redteam-bench.md) |
 | 5 | Endpoint | Velociraptor 0.75.1 for on-demand forensics; Elastic Defend streaming continuously | this page |
-| 6 | Assurance | Prometheus, Alertmanager, 85 alert rules across 17 files, freshness and integrity probes | [Assurance audit](assurance-audit.md) · [hardening](hardening-telemetry.md) · [integrity & malware](integrity-and-malware-scanning.md) · [off-site backup](off-site-backup.md) |
+| 6 | Assurance | Prometheus, Alertmanager, <!--f:rules_total-->85<!--/f--> alert rules across <!--f:rule_files-->17<!--/f--> files, freshness and integrity probes | [Assurance audit](assurance-audit.md) · [hardening](hardening-telemetry.md) · [integrity & malware](integrity-and-malware-scanning.md) · [off-site backup](off-site-backup.md) |
 
 All nine core services (search, dashboards, ingest, IDS, EDR server, endpoint agent, the
 LLM runtime, metrics and dashboards) were `active` when this was written. That sentence is
@@ -38,10 +38,10 @@ worth exactly as much as the rest of this page makes it worth.
 
 | | documents | storage | indices | share |
 |---|---|---|---|---|
-| Endpoint telemetry (Elastic Defend) | **6.93B** | 1.83 TB | 82 | **74.8%** |
-| Network telemetry (Suricata + Zeek) | 0.73B | 0.26 TB | 97 | 7.9% |
-| Everything else | 1.60B | 0.32 TB | 448 | 17.3% |
-| **Cluster total** | **9.26B** | **2.41 TB** | 627 | |
+| Endpoint telemetry (Elastic Defend) | **<!--f:endpoint_docs-->6.97B<!--/f-->** | <!--f:endpoint_tb-->1.84<!--/f--> TB | <!--f:endpoint_indices-->83<!--/f--> | **<!--f:endpoint_share-->74.7<!--/f-->%** |
+| Network telemetry (Suricata + Zeek) | <!--f:sensor_docs-->0.75B<!--/f--> | <!--f:sensor_tb-->0.27<!--/f--> TB | <!--f:sensor_indices-->97<!--/f--> | <!--f:sensor_share-->8.0<!--/f-->% |
+| Everything else | <!--f:other_docs-->1.62B<!--/f--> | <!--f:other_tb-->0.32<!--/f--> TB | <!--f:other_indices-->448<!--/f--> | <!--f:other_share-->17.3<!--/f-->% |
+| **Cluster total** | **<!--f:cluster_docs-->9.34B<!--/f-->** | **<!--f:cluster_tb-->2.43<!--/f--> TB** | <!--f:cluster_indices-->628<!--/f--> | |
 
 Daily throughput, seven-day average:
 
@@ -91,8 +91,8 @@ periods measured in months. Three security controls reported success while havin
 effect. That is why layer 6 exists, and why it is the layer I would defend hardest in an
 interview:
 
-- **Output freshness, not process liveness.** 17 producers are watched by output age, and
-  **6 of those additionally against a 24-hour volume floor**; a source that keeps writing at
+- **Output freshness, not process liveness.** <!--f:producers_total-->17<!--/f--> producers are watched by output age, and
+  **<!--f:producers_floor-->6<!--/f--> of those additionally against a 24-hour volume floor**; a source that keeps writing at
   0.2% of normal volume is invisible to any check that only asks whether output exists. See the [assurance audit](assurance-audit.md).
 - **Failure never renders as a healthy zero.** Every exporter here withholds its series
   rather than emitting `0` when it cannot measure, because a plausible number gets
