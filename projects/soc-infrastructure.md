@@ -38,10 +38,10 @@ worth exactly as much as the rest of this page makes it worth.
 
 | | documents | storage | indices | share |
 |---|---|---|---|---|
-| Endpoint telemetry (Elastic Defend) | **<!--f:endpoint_docs-->6.97B<!--/f-->** | <!--f:endpoint_tb-->1.84<!--/f--> TB | <!--f:endpoint_indices-->83<!--/f--> | **<!--f:endpoint_share-->74.7<!--/f-->%** |
+| Endpoint telemetry (Elastic Defend) | **<!--f:endpoint_docs-->6.98B<!--/f-->** | <!--f:endpoint_tb-->1.84<!--/f--> TB | <!--f:endpoint_indices-->83<!--/f--> | **<!--f:endpoint_share-->74.7<!--/f-->%** |
 | Network telemetry (Suricata + Zeek) | <!--f:sensor_docs-->0.75B<!--/f--> | <!--f:sensor_tb-->0.27<!--/f--> TB | <!--f:sensor_indices-->97<!--/f--> | <!--f:sensor_share-->8.0<!--/f-->% |
 | Everything else | <!--f:other_docs-->1.62B<!--/f--> | <!--f:other_tb-->0.32<!--/f--> TB | <!--f:other_indices-->448<!--/f--> | <!--f:other_share-->17.3<!--/f-->% |
-| **Cluster total** | **<!--f:cluster_docs-->9.34B<!--/f-->** | **<!--f:cluster_tb-->2.43<!--/f--> TB** | <!--f:cluster_indices-->628<!--/f--> | |
+| **Cluster total** | **<!--f:cluster_docs-->9.35B<!--/f-->** | **<!--f:cluster_tb-->2.44<!--/f--> TB** | <!--f:cluster_indices-->628<!--/f--> | |
 
 Daily throughput, seven-day average:
 
