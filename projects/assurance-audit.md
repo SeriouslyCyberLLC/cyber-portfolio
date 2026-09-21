@@ -8,7 +8,7 @@ the problem was not coverage. Every sensor I might have added was a sensor I cou
 have trusted, because the ones already installed had been failing silently for months and
 nothing had noticed.
 
-Eleven defects, and eight of them share one shape:
+Ten defects, and eight of them share one shape:
 
 > **Five services reported `active (running)` while producing nothing.
 > Three security controls reported success while having no effect.**
@@ -16,9 +16,9 @@ Eleven defects, and eight of them share one shape:
 None of those eight was detectable from a status command, a log file, or an exit code. Every
 one was detectable from **output**: what the thing had actually produced, or failed to.
 
-The other three (findings 1, 2 and 3 below) are a different category, and worth separating
-rather than folding in. They were readable straight from configuration by anyone who went
-looking. Nobody had gone looking, which is its own finding.
+The other two (findings 1 and 2 below) are a different category, and worth separating rather
+than folding in. They were readable straight from configuration by anyone who went looking.
+Nobody had gone looking, which is its own finding.
 
 ## The findings
 
@@ -26,15 +26,14 @@ looking. Nobody had gone looking, which is its own finding.
 |---|---|---|
 | 1 | Evidence store accepted connections from two entire VLANs and a container network | unknown |
 | 2 | Log-shipping account held `manage` (delete-index) over the telemetry indices | unknown |
-| 3 | That account's password was a **six-digit literal** in a world-readable config | unknown |
-| 4 | Threat-intel adapters returning HTTP 403 on every fetch: revoked API key | **35 days** |
-| 5 | The intel pipeline's second stage was a manual CLI command with no scheduler | **73 days** |
-| 6 | Intel service authenticated as **superuser** with TLS verification disabled | since build |
-| 7 | Freshness monitoring could detect *absent* output but not *wrong* output | since build |
-| 8 | Auto-blocker running because a reboot started it, not because anyone chose to | 7 days |
-| 9 | Auto-blocker's `unblock` and `check` were **no-ops that reported success** | since build |
-| 10 | Endpoint isolation **could not launch its own artifact**, and reported success | since build |
-| 11 | Four distinct rejection reasons collapsed into one counter | since build |
+| 3 | Threat-intel adapters returning HTTP 403 on every fetch: revoked API key | **35 days** |
+| 4 | The intel pipeline's second stage was a manual CLI command with no scheduler | **73 days** |
+| 5 | Intel service authenticated as **superuser** with TLS verification disabled | since build |
+| 6 | Freshness monitoring could detect *absent* output but not *wrong* output | since build |
+| 7 | Auto-blocker running because a reboot started it, not because anyone chose to | 7 days |
+| 8 | Auto-blocker's `unblock` and `check` were **no-ops that reported success** | since build |
+| 9 | Endpoint isolation **could not launch its own artifact**, and reported success | since build |
+| 10 | Four distinct rejection reasons collapsed into one counter | since build |
 
 Three of them are worth the detail, because each one is a different way for a check to
 report a result it never actually measured.
@@ -177,7 +176,7 @@ distinct error metric and withhold the others entirely.
 
 ## Corrections to my own documentation
 
-The operational runbook for this environment is detailed and confidently written. Four of
+The operational runbook for this environment is detailed and confidently written. Three of
 its claims were wrong, and each survived because nothing measured it:
 
 - **"This service is deliberately left disabled."** It was enabled and running, started
@@ -192,10 +191,6 @@ its claims were wrong, and each survived because nothing measured it:
   second is a property of current traffic. That distinction is now in the file, because
   reading "zero external sources in seven days" as a safety guarantee is how the original
   wrong claim happened.
-- **A security review flagged "a six-digit password" and I dismissed it** as wrong,
-  because the account I checked had a 32-character password. The review was right about a
-  *different* account. Checking the claim that was made, rather than the one I assumed,
-  would have found it immediately.
 
 ## Mistakes made doing the work
 

@@ -64,7 +64,7 @@ Six layers on owned hardware, and the map to every other project here: network d
 **Key Stats**: 8.73B documents across 2.30 TB with network telemetry only 11.7% of it, 12.6M network and 54.5M endpoint events per day, ingest ceiling 6,300 docs/sec bounded by spinning disks, four advertised capabilities retired on measurement rather than repaired
 
 ### 7. [SOC Assurance Audit](assurance-audit.md)
-Audited a running SOC's own reliability rather than adding sensors. Eleven defects, every one invisible to status commands and exit codes, all found by measuring output.
+Audited a running SOC's own reliability rather than adding sensors. Ten defects, every one invisible to status commands and exit codes, all found by measuring output.
 
 **Key Stats**: 5 services healthy while producing nothing, 3 controls reporting success with no effect, intel pipeline dead 35 and 73 days, auto-blocker that could never unblock
 
