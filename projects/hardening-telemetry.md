@@ -1,7 +1,7 @@
 # An Audit Nobody Reads: putting a number on hardening
 
 **Status:** Live on two Linux hosts. Built August 2026, extended through September. Figures
-marked *read live* were taken from the running monitoring stack on <!--f:asof-->2026-09-24<!--/f-->. Historical
+marked *read live* were taken from the running monitoring stack on <!--f:asof-->2026-09-25<!--/f-->. Historical
 figures carry their own dates. Numbers here move as the hosts get patched, so treat a
 hardening index as a reading, not a property.
 
@@ -70,8 +70,8 @@ Measured from the monitoring stack, 14-day window against today:
 
 | host | hardening index | suggestions | warnings | tests run |
 |---|---|---|---|---|
-| SOC server | **66 → <!--f:lynis_index_soc-->70<!--/f-->** | 52 → <!--f:lynis_sugg_soc-->33<!--/f--> | 2 | 273 |
-| second Linux host | **59 → <!--f:lynis_index_second-->65<!--/f-->** | 51 → <!--f:lynis_sugg_second-->33<!--/f--> | 0 | 277 |
+| SOC server | **66 → <!--f:lynis_index_soc-->70<!--/f-->** | 52 → <!--f:lynis_sugg_soc-->34<!--/f--> | 2 | 273 |
+| second Linux host | **59 → <!--f:lynis_index_second-->64<!--/f-->** | 51 → <!--f:lynis_sugg_second-->33<!--/f--> | 0 | 277 |
 
 One package was deliberately **not** installed: an interactive bug-notifier that prompts
 during package operations and would have hung unattended upgrades. A hardening suggestion
@@ -150,9 +150,9 @@ entries** as new build-id directories appear. That is exactly what raised the on
 this rule has produced, a kernel reboot, correctly detected, and entirely noise. The
 tolerance exists because I went and looked at what normal change costs.
 
-Second host, read live <!--f:asof-->2026-09-24<!--/f-->: 0 infected, <!--f:chkroot_susp_second-->29<!--/f--> suspicious,
+Second host, read live <!--f:asof-->2026-09-25<!--/f-->: 0 infected, <!--f:chkroot_susp_second-->29<!--/f--> suspicious,
 <!--f:chkroot_checks_second-->142<!--/f--> checks, report readable. The SOC server reads <!--f:chkroot_susp_soc-->27<!--/f--> suspicious over
-<!--f:chkroot_checks_soc-->117<!--/f--> checks, a different baseline, which is why the
+<!--f:chkroot_checks_soc-->118<!--/f--> checks, a different baseline, which is why the
 jump rule compares each host against its own history rather than against a shared number.
 
 ### Two scanners, and the order in which to remove one
