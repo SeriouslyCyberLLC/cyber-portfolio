@@ -1,7 +1,7 @@
 # An Audit Nobody Reads: putting a number on hardening
 
 **Status:** Live on two Linux hosts. Built August 2026, extended through September. Figures
-marked *read live* were taken from the running monitoring stack on <!--f:asof-->2026-09-25<!--/f-->. Historical
+marked *read live* were taken from the running monitoring stack on <!--f:asof-->2026-09-26<!--/f-->. Historical
 figures carry their own dates. Numbers here move as the hosts get patched, so treat a
 hardening index as a reading, not a property.
 
@@ -150,7 +150,7 @@ entries** as new build-id directories appear. That is exactly what raised the on
 this rule has produced, a kernel reboot, correctly detected, and entirely noise. The
 tolerance exists because I went and looked at what normal change costs.
 
-Second host, read live <!--f:asof-->2026-09-25<!--/f-->: 0 infected, <!--f:chkroot_susp_second-->29<!--/f--> suspicious,
+Second host, read live <!--f:asof-->2026-09-26<!--/f-->: 0 infected, <!--f:chkroot_susp_second-->29<!--/f--> suspicious,
 <!--f:chkroot_checks_second-->142<!--/f--> checks, report readable. The SOC server reads <!--f:chkroot_susp_soc-->27<!--/f--> suspicious over
 <!--f:chkroot_checks_soc-->118<!--/f--> checks, a different baseline, which is why the
 jump rule compares each host against its own history rather than against a shared number.
@@ -284,7 +284,7 @@ separately:
 | package-verification scan (second host) | 3 | 10 |
 | **total** | **11** | **38** |
 
-Those 11 sit inside an environment total of **<!--f:rules_total-->85<!--/f--> alert rules across <!--f:rule_files-->17<!--/f--> rule files**, counted
+Those 11 sit inside an environment total of **<!--f:rules_total-->86<!--/f--> alert rules across <!--f:rule_files-->17<!--/f--> rule files**, counted
 off the deployed files on 2026-09-20 rather than added up from this page. Zero of the 11
 were firing when I checked.
 
