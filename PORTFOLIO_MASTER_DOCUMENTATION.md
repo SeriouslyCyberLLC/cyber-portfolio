@@ -9,9 +9,9 @@ This document contains all commands, procedures, and technical details for maint
 
 - **GitHub Repo**: https://github.com/SeriouslyCyberLLC/cyber-portfolio
 - **Live Site**: https://seriouslycyberllc.github.io/cyber-portfolio/
-- **Local Directory**: `/home/analyst/cybersecurity-portfolio/`
+- **Local Directory**: `/home/cyberguy/cybersecurity-portfolio/`
 - **GitHub Username**: SeriouslyCyberLLC
-- **Email**: larry.harvey.cyber@protonmail.com
+- **Email**: mail@seriouslycyber.com
 
 ---
 
@@ -27,7 +27,7 @@ cd ~/cybersecurity-portfolio
 ```bash
 git init
 git config user.name "SeriouslyCyberLLC"
-git config user.email "larry.harvey.cyber@protonmail.com"
+git config user.email "254199373+SeriouslyCyberLLC@users.noreply.github.com"
 ```
 
 ### 3. Created .gitignore
@@ -371,8 +371,8 @@ Edit in `index.html`, footer section:
 ```html
 <div class="contact-links">
     <a href="https://github.com/SeriouslyCyberLLC">GitHub</a>
-    <a href="mailto:larry.harvey.cyber@protonmail.com">Email</a>
-    <a href="https://www.linkedin.com/in/larry-harvey-cyber">LinkedIn</a>
+    <a href="mailto:mail@seriouslycyber.com">Email</a>
+    <a href="https://www.linkedin.com/in/larry-harvey-cybersecurity">LinkedIn</a>
 </div>
 ```
 
