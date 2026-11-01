@@ -2,7 +2,7 @@
 
 **Status:** Production, continuous operation. Built September 2025 to January 2026, run and
 measured daily since. The tables below were read from the running cluster and services on
-**<!--f:asof-->2026-10-31<!--/f-->**. Scale and throughput move daily, so they are readings with a date on them,
+**<!--f:asof-->2026-11-01<!--/f-->**. Scale and throughput move daily, so they are readings with a date on them,
 not properties; the screenshot further down carries its own, earlier date for the same
 reason.
 
@@ -38,10 +38,10 @@ worth exactly as much as the rest of this page makes it worth.
 
 | | documents | storage | indices | share |
 |---|---|---|---|---|
-| Endpoint telemetry (Elastic Defend) | **<!--f:endpoint_docs-->1.25B<!--/f-->** | <!--f:endpoint_tb-->0.34<!--/f--> TB | <!--f:endpoint_indices-->94<!--/f--> | **<!--f:endpoint_share-->33.8<!--/f-->%** |
-| Network telemetry (Suricata + Zeek) | <!--f:sensor_docs-->1.60B<!--/f--> | <!--f:sensor_tb-->0.47<!--/f--> TB | <!--f:sensor_indices-->16<!--/f--> | <!--f:sensor_share-->43.4<!--/f-->% |
-| Everything else | <!--f:other_docs-->0.84B<!--/f--> | <!--f:other_tb-->0.16<!--/f--> TB | <!--f:other_indices-->383<!--/f--> | <!--f:other_share-->22.8<!--/f-->% |
-| **Cluster total** | **<!--f:cluster_docs-->3.69B<!--/f-->** | **<!--f:cluster_tb-->0.98<!--/f--> TB** | <!--f:cluster_indices-->493<!--/f--> | |
+| Endpoint telemetry (Elastic Defend) | **<!--f:endpoint_docs-->1.08B<!--/f-->** | <!--f:endpoint_tb-->0.32<!--/f--> TB | <!--f:endpoint_indices-->95<!--/f--> | **<!--f:endpoint_share-->30.5<!--/f-->%** |
+| Network telemetry (Suricata + Zeek) | <!--f:sensor_docs-->1.61B<!--/f--> | <!--f:sensor_tb-->0.48<!--/f--> TB | <!--f:sensor_indices-->16<!--/f--> | <!--f:sensor_share-->45.6<!--/f-->% |
+| Everything else | <!--f:other_docs-->0.85B<!--/f--> | <!--f:other_tb-->0.16<!--/f--> TB | <!--f:other_indices-->385<!--/f--> | <!--f:other_share-->23.9<!--/f-->% |
+| **Cluster total** | **<!--f:cluster_docs-->3.54B<!--/f-->** | **<!--f:cluster_tb-->0.96<!--/f--> TB** | <!--f:cluster_indices-->496<!--/f--> | |
 
 Daily throughput, seven-day average:
 
