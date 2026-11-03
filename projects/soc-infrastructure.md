@@ -2,7 +2,7 @@
 
 **Status:** Production, continuous operation. Built September 2025 to January 2026, run and
 measured daily since. The tables below were read from the running cluster and services on
-**<!--f:asof-->2026-11-02<!--/f-->**. Scale and throughput move daily, so they are readings with a date on them,
+**<!--f:asof-->2026-11-03<!--/f-->**. Scale and throughput move daily, so they are readings with a date on them,
 not properties; the screenshot further down carries its own, earlier date for the same
 reason.
 
@@ -28,7 +28,7 @@ broken, or retired on the evidence.
 | 3 | Threat intelligence | VirusTotal, AbuseIPDB, OTX, abuse.ch feeds, MISP, a custom aggregator | [Threat intel integration](threat-intelligence-integration.md) |
 | 4 | LLM triage | Local models over collected endpoint evidence, with a deterministic severity floor | [AI-enhanced analysis](ai-enhanced-security-analysis.md) · [red-team bench](ai-redteam-bench.md) |
 | 5 | Endpoint | Velociraptor 0.75.1 for on-demand forensics; Elastic Defend streaming continuously | this page |
-| 6 | Assurance | Prometheus, Alertmanager, <!--f:rules_total-->88<!--/f--> alert rules across <!--f:rule_files-->18<!--/f--> files, freshness and integrity probes | [Assurance audit](assurance-audit.md) · [hardening](hardening-telemetry.md) · [integrity & malware](integrity-and-malware-scanning.md) · [off-site backup](off-site-backup.md) |
+| 6 | Assurance | Prometheus, Alertmanager, <!--f:rules_total-->95<!--/f--> alert rules across <!--f:rule_files-->19<!--/f--> files, freshness and integrity probes | [Assurance audit](assurance-audit.md) · [hardening](hardening-telemetry.md) · [integrity & malware](integrity-and-malware-scanning.md) · [off-site backup](off-site-backup.md) |
 
 All nine core services (search, dashboards, ingest, IDS, EDR server, endpoint agent, the
 LLM runtime, metrics and dashboards) were `active` when this was written. That sentence is
@@ -38,10 +38,10 @@ worth exactly as much as the rest of this page makes it worth.
 
 | | documents | storage | indices | share |
 |---|---|---|---|---|
-| Endpoint telemetry (Elastic Defend) | **<!--f:endpoint_docs-->1.11B<!--/f-->** | <!--f:endpoint_tb-->0.33<!--/f--> TB | <!--f:endpoint_indices-->102<!--/f--> | **<!--f:endpoint_share-->31.9<!--/f-->%** |
-| Network telemetry (Suricata + Zeek) | <!--f:sensor_docs-->1.63B<!--/f--> | <!--f:sensor_tb-->0.48<!--/f--> TB | <!--f:sensor_indices-->16<!--/f--> | <!--f:sensor_share-->46.8<!--/f-->% |
-| Everything else | <!--f:other_docs-->0.74B<!--/f--> | <!--f:other_tb-->0.15<!--/f--> TB | <!--f:other_indices-->420<!--/f--> | <!--f:other_share-->21.3<!--/f-->% |
-| **Cluster total** | **<!--f:cluster_docs-->3.48B<!--/f-->** | **<!--f:cluster_tb-->0.96<!--/f--> TB** | <!--f:cluster_indices-->538<!--/f--> | |
+| Endpoint telemetry (Elastic Defend) | **<!--f:endpoint_docs-->1.13B<!--/f-->** | <!--f:endpoint_tb-->0.33<!--/f--> TB | <!--f:endpoint_indices-->104<!--/f--> | **<!--f:endpoint_share-->32.4<!--/f-->%** |
+| Network telemetry (Suricata + Zeek) | <!--f:sensor_docs-->1.65B<!--/f--> | <!--f:sensor_tb-->0.49<!--/f--> TB | <!--f:sensor_indices-->16<!--/f--> | <!--f:sensor_share-->47.3<!--/f-->% |
+| Everything else | <!--f:other_docs-->0.71B<!--/f--> | <!--f:other_tb-->0.15<!--/f--> TB | <!--f:other_indices-->420<!--/f--> | <!--f:other_share-->20.3<!--/f-->% |
+| **Cluster total** | **<!--f:cluster_docs-->3.50B<!--/f-->** | **<!--f:cluster_tb-->0.97<!--/f--> TB** | <!--f:cluster_indices-->540<!--/f--> | |
 
 Daily throughput, seven-day average:
 
